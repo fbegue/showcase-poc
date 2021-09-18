@@ -1,0 +1,20 @@
+service: showcase-backend-app
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+  memorySize: 3500
+functions:
+#  express -> serverless -> gateway api easiest route possible = just one function, handles everything
+  app:
+    handler: app.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
