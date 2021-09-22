@@ -522,8 +522,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 				return date;
 			};
 			//testing:
-			req.body.dateFilter.end = new Date().addDays(31).toISOString();
-			// req.body.dateFilter.end = new Date().addDays(365).toISOString();
+			//req.body.dateFilter.end = new Date().addDays(90).toISOString();
+			 req.body.dateFilter.end = new Date().addDays(365).toISOString();
 			//req.body.dateFilter.end = new Date().addDays(7).toISOString();
 
 			console.warn("faking dateFilter values");
@@ -561,7 +561,7 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 						 */
 
 						var metrOb = {metro:req.body.metro,dateFilter:req.body.dateFilter,
-							artists:[], aas_match:[],aas_match_genres:[], leven_match:[], spotify_match:[],
+							artists:[], aas_match_no_genres:[],aas_match_genres:[], leven_match:[], spotify_match:[],
 							payload:[],
 						};
 
@@ -621,26 +621,31 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 
 
 						//check if we ALREADY KNOW OF a match between songkick and spotify
+
+
 						Promise.all(AASMatch).then(results => {
 
 								var LevenMatch = [];
 
 								//todo: how to parallel these? mixing promises here (2)
-								results.shift();
+							   //todo: what is this?
+								///results.shift();
 
 								//make a map of the matches we got so we can filter a payload for step (2)
 								results.forEach(r =>{
 
-									//record differently depending on weather we found genres
+									//recording matches to filter out later
+									//and for no matches / genres, pushing onto checkDBForArtistLevenMatch
 
 									if(r.genres.length > 0){
+
 										//matched and found genres. just recording for posterity
 										//and filtering out of next step
 										metrOb.aas_match_genres.push(r)
 									}
 									else if(r.length === 0){
 										//matched but no genres
-										metrOb.aas_match.push(r);
+										metrOb.aas_match_no_genres.push(r);
 										LevenMatch.push(db_api.checkDBForArtistLevenMatch(r))
 									}
 									else{
@@ -650,9 +655,9 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								});
 
 
-								console.info("metrOb.aas_match",metrOb.aas_match.length);
+								console.info("metrOb.aas_match_no_genres",metrOb.aas_match_no_genres.length);
 								console.info("metrOb.aas_match_genres",metrOb.aas_match_genres.length);
-								console.info("LevenMatch payload",LevenMatch.length);
+								//console.info("LevenMatch payload",LevenMatch.length);
 
 								//testing:
 								//LevenMatch.push(db_api.checkDBForArtistLevenMatch({name:"earth gang",id:1234324}));
@@ -660,24 +665,20 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								//testing: skipping this for now (I was ignoring result anyways)
 								//Promise.all(LevenMatch).then(results => {
 
-								//spotify artist string search
-
-
-
-								//history:
-								//238 @ 20:100 FAIL
-								//238 @ 15:100 PASS
 								var searches = [];
-								var artistSongkicks = [];
+								var artistSongkicksLevenMatches = [];
+
+								//filter out matches reported above
+								var matchedMap = {}
+								metrOb.aas_match_genres.forEach(r =>{
+									matchedMap[r.id] =  r;
+								})
 
 								//testing:
 								console.warn("auto-failing LevenMatch results");
-
 								results.forEach(r =>{
-
 									//testing:
 									r.error = true;
-
 									if(r.error === undefined){
 
 										//record LevenMatch we found
@@ -686,16 +687,20 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										metrOb.leven_match.push(r);
 
 										//commit to match to db
-										artistSongkicks.push(db_api.commit_artistSongkick_with_match(r))
+										//todo: updated params here
+
+										artistSongkicksLevenMatches.push(db_api.commit_artistSongkick_with_match(r))
 
 
 										//we couldn't find a match in our db via direct id lookups
 										//or my levenmatching, but lets try one more time to link
 										//spotify and songkick artists before we just work with the songkick
 										//artist and try to resolve genres for it
-									}else{
-
-										//right?
+									}else if(matchedMap[r.id]){
+										//skip
+									}
+									else{
+										//testing:
 										delete r.error;
 										//note: basically just providing the spotifyApi for this searchArtist by imitating a req from the UI
 										searches.push(limiterSpotify.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
@@ -704,14 +709,21 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								});
 
 
-								console.info("leven_match",metrOb.leven_match.length);
+								//console.info("leven_match",metrOb.leven_match.length);
 								console.info("queries #",searches.length);
-								console.info("metrobArtists #",artistSongkicks.length);
+								//console.info("metrobArtists #",artistSongkicks.length);
+								//searches = searches.slice(0,5)
+								//console.info("queries #",searches.length);
 
 								//todo: parallel
-								var combined_promises = artistSongkicks.concat(searches);
+								var combined_promises = artistSongkicksLevenMatches.concat(searches);
 
+
+								//note: these results look like this:
+								// {artist:<songkickArtist>
+								// result:{artists:{items:<spotifyArtist>}}}
 								Promise.all(combined_promises).then(results => {
+
 									//look like: {artist:{},result:{}}
 									//console.info("$searches",app.jstr(results[0]));
 									var newMatches = [];
@@ -731,153 +743,135 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									var songkickSpotifyMap = {};
 
 									results.forEach(r =>{
-										//debugger;
+
 
 										//todo: dbl check necessary?
 										//todo: larger requests are sometimes timing out?
 										if(!(r.result) || r.result.artists.items === null || r.result.artists.items.length === 0  ){
 											noMatches.push(r.artist)}
-										else{
-											var item = r.result.artists.items[0];	var artist = r.artist;
-											// console.info(item.name + "/" + artist.name);
-											var a = FuzzySet();a.add(item.name);
-											//console.info("m",a.get(artist.name));
+										else {
 
-											//bad match
-											//push onto next payload
-											if(a.get(item.name) === null || a.get(item.name)[0][0] < .5){
-												rejectedMatches.push([item.name,artist.name])
-												console.info("rejection",artist);
-												console.info(item.genres);
-												console.info(a.get(item.name) );
-											}else{
-												//quality match, no genres means we push onto next payload
-												//and we also record this new match
-												if(item.genres.length === 0){
-													newMatches.push([item.name,artist.name])
-													//todo: next payload
+											var artist = JSON.parse(JSON.stringify(r.result.artists.items[0]));
+											//todo:#
+											// var artist_artistSongkick = {
+											// 	artist_id: r.artist.id,
+											// 	artistSongkick_id: r.artist.artistSongkick_id
+											// }
 
+											var artist_artistSongkick = {
+												artist_id: artist.id,
+												artistSongkick_id: r.artist.id
+											}
+											//todo: #
+											// var artistSongkick = JSON.parse(JSON.stringify(r.artist))
+											var artistSongkick = {id:r.artist.id,displayName:r.artist.name}
+											//todo:# b/c results can be different somehow if I didn't find versus I did find???
+											// artistSongkick.id = artistSongkick.artistSongkick_id
+											// delete artistSongkick.artistSongkick_id
+
+
+											//todo: check when used later
+											songkickSpotifyMap[artist.id] = artistSongkick.id;
+
+											//note: if we got here, we know there is at least no CORRELATION between an artist and artistSongkick
+											//but it's possible we've already stored the artist w/ genres
+
+
+											aas_promises.push(db_api.commit_artistSongkick_with_match(artist,artistSongkick,artist_artistSongkick));
+
+											//todo: bc we mutated it? or does this just not mater anyways right? we don't NEED to return anything here
+											obs.push(artistSongkick)
+
+											//testing: disabled / old as shit
+											var processFuzzy = function (item) {
+												var a = FuzzySet();
+												a.add(item.name);
+												if (a.get(item.name) === null || a.get(item.name)[0][0] < .5) {
+													rejectedMatches.push([item.name, artist.name])
+													console.info("rejection", artist);
+													console.info(item.genres);
+													console.info(a.get(item.name));
+												} else {
+													//quality match, no genres means we push onto next payload
+													//and we also record this new match
+													if (item.genres.length === 0) {
+														newMatches.push([item.name, artist.name])
+														//todo: next payload
+
+													}
+														//new quality match with genres, so skip next payload
+													//but we still need to record this
+													else {
+														newMatches_genres.push([item.name, artist.name])
+													}
 												}
-													//new quality match with genres, so skip next payload
-												//but we still need to record this
-												else{
-													newMatches_genres.push([item.name,artist.name])
-												}
+											}
+
+											//testing: disabled b/c
+											//1) didn't feel like fixing an api timeout issue
+											//2) don't really feel like this is needed - just have the UI query for songs to play
+											async function topTracksAsync() {
+
+												// Promise.all(topTracksProms)
+												// 	.then(r => {console.info(r);})
+												console.info("topTracksResults...");
+												var topTracksResults = await Promise.all(topTracksProms);
+												//find the event they belong to and mutate it
+												//todo: n^n b/c I took easy way out w/ topTracksProms
+												//should have been done inline?
+												// var artists = [];
 
 
-												//for every valid songkick-spotify artist I made
-												//push a promise to retrieve that artist's tracks
+												//create map w/ artist ids
+												var artistsTracksMap = {};
 
-												//todo: having trouble with calling this locally w/ limiter
-												//looks like I setup req.body.spotifyApi.getArtistTopTracks to work
-												//from here but I'm not sure how exactly that is
+												//returns a set of 10 tracks for each artist
+												topTracksResults.forEach(tracks => {
+													tracks.forEach(t => {
+														t.artists.forEach(a => {
+															//todo: trimming this result to just ids
+															artistsTracksMap[a.id] = tracks.map(t => t.id)
+															//artistsTracksMap[a.name] = ids
+														})
+													})
+												})
+												//artists = r.body.tracks[0].artists.map(i => {return i.id});
 
-												//testing: this works but it won't return anything (duh)
-												//topTracksProms.push(limiterSpotify.schedule(spotify_api.getArtistTopTracks,{body:{id:item.id}},'ES',{}))
+												console.info(Object.keys(songkickSpotifyMap).length);
+												events.forEach(e => {
+													//for each performance, if we saved the mapping of the artist
+													//set their topfive = to the spotify tracks map
+													e.performance.forEach((p, i, array) => {
+														if (songkickSpotifyMap[p.artist.id]) {
+															array[i].artist.spotifyTopFive = artistsTracksMap[songkickSpotifyMap[p.artist.id]]
+														}
+													})
+													// var id = _.get()
+													// artists.forEach(id =>{
+													// 	var a = _.find(e.performance,['artist.id', id]);
+													// })
+													//console.info(artist.id);
+												})
 
-												// var limiterSpotify2 = new Bottleneck({
-												// 	maxConcurrent: 1,
-												// 	minTime: 5000,
-												// 	trackDoneStatus: true
-												// });
-
-												//testing: trying to limit this ends up 'this.getAccessToken is not a function'
-												//didn't investigate much tho - figured it was just something with limter's binding getting fucked up
-												//but maybe I have a shitty spotifyApi when I do cheatyToken?
-												//topTracksProms.push(limiterSpotify.schedule(req.body.spotifyApi.getArtistTopTracks,item.id,'ES',{}))
-
-												//todo: fails over some limit
-												//testing: disabled, just make the UI look it up on demand
-												//topTracksProms.push(req.body.spotifyApi.getArtistTopTracks(item.id, 'ES'));
-												//topTracksProms.push(limiterSpotify.schedule(spotify_api.getArtistTopTracks,{body:{id:item.id,spotifyApi:req.body.spotifyApi,}},{}))
-												songkickSpotifyMap[artist.id] = item.id;
-
-
-												//example songkickOb
-												// var songkickOb = {
-												// 	id: '1xD85sp0kecIVuMwUHShxs',
-												// 	name: 'Twin Peaks',
-												// 	artistSongkick_id: 296530,
-												// 	displayName: 'Twin Peaks',
-												// 	genres: []}
-
-												// console.info(item);
-												// console.info(artist);
-
-												var songkickOb = {id:item.id,name:item.name,artistSongkick_id:artist.id,displayName:artist.name,genres:item.genres}
-												songkickOb.newSpotifyArtist = item;
-
-												//todo:
-												//testing: (hmmm what was I testing?)
-												aas_promises.push(db_api.commit_artistSongkick_with_match(songkickOb));
-
-												obs.push(songkickOb)
+												// console.info(JSON.stringify(events));
+												//just tagging this on here
+												console.log("aas_promises...");
+												aas_promises.push(db_mongo_api.insert(events));
+												const result = await Promise.all(aas_promises)
+												return null;
 											}
 										}
+
 									})//results.each
 
 									//testing:
-									console.info(noMatches);
+									console.info("no artist-artistSongkick Matches",noMatches.length);
+									console.info("committing new artist-artistSongkick matches",aas_promises.length);
 									// console.info(rejectedMatches);
 									// console.info(newMatches);
 
-									//testing: disabled b/c
-									//1) didn't feel like fixing an api timeout issue
-									//2) don't really feel like this is needed - just have the UI query for songs to play
 
-									async function asyncCall() {
-
-										// Promise.all(topTracksProms)
-										// 	.then(r => {console.info(r);})
-										console.info("topTracksResults...");
-										var topTracksResults = await Promise.all(topTracksProms);
-										//find the event they belong to and mutate it
-										//todo: n^n b/c I took easy way out w/ topTracksProms
-										//should have been done inline?
-										// var artists = [];
-
-
-										//create map w/ artist ids
-										var artistsTracksMap ={};
-
-										//returns a set of 10 tracks for each artist
-										topTracksResults.forEach(tracks => {
-											tracks.forEach(t =>{
-												t.artists.forEach(a => {
-													//todo: trimming this result to just ids
-													artistsTracksMap[a.id] = tracks.map(t => t.id)
-													//artistsTracksMap[a.name] = ids
-												})
-											})
-										})
-										//artists = r.body.tracks[0].artists.map(i => {return i.id});
-
-										console.info(Object.keys(songkickSpotifyMap).length);
-										events.forEach(e =>{
-											//for each performance, if we saved the mapping of the artist
-											//set their topfive = to the spotify tracks map
-											e.performance.forEach((p,i,array) =>{
-												if(songkickSpotifyMap[p.artist.id]){
-													array[i].artist.spotifyTopFive = artistsTracksMap[songkickSpotifyMap[p.artist.id]]
-												}
-											})
-											// var id = _.get()
-											// artists.forEach(id =>{
-											// 	var a = _.find(e.performance,['artist.id', id]);
-											// })
-											//console.info(artist.id);
-										})
-
-										// console.info(JSON.stringify(events));
-										//just tagging this on here
-										console.log("aas_promises...");
-										aas_promises.push(db_mongo_api.insert(events));
-										const result = await Promise.all(aas_promises)
-										return null;
-									}
-
-
-									// asyncCall().then(r => {
+									// topTracksAsync().then(r => {
 									// Promise.all(aas_promises).then(r => {
 
 									aas_promises.push(db_mongo_api.insert(events));

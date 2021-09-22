@@ -36,8 +36,8 @@ let all_scopes = ["playlist-read-private", "playlist-modify-private", "playlist-
 var scopes = all_scopes,
 	// redirectUri = 'http://localhost:8888/callback',
 	//redirectUri = 'http://localhost:3000/redirect',
-	redirectUri = 'https://master.d267e964bph18g.amplifyapp.com/redirect',
-	//redirectUri = 'https://soundfound.io/redirect',
+	//redirectUri = 'https://master.d267e964bph18g.amplifyapp.com/redirect',
+	redirectUri = 'https://soundfound.io/redirect',
 	//todo:
 	state = 'some-state-of-my-choice';
 

@@ -74,12 +74,20 @@ var insert_families =  function(){
 		console.log("inserting families...");
 		var promises = [];
 		families.forEach(f=>{
-			console.log(f.id,f.name);
+			// console.log(f.id,f.name);
 			var poolRDS = db.getPoolRDS()
 			var sreq = new sql.Request(poolRDS);
 			var qry = "IF NOT EXISTS (SELECT * FROM dbo.families WHERE name = @name) " +
 				"INSERT INTO dbo.families(id,name) OUTPUT inserted.id, inserted.name VALUES(@id,@name) " +
 				"else select * from dbo.families WHERE name = @name";
+
+			//testing: debug
+			if(  f.name.length >= 50){
+				debugger;
+				f.name = f.name.substring(0,49)
+				console.log( f.name.length);
+			}
+
 			sreq.input("id", sql.Int, f.id);
 			sreq.input("name", sql.VarChar(255), f.name);
 			promises.push(sreq.query(qry))
@@ -521,83 +529,85 @@ me.commitPlayobs =  function(playobs) {
 //made genres optional for use of this after checking spotify
 //todo: maaaybe getting too messy due to lazyness
 
-module.exports.commit_artistSongkick_with_match =   function(songkickOb) {
-	return new Promise(function (done, fail) {
-		//console.log("$artist", songkickOb);
+async function commit_artistSongkick_with_match(artist,artistSongkick,artist_artistSongkick) {
 
-		var artistSongkick = {id: songkickOb.artistSongkick_id, displayName: songkickOb.displayName};
-		var artist_artistSongkick = {artist_id: songkickOb.id, artistSongkick_id: songkickOb.artistSongkick_id};
+	//note: insert_artist will check existence. if it's not already there, we need to commit genres too
 
-		async function commit() {
-			//todo: confused whether this is necessary always here?
-			await insert_artistSongkick(artistSongkick);
-			await insert_artist_artistSongkick(artist_artistSongkick);
+	try{
 
-			//these requests come from spotify->songkick string matching successes
-			//even if there were no genres pulled, we will still record newly exposed spotify artist
-			//as we need to to make the above connection valid anyways
-			if(songkickOb.newSpotifyArtist){
-				//var newSpot = {id:songkickOb.newSpotifyArtist.id, name:songkickOb.newSpotifyArtist.name,uri:songkickOb.newSpotifyArtist.uri}
-				await insert_artist(songkickOb.newSpotifyArtist);
+	var alreadyExists = await insert_artist(artist);
 
-				//todo: how does await work here?
+	//debugger;
+	await insert_artistSongkick(artistSongkick);
 
-				//these are artist-artistSongkick matches
-				//we will store the genres obtained from the successful spotify lookup if it got any
-				if (songkickOb.genres.length > 0) {
-					var gpromises = [];
-					var apromises = [];
+	//debugger;
+	await insert_artist_artistSongkick(artist_artistSongkick);
 
-					songkickOb.genres.forEach(g => {
-						gpromises.push(insert_genre(g))
-					});
-					Promise.all(gpromises).then(r => {
-						//console.log("1===========");
-						//console.log(r);
-						//var genres = r.reduce(function(prev, curr) { return prev.concat(curr); });
-						//console.log(r);
-						//console.log(genres);
-						r.forEach(g => {
-							//todo: somewhere up the chain here I'm returning two types of objects:
-							//one has my new 'match' field and creation and all that - the other has the normal bits
-							//I currently can't remember for shit where this happens at...
-							//I know I made this change in insert_family_genres b/c I was thinking that it would make sense
-							//to come back and paramterize all of these types of inserts with that info
+	//debugger;
 
-							// if(g.id){
-							// 	var ag = {genre_id: g.id, id: songkickOb.id}
-							// }else{
-							// 	var ag = {genre_id: g.genre_id, id: songkickOb.id}
-							// }
+		//note: changing this to get genres from and store with id from SPOTIFY not SONGKICK
+		//in the future, I guess the source could be different from spotify but we would still store it there
+		//so basically getting rid of idea that 'songkick can have it's own genres' = should always be stored as
+		//a relation to some resolver's source record
 
+		if(!(alreadyExists)){
+			//debugger;
 
-							if(typeof g.id === "string"){console.log(g); throw 'no id'}
-							var ag = {genre_id: g.id, id: songkickOb.id}
+		//these are artist-artistSongkick matches
+		//we will store the genres obtained from the successful spotify lookup if it got any
 
-							apromises.push(insert_genre_artist(ag));
-						});
+		if (artist.genres.length > 0) {
+			var gpromises = [];
+			var apromises = [];
 
-						//await Promise.all(apromises)
-						Promise.all(apromises).then(r => {
-							//console.log("2===========");
-							//console.log(r);
-							return r;
+			artist.genres.forEach(g => {
+				gpromises.push(insert_genre(g))
+			});
+			Promise.all(gpromises).then(r => {
 
-						}, e => {console.log(e);})
-					}, e => {console.log(e);})
-				}//genres.length
+				r.forEach(g => {
+					//todo: somewhere up the chain here I'm returning two types of objects:
+					//one has my new 'match' field and creation and all that - the other has the normal bits
+					//I currently can't remember for shit where this happens at...
+					//I know I made this change in insert_family_genres b/c I was thinking that it would make sense
+					//to come back and paramterize all of these types of inserts with that info
 
-			}
-		}
+					// if(g.id){
+					// 	var ag = {genre_id: g.id, id: songkickOb.id}
+					// }else{
+					// 	var ag = {genre_id: g.genre_id, id: songkickOb.id}
+					// }
 
-		commit().then(r => {
-			//console.log("3===========");
-			//console.log(r);
-			done(r);
-		}, e => {
-			console.error(e);
-		})
-	})};
+					if(typeof g.id === "string"){console.log(g); throw 'no id'}
+
+					var ag = {genre_id: g.id, id: artist.id}
+
+					apromises.push(insert_genre_artist(ag));
+				});
+
+				//await Promise.all(apromises)
+				Promise.all(apromises).then(r => {
+					//console.log("2===========");
+					//console.log(r);
+					return r;
+
+				}, e => {console.log(e);})
+			}, e => {console.log(e);})
+		}//genres.length
+
+	}else{
+		return 'finished'
+	}
+
+	//these requests come from spotify->songkick string matching successes
+	//even if there were no genres pulled, we will still record newly exposed spotify artist
+	//as we need to to make the above connection valid anyways
+	}catch(e){
+		console.log(e);
+		debugger;
+	}
+};
+me.commit_artistSongkick_with_match = commit_artistSongkick_with_match;
 
 
 //todo: arbitrary limit here not sure what to do with this yet
@@ -615,6 +625,12 @@ module.exports.checkDBForArtistLevenMatch =  function(artist){
 		var sreq = new sql.Request(poolRDS);
 		//var sres = {payload:[],db:[],lastLook:[]};
 
+		//testing: debug name
+		if(  artist.name.length >= 50){
+			debugger;
+			artist.name = artist.name.substring(0,49)
+			console.log( artist.name.length);
+		}
 		sreq.input("name", sql.VarChar(50), artist.name);
 		sreq.input("id", sql.Int, artist.id);
 		sreq.execute("levenMatch").then(function(res){
@@ -738,6 +754,13 @@ var insert_genre = function (genre, phase) {
 		var qry = "IF NOT EXISTS (SELECT * FROM dbo.genres WHERE name = @name) " +
 			"INSERT INTO dbo.genres(name) OUTPUT inserted.id, inserted.name VALUES(@name) " +
 			"else select * from dbo.genres WHERE name = @name";
+		//testing: debug name
+		if(  genre.length >= 50){
+			debugger;
+			genre =genre.substring(0,49)
+			console.log( genre.length);
+		}
+
 		sreq.input("name", sql.VarChar(255), genre);
 		sreq.query(qry).then(function (res) {
 
@@ -887,6 +910,7 @@ var insert_genre = function (genre, phase) {
 var insert_artist =  function(artist){
 	return new Promise(function(done, fail) {
 
+
 		//console.log("$$artist",app.jstr(artist));
 
 		var del = ["external_urls","href","genres","type"]
@@ -910,8 +934,16 @@ var insert_artist =  function(artist){
 
 		var poolRDS = db.getPoolRDS()
 		var sreq = new sql.Request(poolRDS);
+
+		//testing:
+		if( a.name.length >= 50){
+			debugger;
+			a.name = a.name.substring(0,49)
+			console.log(a.name.length);
+		}
+
 		sreq.input("id",  sql.VarChar(50), a.id);
-		sreq.input("name", sql.VarChar(50), a.name);
+		sreq.input("name", sql.VarChar(150), a.name);
 		sreq.input("images", sql.VarChar(), a.images);
 		sreq.input("followers", sql.Int, a.followers);
 		sreq.input("popularity", sql.Int, a.popularity);
@@ -921,15 +953,22 @@ var insert_artist =  function(artist){
 			+ " INSERT INTO dbo.artists("+ klist + ")"
 			+ " OUTPUT inserted.id, inserted.name, inserted.images, inserted.followers, inserted.popularity, inserted.uri"
 			+ " VALUES(" + kparams +")"
-			+ " else select * from dbo.artists WHERE id = @id";
+			+ " else select 'alreadyExists'";
+
 
 		sreq.query(qry).then(function(res){
-			//we already have ids
-			//even if we didn't know about the artist, nothing to return here
-			//console.log(res);
 
-			done();
+			//returned record is here
+			//console.log(res.recordsets[0][0])
+
+			//selecting a string in sql is a little strange
+			var stringRes = Object.values(res.recordsets[0][0])[0];
+			done(stringRes === 'alreadyExists');
 		}).catch(function(err){
+			// console.log(a)
+			// console.log(qry)
+			// console.log(sreq)
+			debugger;
 			console.log(err);
 		})
 	})
@@ -1037,6 +1076,7 @@ var insert_artistSongkick =  function(artistSongkick){
 
 		var poolRDS = db.getPoolRDS()
 		var sreq = new sql.Request(poolRDS);
+
 		sreq.input("id", sql.Int, artistSongkick.id);
 		sreq.input("displayName", sql.VarChar(100), artistSongkick.displayName);
 
@@ -1051,8 +1091,10 @@ var insert_artistSongkick =  function(artistSongkick){
 
 		sreq.query(qry).then(function(res){
 			//console.log(res);
+
 			done(res);
 		}).catch(function(err){
+			debugger;
 			console.log(err);
 		})
 	})
@@ -1062,13 +1104,16 @@ var insert_artist_artistSongkick =  function(artist_artistSongkick){
 	return new Promise(function(done, fail) {
 		var poolRDS = db.getPoolRDS()
 		var sreq = new sql.Request(poolRDS);
+
 		sreq.input("artist_id", sql.VarChar(150), artist_artistSongkick.artist_id);
 		sreq.input("artistSongkick_id",sql.Int, artist_artistSongkick.artistSongkick_id);
 		var qry2 = "insert into artist_artistSongkick(artist_id, artistSongkick_id) values (@artist_id, @artistSongkick_id)";
 		sreq.query(qry2).then(function(res){
 			//console.log(res);
+
 			done(res);
 		}).catch(function(err){
+
 			console.log(err);
 		})
 	});
