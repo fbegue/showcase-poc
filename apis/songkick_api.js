@@ -952,7 +952,7 @@ module.exports.get_metro_events_local=  function(req){
 module.exports.resolveEvents=  function(req,res,next){
 
 	//todo: ajax weirdness
-	console.info("resolveEvents",req.body);
+	console.info("resolveEvents",{metros:req.body.metros,dateFilter:req.body.dateFilter});
 	// if(req.body){//postman
 	// }else{ req.body = JSON.parse(req.body.data);}
 
@@ -964,7 +964,7 @@ module.exports.resolveEvents=  function(req,res,next){
 	db_mongo_api.fetch('all')
 		.then(events =>{
 			//console.info(app.jstr(events));
-			console.info("#events:",events.length);
+			console.info("fetched events:",events.length);
 			var promises = [];
 			var perfMap = {}
 			events.forEach(e =>{

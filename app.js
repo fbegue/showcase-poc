@@ -55,6 +55,7 @@ var  db_seed = require('./db_seed.js');
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	next();
 });
 
@@ -65,33 +66,42 @@ app.use(bodyParser.json({
 	limit: "50mb"
 }));
 
-//forget what these do specifically...
+//I believe this is parsing for a url-encoded request?.
 app.use(bodyParser.urlencoded({
-	extended: false,
+	extended: true,
 	limit: "50mb"
 }));
 
 app.use(awsServerlessExpressMiddleware.eventContext())
 
-//
+
 app.use(function (req, res, next) {
+
 	//so this guy should create it's own instance of my spotify api object using the client creds
 	//and then any request should just look at its req to find their specific api creded object
-	//testing:?
-	// console.log("auth middleware route: " + req.url + " | has auth: " + (req.body.auth !== undefined).toString());
-	console.log("auth middleware route: " + req.url);
-	//console.log("auth middleware auth'ed?:",req.body.auth !== undefined);
 
-	req.body.auth ? set() : setFake()
+	//prevent init getAuth + pre-flight for normal fetches from using middleware
+	if(req.url === '/getAuth' || req.method === 'OPTIONS') {
+		next()
+	}else{
+		// console.log("auth middleware route: " + req.url);
+		// console.log("origin: " + req.headers.origin);
+
+		//note: set clientOrigin as redirect (for consistency, value shouldn't be read)
+		req.body.auth ? set(req.headers.origin) : setFake( req.headers.origin)
+		//req.body.auth ? set() : setFake()
+	}
+	//console.log(req.headers);
 
 	function set(){
-		spotify_api.getSpotifyWebApi()
+		//console.log("set passing:",req.headers.origin);
+		spotify_api.getSpotifyWebApi(req.headers.origin)
 			.then(api =>{
 				api.setAccessToken(req.body.auth.access_token);
 				api.setRefreshToken(req.body.auth.refresh_token);
 				req.body.spotifyApi =api;
 				req.body.user = req.body.auth.user
-				console.log("auth middleware used",req.body.auth.user.display_name);
+				//console.log("auth middleware used",req.body.auth.user.display_name);
 				next()
 			}).catch(e =>{
 			console.error("set error",e); next();
@@ -99,7 +109,9 @@ app.use(function (req, res, next) {
 	}
 	function setFake(){
 		//console.log("faking auth middleware");
-		spotify_api.getCheatyToken()
+		console.log();
+
+		spotify_api.getCheatyToken(req.headers.origin)
 			.then(api =>{
 				//already set by cheaty
 				//api.setAccessToken(req.body.auth.access_token);
@@ -122,12 +134,6 @@ app.use(function (req, res, next) {
 
 })
 
-//testing:
-// app.all('*', function(req, res, next) {
-// 	res.header("Access-Control-Allow-Origin", "*");
-// 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-// 	next();
-// });
 
 
 var port = 8888;

@@ -321,7 +321,7 @@ me.fetchUser =  function(id){
 					var dbo = clientAtlas.db("soundfound");
 					dbo.collection('users').find({id:id}).toArray()
 						.then(users =>{
-							debugger;
+
 							//console.log("events",r2.length);
 							done(users[0])
 						}).catch(e =>{

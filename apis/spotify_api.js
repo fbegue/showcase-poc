@@ -32,12 +32,12 @@ var util = require('../util')
 
 let all_scopes = ["playlist-read-private", "playlist-modify-private", "playlist-modify-public", "playlist-read-collaborative", "user-modify-playback-state", "user-read-currently-playing", "user-read-playback-state", "user-top-read", "user-read-recently-played", "app-remote-control", "streaming", "user-read-birthdate", "user-read-email", "user-read-private", "user-follow-read", "user-follow-modify", "user-library-modify", "user-library-read"];
 
-
+//todo: thought about just making the spotifyAPI
 var scopes = all_scopes,
 	// redirectUri = 'http://localhost:8888/callback',
-	//redirectUri = 'http://localhost:3000/redirect',
+	redirectUri = 'http://localhost:3000/redirect',
 	//redirectUri = 'https://master.d267e964bph18g.amplifyapp.com/redirect',
-	redirectUri = 'https://soundfound.io/redirect',
+	//redirectUri = 'https://soundfound.io/redirect',
 	//todo:
 	state = 'some-state-of-my-choice';
 
@@ -55,9 +55,11 @@ var credentials = {
 //console.log("spotifyApi setup (no tokens)");
 spotifyApi = new SpotifyWebApi(credentials);
 
-module.exports.getSpotifyWebApi =  function(){
+ module.exports.getSpotifyWebApi =  function(clientOrigin){
 	return new Promise(function(done, fail) {
-		//console.log("spawned new SpotifyWebApi");
+		//testing: not sure I even need this here? if your getting a spotify api,
+		//aren't you out of the 'credentials caring about redirectUri' business? maybe keep just for consistency
+		 clientOrigin ? credentials.redirectUri = clientOrigin + "/redirect":{};
 		var s = new SpotifyWebApi(credentials);
 		done(s)
 	})
@@ -68,16 +70,18 @@ module.exports.getSpotifyWebApi =  function(){
 
 module.exports.getAuth =  function(req,res){
 	console.log("getAuth...",req.body.code);
-	getTokens(req.body.code)
-		.then(r => {
 
-			//todo: deal with everyone expecting this (doesn't work now?)
-			//why the fuck is this here?
-			module.exports.spotifyApi = req.body.spotifyApi;
+	//note: set clientOrigin as redirect so express doesn't care if I'm
+	//hitting it from localhost or soundfound.io - it'll adjust Spotify's creds dynamically
+
+	getTokens(req.body.code,req.headers.origin)
+		.then(r => {
+			///testing: safe to delete now right?
+			//module.exports.spotifyApi = req.body.spotifyApi;
 
 			//note: exact clone of what happens in middleware (which we didn't hit this one time)
 			//just so that we can return the user info right away
-			me.getSpotifyWebApi()
+			me.getSpotifyWebApi(req.headers.origin)
 				.then(api => {
 					api.setAccessToken(r.access_token);
 					api.setRefreshToken(r.refresh_token);
@@ -86,8 +90,9 @@ module.exports.getAuth =  function(req,res){
 							r.user = data.body
 							db_mongo_api.fetchUser(r.user.id)
 								.then(user =>{
-									console.log("fetchUser",user);
-									console.log("spotify res",r);
+									//console.log("fetchUser",user);
+									//console.log("spotify res",r);
+
 									//todo: if there's no matching user (their new?)
 									//have to launch user profile init processes
 									// console.log("retrieved users",users[0]);
@@ -125,15 +130,14 @@ module.exports.refreshAuth =  function(req,res){
 }
 
 // var global_access_token = "";
-var getTokens =  function(code){
+var getTokens =  function(code,clientOrigin){
 	return new Promise(function(done, fail) {
-		//console.log("getTokens...",code);
 		var authOptions = {
 			method:"POST",
 			url: 'https://accounts.spotify.com/api/token',
 			headers: { 'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')) },
 			form: {
-				redirect_uri:redirectUri,
+				redirect_uri:clientOrigin? clientOrigin + "/redirect": redirectUri,
 				grant_type: 'authorization_code',
 				code: code
 			},
@@ -205,7 +209,7 @@ var refresh =  function(){
 }
 
 
-module.exports.getCheatyToken =  function(){
+module.exports.getCheatyToken =  function(redirectFromClient){
 	return new Promise(function(done, fail) {
 		var credentials = {
 			clientId: client_id,
@@ -213,6 +217,8 @@ module.exports.getCheatyToken =  function(){
 			// redirectUri:"cheat"
 			redirectUri
 		};
+		//testing:
+		redirectFromClient ? credentials.redirectUri = redirectFromClient:{};
 		var spotifyApi = new SpotifyWebApi(credentials);
 		refresh().then(token =>{
 			spotifyApi.setAccessToken(token);
@@ -576,7 +582,7 @@ var getUserPlaylistFriends =  function(req){
 									if(!ra && rb){return 1};
 								})
 								var users_res =  flatCollabUsers.concat(users);
-								//debugger;
+
 								users_res =  users_res.concat(collabMembersQualified)
 								users_res = _.uniqBy(users_res,'id')
 								users_res = users_res.filter(i =>{return !(i.id === req.body.user.id)})
@@ -588,7 +594,7 @@ var getUserPlaylistFriends =  function(req){
 								})
 								Promise.all(fetchProms)
 									.then(results =>{
-										//debugger;
+
 										results = results.filter(r =>{return r !== null})
 
 										var isUserSet = _.intersectionBy(results,users_res,'id')
@@ -758,7 +764,6 @@ me.getMySavedTracksLast =  function(req,res){
 // 	//console.log(sorted);
 // 	//stats.recent = sorted.slice(0,3)
 // 	stats.artists_top = artObs.slice(0,3)
-// 	debugger;
 // 	return {[key + "s"]:arr,stats:stats};
 // }
 
@@ -1186,7 +1191,8 @@ me.fetchStaticUser = function(req,res){
 			//console.log("fetchStaticUser",req.body.friend.id);
 
 
-			console.log("fetchStaticUser",req.body.friend);
+			//note: Object Destructuring and Property Shorthand to get object w/ reduced set of properties
+			console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 			const userResult = await db_mongo_api.fetchStaticUser(req.body.friend)
 			//console.log("got user",userResult.id);
 
@@ -1463,7 +1469,6 @@ var getRelatedArtists =  function(req,artist_id){
 var getArtistTopTracks  =  function(req){
 	return new Promise(function(done, fail) {
 		console.log("getArtistTopTracks");
-		//debugger;
 		//console.log("$getArtistTopTracks",req.body.id);
 		req.body.spotifyApi.getArtistTopTracks(req.body.artist.id, 'ES')
 			.then(r =>{done(r.body.tracks)},e =>{
