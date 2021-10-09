@@ -446,7 +446,7 @@ const server = awsServerlessExpress.createServer(app);
 
 let outsideHandlerVar = 0;
 module.exports.handler = (event, context) => {
-	console.log("HANDLER",outsideHandlerVar);
+	//console.log("HANDLER",outsideHandlerVar);
 	outsideHandlerVar = 1
 	context.callbackWaitsForEmptyEventLoop = false;
 	console.log(`EVENT: ${JSON.stringify(event)}`);

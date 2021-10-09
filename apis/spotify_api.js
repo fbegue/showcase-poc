@@ -1214,14 +1214,14 @@ me.fetchStaticUser = function(req,res){
 			const resolvedAlbums = await getMySavedAlbums(req,userResult.albums.albums)
 			console.log("resolvedAlbums",resolvedAlbums.albums.length);
 
-			//testing:disabled (enabled = 500 on server, but not locally?)
-			//userResult.tracks.tracks = [];
+			//testing (1) :disabled (enabled = 500 on server, but not locally?)
+			userResult.tracks.tracks = [];
 
-			const resolvedTracks = await getMySavedTracks(req,userResult.tracks.tracks)
-			console.log("resolvedTracks",userResult.tracks.tracks.length)
+			//const resolvedTracks = await getMySavedTracks(req,userResult.tracks.tracks)
+			//console.log("resolvedTracks",userResult.tracks.tracks.length)
 
-			//testing: reduced payload for now
-			userResult.tracks.tracks = userResult.tracks.tracks.slice(0,3000)
+			//testing (2) reduced payload for now
+			//userResult.tracks.tracks = userResult.tracks.tracks.slice(0,3000)
 
 			//testing: playing around with compression to get around lambda response size limit (6mb)
 			//https://jun711.github.io/aws/handling-aws-api-gateway-and-lambda-413-error/
