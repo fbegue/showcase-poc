@@ -771,7 +771,7 @@ me.getMySavedTracksLast =  function(req,res){
 var reducer_familyAgg_stats_producer = function(arr,key,source){
 
 
-	var stats = {};
+	var stats = {recent:[],artists_top:[]};
 	var artistFreq = {};
 	var records =  arr.map(i =>{
 		var t = {...i[key]}
@@ -782,9 +782,14 @@ var reducer_familyAgg_stats_producer = function(arr,key,source){
 
 	records.forEach(t =>{
 		t.artists.forEach(a =>{
+			// if(a.id === "4pejUc4iciQfgdX6OKulQn"){
+			// 	debugger;
+			// }
 			a.familyAgg = util.familyFreq(a);
 			!(artistFreq[a.id]) ? artistFreq[a.id] = {value:1,artist:a}: artistFreq[a.id].value++;
+
 		})
+
 	})
 
 	var artObs = [];
@@ -792,7 +797,7 @@ var reducer_familyAgg_stats_producer = function(arr,key,source){
 
 	artObs= _.orderBy(artObs, function (r) {return r.value},'desc');
 	var sorted= _.orderBy(records, function (r) {return new Date(r.added_at)},'desc');
-	//console.log(sorted);
+
 	stats.recent = sorted.slice(0,3)
 	stats.artists_top = artObs.slice(0,3)
 	return {[key + "s"]:records,stats:stats};
@@ -810,8 +815,8 @@ var getMySavedTracks =  function(req,shallowTracks){
 		var trackOb = {};
 
 		//testing: skip paging
-		//console.warn("getMySavedTracks is skipping pageIt!");
-		//!(shallowTracks) ? shallowTracks = 'skip':{};
+		console.warn("getMySavedTracks is skipping pageIt!");
+		!(shallowTracks) ? shallowTracks = 'skip':{};
 
 		req.body.spotifyApi.getMySavedTracks({limit : 50})
 			.then(pageIt.bind(null,req,null,shallowTracks))
@@ -855,11 +860,20 @@ var getMySavedTracks =  function(req,shallowTracks){
 							item.track.available_markets = null;
 							item.track.album ? item.track.album.available_markets = null:{}
 
+							//console.log(item);
 							item.track.artists.forEach((a,i,arr) =>{
-								arr[i] = artistMap[a.id]
+								//note: think maybe artistMap[a.id].genres get's destroyed somehow after being accessed first time?
+								arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
 								resolver.resolveArtistsCachedGenres([arr[i]],'saved')
+
+								// if(arr[i].id === "4pejUc4iciQfgdX6OKulQn"){
+								// 	debugger;
+								// }
+
 							})
 						})
+
+
 
 						//testing: disabled, replaced with static genres assignment
 						return reducer_familyAgg_stats_producer(trackOb.items,'track','saved')
@@ -1214,14 +1228,14 @@ me.fetchStaticUser = function(req,res){
 			const resolvedAlbums = await getMySavedAlbums(req,userResult.albums.albums)
 			console.log("resolvedAlbums",resolvedAlbums.albums.length);
 
-			//testing (1) :disabled (enabled = 500 on server, but not locally?)
-			userResult.tracks.tracks = [];
+			//testing:disabled (enabled = 500 on server, but not locally?)
+			//userResult.tracks.tracks = [];
 
-			//const resolvedTracks = await getMySavedTracks(req,userResult.tracks.tracks)
-			//console.log("resolvedTracks",userResult.tracks.tracks.length)
+			const resolvedTracks = await getMySavedTracks(req,userResult.tracks.tracks)
+			console.log("resolvedTracks",userResult.tracks.tracks.length)
 
-			//testing (2) reduced payload for now
-			//userResult.tracks.tracks = userResult.tracks.tracks.slice(0,3000)
+			//testing: reduced payload for now
+			userResult.tracks.tracks = userResult.tracks.tracks.slice(0,2400)
 
 			//testing: playing around with compression to get around lambda response size limit (6mb)
 			//https://jun711.github.io/aws/handling-aws-api-gateway-and-lambda-413-error/
@@ -1230,7 +1244,9 @@ me.fetchStaticUser = function(req,res){
 			//full payload was taking ?? awhile
 			// var userResultC = JSONC.compress(userResult)
 			// var userResultC = JSONC.compress(userResult.albums.albums)
-
+			const size = Buffer.byteLength(JSON.stringify(userResult))
+			const mb = size / 1024 / 1024
+			//console.log("userResult size",mb);
 
 			return userResult
 		} catch (e) {
