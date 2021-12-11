@@ -55,11 +55,11 @@ var credentials = {
 //console.log("spotifyApi setup (no tokens)");
 spotifyApi = new SpotifyWebApi(credentials);
 
- module.exports.getSpotifyWebApi =  function(clientOrigin){
+module.exports.getSpotifyWebApi =  function(clientOrigin){
 	return new Promise(function(done, fail) {
 		//testing: not sure I even need this here? if your getting a spotify api,
 		//aren't you out of the 'credentials caring about redirectUri' business? maybe keep just for consistency
-		 clientOrigin ? credentials.redirectUri = clientOrigin + "/redirect":{};
+		clientOrigin ? credentials.redirectUri = clientOrigin + "/redirect":{};
 		var s = new SpotifyWebApi(credentials);
 		done(s)
 	})
@@ -444,7 +444,7 @@ me.fetchSpotifyUsers = function (req,res) {
 
 var getUserPlaylistFriends =  function(req){
 	return new Promise(function(done, fail) {
-
+		console.log("getUserPlaylistFriends...");
 		//testing:
 		//var user = 'tipshishat';
 		//req.body.user = {id:'dacandyman01'};
@@ -798,8 +798,8 @@ var reducer_familyAgg_stats_producer = function(arr,key,source){
 	artObs= _.orderBy(artObs, function (r) {return r.value},'desc');
 	var sorted= _.orderBy(records, function (r) {return new Date(r.added_at)},'desc');
 
-	stats.recent = sorted.slice(0,3)
-	stats.artists_top = artObs.slice(0,3)
+	stats.recent = sorted.slice(0,5)
+	stats.artists_top = artObs.slice(0,5)
 	return {[key + "s"]:records,stats:stats};
 }
 
@@ -940,6 +940,11 @@ var getMySavedAlbums =  function(req,shallowAlbums){
 					.then(resolved =>{
 						var artistsPay = [];
 
+						var artistMap = {};
+						resolved.forEach(a =>{
+							artistMap[a.id] = a
+						})
+
 						albumOb.items.forEach(item =>{
 							//note: theres a genres listing on both: items[0].album.genres AND a items[0].album.artists.genres
 							//(the one I'm finding myself) versus the genres of an album itself
@@ -954,23 +959,29 @@ var getMySavedAlbums =  function(req,shallowAlbums){
 								ar.forEach(a =>{a.id === id ? ret = true:{};})
 								return ret;
 							};
+							item.album.artists.forEach((a,i,arr) =>{
+								arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
+								resolver.resolveArtistsCachedGenres([arr[i]],'saved')
+							})
 
-							var resolvedAlbumArtists = resolved.filter(a =>{return findMatch(item.album.artists,a.id)})
-							item.album.artists = resolvedAlbumArtists;
+							//var resolvedAlbumArtists = resolved.filter(a =>{return findMatch(item.album.artists,a.id)})
+							//item.album.artists = resolvedAlbumArtists;
 
 							//these have genres on them, still a bit of a waste tho
-							artistsPay = artistsPay.concat(item.album.artists);
+							//artistsPay = artistsPay.concat(item.album.artists);
 						});
 
+						return reducer_familyAgg_stats_producer(albumOb.items,'album','saved')
+
 						//prune duplicate artists from track aggregation
-						artistsPay = _.uniqBy(artistsPay, function(n) {return n.id;});
+						//artistsPay = _.uniqBy(artistsPay, function(n) {return n.id;});
 
-						return db_api.checkDBForArtistGenres({payload:artistsPay},'payload')
-							.then(resolvedArtists =>{
-
-								return reducer_familyAgg_stats_producer(albumOb.items,'album','saved')
-
-							})
+						// return db_api.checkDBForArtistGenres({payload:artistsPay},'payload')
+						// 	.then(resolvedArtists =>{
+						//
+						// 		return reducer_familyAgg_stats_producer(albumOb.items,'album','saved')
+						//
+						// 	})
 
 					}).catch(err =>{
 						console.log(err);
@@ -1048,34 +1059,36 @@ var getTopArtists =  function(req){
 						case 0:{tres.items.forEach(i =>{termMap[i.id] = 'long'});break;}
 						case 1:{tres.items.forEach(i =>{termMap[i.id] = 'medium'});break;}
 						case 2:{tres.items.forEach(i =>{termMap[i.id] = 'short'});break;}
-
 					}
 				})
 
 				artists =  _.uniqBy(artists, function(n) {return n.id;});
-				db_api.commitArtistGenres(artists)
-					.then(justGetFromDb =>{
-						db_api.checkDBForArtistGenres({artists:artists},'artists')
-							.then(result =>{
-								if(result.db.length !== result.artists.length){
-									console.log("couldn't find " + result.payload.length + " artists");
-								}
-								result.resolved = result.db.concat(result.payload);
-								//console.log(result.resolved.length);
+				resolver.resolveArtistsCachedGenres(artists,'top')
+				done(artists);
 
-								//map the term value for the artist back onto itself according to the map
-								//also add familyAgg
-								result.resolved.forEach((a,i,arr)=>{
-									// termMap[a.id] ? resolvedMap[termMap[a.id]].push(a):{};
-									termMap[a.id] ? arr[i].term = termMap[a.id]:{};
-									a.source = 'top'
-									util.familyFreq(a)
-								});
-
-								done(result.resolved)
-								//res.send(resolvedMap)
-							})
-					},err =>{fail(err)})
+				//testing: forgot to switch this over to cachedGenres
+				// .then(justGetFromDb =>{
+				// 	db_api.checkDBForArtistGenres({artists:artists},'artists')
+				// 		.then(result =>{
+				// 			if(result.db.length !== result.artists.length){
+				// 				console.log("couldn't find " + result.payload.length + " artists");
+				// 			}
+				// 			result.resolved = result.db.concat(result.payload);
+				// 			//console.log(result.resolved.length);
+				//
+				// 			//map the term value for the artist back onto itself according to the map
+				// 			//also add familyAgg
+				// 			result.resolved.forEach((a,i,arr)=>{
+				// 				// termMap[a.id] ? resolvedMap[termMap[a.id]].push(a):{};
+				// 				termMap[a.id] ? arr[i].term = termMap[a.id]:{};
+				// 				a.source = 'top'
+				// 				util.familyFreq(a)
+				// 			});
+				//
+				// 			done(result.resolved)
+				// 			//res.send(resolvedMap)
+				// 		})
+				// },err =>{fail(err)})
 			},err =>{
 				console.error("getTopArtists mystery error?",err);
 				fail(err)
@@ -1231,7 +1244,7 @@ me.fetchStaticUser = function(req,res){
 			//testing:disabled (enabled = 500 on server, but not locally?)
 			//userResult.tracks.tracks = [];
 
-			const resolvedTracks = await getMySavedTracks(req,userResult.tracks.tracks)
+			const ignored = await getMySavedTracks(req,userResult.tracks.tracks)
 			console.log("resolvedTracks",userResult.tracks.tracks.length)
 
 			//testing: reduced payload for now
@@ -1272,7 +1285,6 @@ me.fetchStaticUser = function(req,res){
 
 me.storeStaticUser = function(req,res){
 
-	debugger
 	var proms = [];
 	//no limiter
 	proms.push(getTopArtists(req))
@@ -1317,6 +1329,8 @@ me.storeStaticUser = function(req,res){
 						payload.related_users = rel.all_users
 						db_mongo_api.insertStaticUsers([payload])
 						console.log("storeStaticUser completed",c.body.display_name);
+						console.log(payload.artists.artists.length + " artists | " +
+							payload.tracks.tracks.length+ " tracks | " + payload.albums.albums.length +  " albums");
 						res.send(payload)
 					})
 				})

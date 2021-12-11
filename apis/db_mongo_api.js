@@ -125,11 +125,11 @@ else{
 clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 //===========================================================
 
-//snippet
+//note: snippet that surrounds all of these calls b/c I can't figure out wtf is wrong here
 
 // clientAtlas.connect()
 // 	.then(ignored => {
-//
+//   var dbo = clientAtlas.db("soundfound");
 // 	},e =>{console.error(e);fail(e)})
 
 me.testAtlasProm =  function(){
@@ -189,46 +189,51 @@ me.insert =  function(events){
 	return new Promise(function(done, fail) {
 
 
-clientAtlas.connect()
-	.then(ignored => {
-		var dbo = clientAtlas.db("soundfound");
-		//infer correct collection from one sample event
-		// dbo.collection(events[0].venue.metroArea.id).insert(events).then(r =>{
-		// 	done(r)
-		// })
-		console.log("committing to mongo collection:",events[0].venue.metroArea.id);
-		var c = events[0].venue.metroArea.id.toString()
-		dbo.collection(c).deleteMany({}).then(r =>{
-			dbo.collection(c).insertMany(events).then(r2 =>{
-				done(r2)
-			})
-		})
-		//todo: can't figure out the easy way to do a massive insert if not already in collection wtf?
-		//it can't really be a find and insert if not found right?
+		clientAtlas.connect()
+			.then(ignored => {
+				var dbo = clientAtlas.db("soundfound");
+				//infer correct collection from one sample event
+				// dbo.collection(events[0].venue.metroArea.id).insert(events).then(r =>{
+				// 	done(r)
+				// })
+				console.log("committing to mongo collection:",events[0].venue.metroArea.id);
+				var c = events[0].venue.metroArea.id.toString()
+				dbo.collection(c).deleteMany({}).then(r =>{
+					dbo.collection(c).insertMany(events).then(r2 =>{
+						done(r2)
+					})
+				})
+				//todo: can't figure out the easy way to do a massive insert if not already in collection wtf?
+				//it can't really be a find and insert if not found right?
 
-		// https://docs.mongodb.com/stitch/mongodb/actions/collection.insertMany/
-		// https://docs.mongodb.com/stitch/mongodb/actions/collection.updateMany/
+				// https://docs.mongodb.com/stitch/mongodb/actions/collection.insertMany/
+				// https://docs.mongodb.com/stitch/mongodb/actions/collection.updateMany/
 
-		//.updateMany({},events,{"upsert":true}).then(r =>{
-	},e =>{console.error(e);fail(e)})
+				//.updateMany({},events,{"upsert":true}).then(r =>{
+			},e =>{console.error(e);fail(e)})
 
 
 
 	})
 }
+
 
 me.insertStaticUsers =  function(payload){
 	return new Promise(function(done, fail) {
-		var dbo = client.db("soundfound");
-		payload[0].updatedAt = new Date().toISOString()
-		dbo.collection('users').insertMany(payload).then(r2 =>{
-			done(r2)
-		})
+		clientAtlas.connect()
+			.then(ignored => {
+				var dbo = clientAtlas.db("soundfound");
+				payload[0].updatedAt = new Date().toISOString()
+				dbo.collection('users').insertMany(payload).then(r2 =>{
+					done(r2)
+				})
+			},e =>{console.error(e);fail(e)})
+
 	})
 }
 
 
-
+//todo: snippet
 me.saveSnapshotPlaylists =  function(user,snapMap){
 	return new Promise(function(done, fail) {
 		var dbo = client.db("soundfound");

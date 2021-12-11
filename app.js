@@ -88,13 +88,14 @@ app.use(function (req, res, next) {
 		// console.log("origin: " + req.headers.origin);
 
 		//note: set clientOrigin as redirect (for consistency, value shouldn't be read)
+		//note: when testin' for postman, got to send 'req.body.authFake'
 		req.body.auth ? set(req.headers.origin) : setFake( req.headers.origin)
 		//req.body.auth ? set() : setFake()
 	}
 	//console.log(req.headers);
 
 	function set(){
-		//console.log("set passing:",req.headers.origin);
+		console.log("set passing:",req.headers.origin);
 		spotify_api.getSpotifyWebApi(req.headers.origin)
 			.then(api =>{
 				api.setAccessToken(req.body.auth.access_token);
@@ -109,10 +110,10 @@ app.use(function (req, res, next) {
 	}
 	function setFake(){
 		//console.log("faking auth middleware");
-		console.log();
 
 		spotify_api.getCheatyToken(req.headers.origin)
 			.then(api =>{
+
 				//already set by cheaty
 				//api.setAccessToken(req.body.auth.access_token);
 
