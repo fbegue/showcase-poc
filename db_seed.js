@@ -1,7 +1,7 @@
-
+var db_mongo_api = require("./apis/db_mongo_api")
 var  db_api = require('./apis/db_api.js');
 
-//scripted insert of genre_family info
+//note: scripted insert of genre_family info
 async function insertStatic(){
 	try{
 		await db_api.insert_families();
@@ -15,12 +15,6 @@ async function insertStatic(){
 	}
 }
 
-//testing:
-//example spotifyUsers
-// db_mongo_api.insertSpotifyUsers()
-
-
-
 // setTimeout(t =>{
 // 	console.log("insertStatic...");
 // 	insertStatic()
@@ -28,4 +22,6 @@ async function insertStatic(){
 // },2000);
 
 
+//note: inserting example spotifyUsers
+module.exports.insertSpotifyUsers = db_mongo_api.insertSpotifyUsers;
 module.exports.insertStatic = insertStatic;

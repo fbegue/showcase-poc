@@ -111,11 +111,16 @@ me.testAtlas3 =  function(){
 
 //===========================================================
 const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
-const uriLocal = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
+const uriLocalCluster = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
+const uriLocalDB = "mongodb://localhost:27017"
 let uri = null;
+
+
 if(process.env.AWS_SESSION_TOKEN === undefined){
 	//console.log("connecting to local mongo atlas instance");
-	uri = uriLocal
+	uri = uriLocalCluster
+	//testing:
+	//uri = uriLocalDB;
 }
 else{
 	//console.log("connecting to remote mongo atlas instance");
@@ -253,7 +258,6 @@ me.fetchStaticUser =  function(user){
 				var dbo = clientAtlas.db("soundfound");
 				dbo.collection('users').find({id:user.id}).toArray()
 					.then(arr =>{
-						//testing:
 						arr[0] ? done(arr[0]) : done(null)
 						// r[0] ? done(r[0]) : fail('couldnt find user' + user.id)
 					})

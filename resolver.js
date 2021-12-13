@@ -421,7 +421,7 @@ module.exports.resolveArtistsCachedGenres = function(artists,source){
 		a.familyAgg = util.familyFreq(a);
 		a.source = source
 	})
-	return 1;
+	return artists;
 }
 
 //todo: should really receive one at a time

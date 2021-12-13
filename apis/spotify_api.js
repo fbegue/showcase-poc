@@ -92,13 +92,7 @@ module.exports.getAuth =  function(req,res){
 								.then(user =>{
 									//console.log("fetchUser",user);
 									//console.log("spotify res",r);
-
-									//todo: if there's no matching user (their new?)
-									//have to launch user profile init processes
-									// console.log("retrieved users",users[0]);
-									// users.length === 0 ? users = [{}]:{};
-									r.user = Object.assign(user,r.user)
-
+									user !== undefined ? r.user = Object.assign(user,r.user):{};
 									//res.send({result:users[0]})
 									res.send(r)
 								},e => {console.error("fetchUser",e);})
@@ -863,8 +857,15 @@ var getMySavedTracks =  function(req,shallowTracks){
 							//console.log(item);
 							item.track.artists.forEach((a,i,arr) =>{
 								//note: think maybe artistMap[a.id].genres get's destroyed somehow after being accessed first time?
-								arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
-								resolver.resolveArtistsCachedGenres([arr[i]],'saved')
+
+								//todo: super weird Santana issue?
+								if(!(artistMap[a.id])){
+									console.log("artistMap missed",a.id);
+								}
+								if(artistMap[a.id]){
+									arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
+									resolver.resolveArtistsCachedGenres([arr[i]],'saved')
+								}
 
 								// if(arr[i].id === "4pejUc4iciQfgdX6OKulQn"){
 								// 	debugger;
@@ -1210,6 +1211,11 @@ me.getRecentlyPlayedTracks=  function(req,res){
 
 //todo: api will timeout if it has to do any resolves :(
 
+
+//todo: so why again am I NOT storing the genres on the shallow artists?
+//the idea was just to store these references to various collections at a static user
+//so ONLY as to save time from having to pull all their data down every time they log in
+
 me.fetchStaticUser = function(req,res){
 
 	async function asyncBatchFetch() {
@@ -1221,34 +1227,80 @@ me.fetchStaticUser = function(req,res){
 			//note: Object Destructuring and Property Shorthand to get object w/ reduced set of properties
 			console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 			const userResult = await db_mongo_api.fetchStaticUser(req.body.friend)
+
+			var shallow = true;
+			if(userResult === null){
+				console.log("fetchStaticUser couldn't locate",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
+				shallow = false;
+			}else{
+
+			}
 			//console.log("got user",userResult.id);
 
+			//todo: little different then next two
 
-			const resolvedArtists = await resolver.resolveArtists2(req,userResult.artists.artists)
+			let resolvedArtists = null;
+			if(shallow){
+				resolvedArtists = await resolver.resolveArtists2(req,userResult.artists.artists)
+				//note: forgot why, but disabled mutate inline?
+				resolver.resolveArtistsCachedGenres(resolvedArtists,'saved')
+				userResult.artists.artists = resolvedArtists;
+				//todo: make shallow?
+			}else{
+				var artistOb = await getFollowedArtists(req)
+				resolvedArtists = await resolver.resolveArtists2(req,artistOb.artists)
+				resolvedArtists = resolver.resolveArtistsCachedGenres(resolvedArtists,'saved')
+			}
 
-			//note: forgot why, but disabled mutate inline?
-			resolver.resolveArtistsCachedGenres(resolvedArtists,'saved')
 			console.log("resolvedArtists",resolvedArtists.length);
-			userResult.artists.artists = resolvedArtists;
-
-
-			//testing:disabled
-			//userResult.tracks.albums = []
 
 			//todo: this has it's own mechanism for mutating albums w/ artist genres
 			//should replace with	resolver.resolveArtistsCachedGenres
 
-			const resolvedAlbums = await getMySavedAlbums(req,userResult.albums.albums)
+			const resolvedAlbums = await getMySavedAlbums(req,shallow ? userResult.albums.albums:null)
 			console.log("resolvedAlbums",resolvedAlbums.albums.length);
 
-			//testing:disabled (enabled = 500 on server, but not locally?)
-			//userResult.tracks.tracks = [];
 
-			const ignored = await getMySavedTracks(req,userResult.tracks.tracks)
-			console.log("resolvedTracks",userResult.tracks.tracks.length)
+			//todo: thinking about disabling right here and just making this whole process an additional API call
+			//right now UI is fetching twice
+			let resolvedTracks = await getMySavedTracks(req,shallow ? userResult.tracks.tracks:null)
+			console.log("resolvedTracks",resolvedTracks.tracks.length)
+
+			//testing:disabled (enabled = 500 on server, but not locally?)
+			//resolvedTracks.tracks = [];
 
 			//testing: reduced payload for now
-			userResult.tracks.tracks = userResult.tracks.tracks.slice(0,2400)
+			resolvedTracks.tracks = resolvedTracks.tracks.slice(0,2500)
+
+			//todo: codify defs for 'shallow' artist, album,track
+
+			//todo: somehow wasn't including genres:r.genres??
+			const getShallowArtists = (r) =>{
+				var arts = _.get(r,'artists')
+				return arts.map(r=>{return {id:r.id,name:r.name,type:"artist",images:r.images,genres:r.genres}})
+			}
+			const getShallowAlbum = (r) =>{
+				return {id:r.id,name:r.name,images:r.images,type:"album"}
+			}
+
+			//testing: payload looks the same either way
+			var payload = JSON.parse(JSON.stringify(req.body.friend))
+			payload = {...payload,artists:{artists:resolvedArtists,stats:null},
+				tracks: resolvedTracks,albums: resolvedAlbums}
+
+			payload.artists.artists = payload.artists.artists.map(r=>{return {id:r.id,name:r.name,source:r.source,images:r.images,type:r.type,genres:r.genres,familyAgg:r.familyAgg}})
+			payload.albums.albums = payload.albums.albums.map(r=>{return {id:r.id,name:r.name,artists:getShallowArtists(r),images:r.images,type:r.type}})
+			payload.tracks.tracks = payload.tracks.tracks.map(r=>{return {id:r.id,name:r.name,artists:getShallowArtists(r),album:getShallowAlbum(r.album),type:r.type}})
+
+			//todo: async if statement w/out modifying return value in called function
+			//note: storeStaticUserLocal also appends related_users
+			var moddedPayload = await me.storeStaticUserLocal(req,shallow ? null:payload)
+			if(moddedPayload){payload = moddedPayload}
+
+			//todo: we never store 'top artists' b/c they are dynamic
+			//so remember to add them in here to response
+
+			//todo: same with recentTracks
 
 			//testing: playing around with compression to get around lambda response size limit (6mb)
 			//https://jun711.github.io/aws/handling-aws-api-gateway-and-lambda-413-error/
@@ -1257,11 +1309,12 @@ me.fetchStaticUser = function(req,res){
 			//full payload was taking ?? awhile
 			// var userResultC = JSONC.compress(userResult)
 			// var userResultC = JSONC.compress(userResult.albums.albums)
-			const size = Buffer.byteLength(JSON.stringify(userResult))
+			const size = Buffer.byteLength(JSON.stringify(payload))
 			const mb = size / 1024 / 1024
-			//console.log("userResult size",mb);
+			console.log("userResult size",mb);
 
-			return userResult
+			return payload
+
 		} catch (e) {
 			console.log("asyncBatchFetch failed", e);
 		}
@@ -1280,6 +1333,47 @@ me.fetchStaticUser = function(req,res){
  * - getUserPlaylistFriends
  * */
 
+
+me.storeStaticUserLocal =  function(req,payload){
+    return new Promise(function(done, fail) {
+    	//todo: see where called
+		if(!(payload)){done(false)}
+		else{
+			//note: your related users are just your playlist buddies
+			req.body.user = {id:req.body.friend.id}
+			getUserPlaylistFriends(req).then(rel =>{
+				payload.related_users = rel.all_users
+
+				//testing: adding Dan as friend manually
+				if(req.body.friend.id !== '123028477#2'){
+					var d = {
+						"friend":true,
+						"display_name" : "Daniel Niemiec#2",
+						"external_urls" : {
+							"spotify" : "https://open.spotify.com/user/123028477"
+						},
+						"href" : "https://api.spotify.com/v1/users/123028477",
+						"id" : "123028477#2",
+						"type" : "user",
+						"uri" : "spotify:user:123028477",
+						"images" : [
+							{
+								"height" : null,
+								"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
+								"width" : null
+							}
+						]
+					}
+					payload.related_users.push(d)
+				}
+
+				//console.log(typeof db_mongo_api.insertStaticUsers)
+				db_mongo_api.insertStaticUsers([payload])
+				done(payload)
+			},e =>{fail(e)})
+		}
+    })
+}
 //note: recall these are CALLS FOR CURRENT AUTH'ED USER!
 //(so if testing, make sure to change static refresh token above)
 
@@ -1288,6 +1382,7 @@ me.storeStaticUser = function(req,res){
 	var proms = [];
 	//no limiter
 	proms.push(getTopArtists(req))
+
 	//todo: no limiter - uses pageItAter
 	proms.push(getFollowedArtists(req))
 	proms.push(getMySavedTracks(req))

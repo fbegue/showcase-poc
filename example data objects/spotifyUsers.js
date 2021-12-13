@@ -314,7 +314,25 @@ module.exports.spotifyUsers = [
             "width" : null
         }
     ]
-}
+},
+    {
+
+        "display_name" : "Daniel Niemiec#2",
+        "external_urls" : {
+            "spotify" : "https://open.spotify.com/user/123028477"
+        },
+        "href" : "https://api.spotify.com/v1/users/123028477",
+        "id" : "123028477#2",
+        "type" : "user",
+        "uri" : "spotify:user:123028477",
+        "images" : [
+            {
+                "height" : null,
+                "url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
+                "width" : null
+            }
+        ]
+    }
 ,
 {
 

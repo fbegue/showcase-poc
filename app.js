@@ -185,16 +185,17 @@ module.exports.console = console;
 //db seeding
 
 //todo: times out on insertStaticGenres
-// app.post('/api/insertStatic', (req, res) => {
-// 	db_seed.insertStatic()
-// 		.then(r =>{
-// 			console.log(r)
-// 			res.send({ result: r});
-// 		},e =>{console.error(e)
-// 			res.status(500).send(e)
-// 		});
-//
-// });
+app.post('/api/insertStatic', (req, res) => {
+	//db_seed.insertSpotifyUsers()
+	 db_seed.insertStatic()
+		.then(r =>{
+			console.log(r)
+			res.send({ result: r});
+		},e =>{console.error(e)
+			res.status(500).send(e)
+		});
+
+});
 
 //================================
 //db connections and tests
