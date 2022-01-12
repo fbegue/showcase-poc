@@ -9,6 +9,7 @@ const resolver_api = require('./resolver_api');
 const db_api = require('./apis/db_api')
 const util = require('./util')
 const db = require('./db')
+const IM = require('./utility/inMemory')
 
 //=================================================
 //utilities
@@ -401,11 +402,11 @@ module.exports.resolveArtistsCachedGenres = function(artists,source){
 
 	//testing: idk some weird 'the map isn't defined' shit
 	//tried to fix by always setting after mssql connection
-	var useme = db.genresQualifiedMap;
+	var useme = IM.genresQualifiedMap;
 	// if(db.genresQualifiedMap === undefined){
-	if(db.genresQualifiedMap === undefined){
+	if(IM.genresQualifiedMap === undefined){
 		console.log("db_api.genresQualifiedMap undefined");
-		useme = db.getGenresQualifiedMap()
+		useme = IM.getGenresQualifiedMap()
 	}
 
 

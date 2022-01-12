@@ -7,8 +7,8 @@ let sql = require("mssql");
 var _ = require('lodash');
 var app =  require('../app')
 var db = require('../db')
-
-
+var matcher = require("../utility/matcher")
+const IM = require('../utility/inMemory')
 //--------------------------------------------------------
 var all_genres = require('../example data objects/all_genres').all_genres
 var familyGenre_map = {};
@@ -42,13 +42,14 @@ all_genres.forEach(function(t){
 
 });
 // console.log("$familyGenre_map",familyGenre_map);
-// console.log("$genreFam_map",genreFam_map);
+//console.log("$genreFam_map",genreFam_map);
 
 //--------------------------------------------------------
 var me = module.exports;
 
 me.genreFam_map = genreFam_map;
 me.familyGenre_map = familyGenre_map;
+me.families = families;
 
 // module.exports.checkDb = function(){
 //
@@ -111,6 +112,7 @@ var insert_family_genre =  function(ob){
 		sreq.input("genre_name", sql.VarChar(255), ob.genre_name);
 		sreq.input("source", sql.VarChar(50), ob.source);
 		sreq.input("matched", sql.VarChar(50), ob.matched);
+
 		sreq.execute("insert_family_genres").then(function (res) {
 			//testing: changed this from the res, but it had consequences..
 			ob.id = ob.genre_id || 'ob'
@@ -167,50 +169,12 @@ var createFamilyBinds =  function(){
 }
 
 
-// setTimeout(e =>{
-// 	setGenresQualifiedMap()
-// 		.then(r =>{
-// 			console.log("db_api set genresQualifiedMap");
-// 		},e =>{
-// 			console.error("db_api set genresQualifiedMap FAILURE");
-// 		})
-// },2000)
-
-
-//in order to avoid doing a lot of experimentation within sql w/ string matching and such, i'm just going to store this map
-//in memory for now
-var setFG =  function(){
-	return new Promise(function(done, fail) {
-		var poolRDS = db.getPoolRDS()
-		var sreq = new sql.Request(poolRDS);
-		sreq.execute("getFamilyGenreMap").then(function (res) {
-			res.recordset.forEach(r =>{
-				me.genreNameFamilyIdMap[r.genre_name] = r.family_id;
-				//todo: need a fam -> genre map or no?
-				me.familyMap[r.family_id] = r.family_name
-
-			})
-			// console.log("$genreNameFamilyIdMap",me.genreNameFamilyIdMap);
-			console.log("$genreNameFamilyIdMap has been set in memory");
-			//console.log(me.familyMap);
-			//console.log(res.recordset);
-			done(res);
-		}).catch(function (err) {
-			console.error(err);
-			fail(err);
-		})
-	})
-}
-
-
-
 me.insert_families = insert_families;
 me.createFamilyBinds = createFamilyBinds;
 me.insertStaticGenres = insertStaticGenres;
-me.setFG = setFG;
+//me.setFG = setFG;
 
-me.genreNameFamilyIdMap = {};
-me.familyMap = {};
+
 
 //the utilized SP checkForArtistGenres can handle both types of artist ids
 //expects artist.ids
@@ -266,7 +230,7 @@ module.exports.checkDBForArtist = checkDBForArtist = function(artist){
 					artist.id = res.recordset[0].id;
 					//artist.id === '2Ceq5nkABzryK0OkaQYtzg' ? console.log(artist):{};
 					//testing: recent addition to these returns for recentlyPlayed
-					artist.images = JSON.parse(res.recordset[0].images);
+					artist.images = JSON.stringify(JSON.parse(res.recordset[0].images));
 					sres.db.push(artist)
 				}
 			}
@@ -529,21 +493,21 @@ me.commitPlayobs =  function(playobs) {
 //made genres optional for use of this after checking spotify
 //todo: maaaybe getting too messy due to lazyness
 
+//todo: my branching logic + bad async form = this returns but is still running...
+
 async function commit_artistSongkick_with_match(artist,artistSongkick,artist_artistSongkick) {
 
 	//note: insert_artist will check existence. if it's not already there, we need to commit genres too
 
 	try{
 
-	var alreadyExists = await insert_artist(artist);
+		var alreadyExists = await insert_artist(artist);
 
-	//debugger;
-	await insert_artistSongkick(artistSongkick);
 
-	//debugger;
-	await insert_artist_artistSongkick(artist_artistSongkick);
+		await insert_artistSongkick(artistSongkick);
 
-	//debugger;
+		await insert_artist_artistSongkick(artist_artistSongkick);
+
 
 		//note: changing this to get genres from and store with id from SPOTIFY not SONGKICK
 		//in the future, I guess the source could be different from spotify but we would still store it there
@@ -551,62 +515,68 @@ async function commit_artistSongkick_with_match(artist,artistSongkick,artist_art
 		//a relation to some resolver's source record
 
 		if(!(alreadyExists)){
-			//debugger;
+			//
 
-		//these are artist-artistSongkick matches
-		//we will store the genres obtained from the successful spotify lookup if it got any
+			//these are artist-artistSongkick matches
+			//we will store the genres obtained from the successful spotify lookup if it got any
 
-		if (artist.genres.length > 0) {
-			var gpromises = [];
-			var apromises = [];
+			if (artist.genres.length > 0) {
+				var gpromises = [];
+				var apromises = [];
 
-			artist.genres.forEach(g => {
-				gpromises.push(insert_genre(g))
-			});
-			Promise.all(gpromises).then(r => {
-
-				r.forEach(g => {
-					//todo: somewhere up the chain here I'm returning two types of objects:
-					//one has my new 'match' field and creation and all that - the other has the normal bits
-					//I currently can't remember for shit where this happens at...
-					//I know I made this change in insert_family_genres b/c I was thinking that it would make sense
-					//to come back and paramterize all of these types of inserts with that info
-
-					// if(g.id){
-					// 	var ag = {genre_id: g.id, id: songkickOb.id}
-					// }else{
-					// 	var ag = {genre_id: g.genre_id, id: songkickOb.id}
-					// }
-
-					if(typeof g.id === "string"){console.log(g); throw 'no id'}
-
-					var ag = {genre_id: g.id, id: artist.id}
-
-					apromises.push(insert_genre_artist(ag));
+				artist.genres.forEach(g => {
+					gpromises.push(insert_genre(g))
 				});
+				Promise.all(gpromises).then(r => {
 
-				//await Promise.all(apromises)
-				Promise.all(apromises).then(r => {
-					//console.log("2===========");
-					//console.log(r);
-					return r;
+					r.forEach(g => {
+						//todo: somewhere up the chain here I'm returning two types of objects:
+						//one has my new 'match' field and creation and all that - the other has the normal bits
+						//I currently can't remember for shit where this happens at...
+						//I know I made this change in insert_family_genres b/c I was thinking that it would make sense
+						//to come back and paramterize all of these types of inserts with that info
 
+						// if(g.id){
+						// 	var ag = {genre_id: g.id, id: songkickOb.id}
+						// }else{
+						// 	var ag = {genre_id: g.genre_id, id: songkickOb.id}
+						// }
+
+						if(typeof g.id === "string"){console.log(g); throw 'no id'}
+
+						var ag = {genre_id: g.id, id: artist.id}
+
+						apromises.push(insert_genre_artist(ag));
+					});
+
+					//await Promise.all(apromises)
+					Promise.all(apromises).then(r => {
+						//console.log("2===========");
+						//console.log(r);
+						return r;
+
+					}, e => {console.log(e);})
 				}, e => {console.log(e);})
-			}, e => {console.log(e);})
-		}//genres.length
+			}//found genres?
+			else{
+				return 'spotifyHadNoGenres'
+			}
 
-	}else{
-		return 'finished'
-	}
+		}else{
+			return 'alreadyExists'
+		}
 
-	//these requests come from spotify->songkick string matching successes
-	//even if there were no genres pulled, we will still record newly exposed spotify artist
-	//as we need to to make the above connection valid anyways
+		//these requests come from spotify->songkick string matching successes
+		//even if there were no genres pulled, we will still record newly exposed spotify artist
+		//as we need to to make the above connection valid anyways
 	}catch(e){
-		console.log(e);
 		debugger;
+		console.log(e);
+		throw e
+
 	}
 };
+
 me.commit_artistSongkick_with_match = commit_artistSongkick_with_match;
 
 
@@ -675,20 +645,33 @@ module.exports.checkDBFor_artist_artistSongkick_match =  function(artist){
 		//which we then ignore when we set genres and pull out of 'any' record
 		sreq.execute("match_artist_artistSongkick")
 			.then(r => {
-				//debugger;
+
 				//console.log(artist.id + " results: ",r.recordset.length);
 				var ret = Object.assign({}, artist);
 				ret.genres = [];
 				if(r.recordset.length > 0) {
+
 					r.recordset.forEach(rec => {
 						//console.log(rec);
-						ret.genres.push({id:rec.genre_id,name:rec.genre_name,family_id:rec.family_id,family_name:rec.family_name})
+						rec.genre_id !== null ? ret.genres.push({id:rec.genre_id,name:rec.genre_name,family_id:rec.family_id,family_name:rec.family_name}):{}
 					});
+
+					//if we found only 1 record, it will be nulls
 					ret.artistSongkick_id = r.recordset[0].artistSongkick_id
 					ret.id = r.recordset[0].id
+					//ret.images =  r.recordset[0].images
+					ret.images = JSON.parse(JSON.parse(r.recordset[0].images));
+					//testing:
+
+					if(r.recordset.length === 1 &&  r.recordset[0].genre_id === null){
+						ret.foundNoMatches = true;
+					}
+
+				}else{
+					ret.notFound = true;
 				}
 
-				//console.log(ret);
+
 				util.familyFreq(ret);
 				done(ret)
 			}).catch(err =>{
@@ -762,144 +745,73 @@ var insert_genre = function (genre, phase) {
 		}
 
 		sreq.input("name", sql.VarChar(255), genre);
-		sreq.query(qry).then(function (res) {
-
-			//todo: if the genre exists, we really shouldn't be taking this step
-			//need to make a SP for genre insert and return whether or not we added in a new one
-
-			//every if/else lands on returning with this original result (modified or not)
+		//note: by performing this insert, I'm guaranteeing that if insert_family_genre, we will have a genre_id to link to
+		sreq.execute("insert_genre").then(function (res) {
 
 			if(phase){
 				//skip this during static fill
 				// console.warn("skipping family assignment during",phase)
 				done(res.recordset[0]);
 			}else{
-				var fid = me.genreNameFamilyIdMap[genre] || null;
 
-				//modifies recordset returned from genre_insert w/ newly minted family id and and returns it
+				//unless it's new, we don't need to worry about finding a family for it
+				if(res.recordset[0].new === 0){
+					done(res.recordset[0]);
+				}
+				else{
+					//console.log("new",res.recordset[0]);
 
-				var commit =  function(res,fid){
-					var fg = {
-						genre_id:res.recordset[0].id,
-						genre_name:res.recordset[0].name,
-						family_id:fid,
-						family_name:me.familyMap[fid]
+					//todo: the db hasn't seen this genre, so of course there's no map here?
+					//bc we've already committed all the genres w/ their families soooo??
+					var fid = IM.genreNameFamilyIdMap[genre] || null;
+					var inferedFam = null;
+
+					//insert a family-genre relation by modifying sql result, specifying what was matched on and how
+					var commit =  function(res,fid){
+						var fg = {
+							genre_id:res.recordset[0].id,
+							genre_name:res.recordset[0].name,
+							family_id:fid,
+							family_name:IM.familyMap[fid]
+						};
+						//todo: match => matched :/
+						res.match ? fg.matched = res.match:{};
+						res.source ? fg.source = res.source:{}
+						return insert_family_genre(fg)
 					};
-					//todo: match => matched :/
-					res.match ? fg.matched = res.match:{};
-					res.source ? fg.source = res.source:{}
-					return insert_family_genre(fg)
-					//return new Promise(function(done, fail) {
-					// var sreq2 = new sql.Request(app.poolGlobal);
-					// var qry = "IF NOT EXISTS (SELECT * FROM dbo.genre_family WHERE genre_id = @genre_id) " +
-					// 	"INSERT INTO dbo.genre_family(genre_id,family_id) OUTPUT inserted.genre_id, inserted.family_id VALUES(@genre_id,@family_id) " +
-					// 	"else select * from dbo.genre_family WHERE genre_id = @genre_id";
-					//
-					// sreq2.input("genre_id", sql.Int, res.recordset[0].id);
-					// sreq2.input("family_id", sql.Int, fid);
-					//return sreq2.query(qry)
 
-					//but also, as a result of parsing this newly generated genres list for a songkick artist and creating a genre_family link,
-					//we also need to
-					//create
-					// })
-				};
+					if(false && fid) {
+						res.source = 'SpotifyDefault'
+						//testing: right?
+						res.match = null
+					}else{
+						inferedFam = matcher.inferGenreFamily(genre)
+						if(inferedFam){
 
-				if(fid){
-					//console.log("$known fid",fid);
-					res.source = 'SpotifyDefault'
-					commit(res,fid)
-						.then(function (res) {
-							//todo: who needs this?
-							res.family_id = fid;
-							res.id = res.genre_id || 'res'
-							done(res);
-						})
-				}else{
-
-					//console.log("TODO: attempt to find new family");
-
-					//fid was looking for an exact genre match. now:
-
-					//split the genre string and detect substrings that:
-					//1) X match directly on a genre_name
-					//2) X match directly on a family_name
-					//3) X match some special inference based on input genre
-					//4) match on a partial genre_name (substrings to substring genre_name)
-
-
-					//special rules
-					//todo: indie = indie rock?
-					var specialLogic = {};
-					specialLogic["rap"] = "hip hop";
-					specialLogic["electronic"] = "electro house"
-
-					//temp reverse map
-					var locmap = {};
-					Object.keys(me.familyMap).forEach(id =>{
-						locmap[me.familyMap[id]] = id;
-					})
-
-					function getLike(g){
-						//console.log("$",JSON.stringify(g));
-						var match = null;
-						//console.log(f);
-						//split the unknown genre at \s and try to find it's keys in our family names
-						var gkeys = g.split(" ");
-
-						//add on contrived keys
-						gkeys.forEach((k, i, arr) => {
-							if (specialLogic[k]) {
-								arr.push(specialLogic[k])
-							}
-						})
-						gkeys.forEach(k => {
-							//for each family, can we find a key as a substring?
-							//return after the first match
-							Object.keys(locmap).forEach(f => {
-								if (f.indexOf(k) !== -1 && (!match)) {
-									//console.log("match: " + g + " to " + f + " on " + k)
-									!(match)?match=f:{};
-								}
-							})
-						})
-
-						if(match){
-							//g === "electronic trap" ? console.log("$match: " + match + " | " + genre):{};
-							//console.log("$match: " + match + " | " + genre);
-							return {match:match,fid:locmap[match]}
-						}
-						else{
-							//testing:
-							//console.log("$no match",genre);
-							return null
+							res.match = inferedFam.match
+							res.source = inferedFam.source
+							// res.source = 'InferGenreFamily'
+							//todo: lazy mapping
+							fid = IM.familyMapName[inferedFam.family]
+						}else{
+							console.warn("orphan genre:" + genre);
 						}
 					}
 
-					//var t =  Object.keys(locmap);
-					//console.log(Object.keys(locmap));
-
-					var likeRes = getLike(genre);
-					// console.log(me.familyMap);
-					// var familyName = getLike(genre)
-					// console.log("$m1",familyName);
-
-
-					if(likeRes && likeRes.fid){
-						res.source = "getLike";
-						res.match = likeRes.match;
-						commit(res,likeRes.fid)
+					if(res.source){
+						commit(res,fid)
 							.then(function (res) {
-								//todo: again who is looknig for this?
-								res.family_id = likeRes.fid;
-								res.id = res.genre_id || 'getLike'
+								//todo: who needs this?
+								res.family_id = fid;
+								res.id = res.genre_id || 'res'
 								done(res);
 							})
 					}else{
-						done(res.recordset[0]);
+						done(res);
 					}
-				}
-			}
+
+				}//is new
+			}//found record
 		}).catch(function (err) {
 			//console.log(err);
 			fail(err);
@@ -918,8 +830,9 @@ var insert_artist =  function(artist){
 		del.forEach(p =>{	delete a[p]});
 
 
-		//todo: make this string json for now
-		a.images = JSON.stringify(a.images);
+		//testing: double stringified this storage after realizing it was storing literal json objects
+		a.images = JSON.stringify(JSON.stringify(a.images));
+
 		//parsing followers to int (also has a null href?)
 		a.followers = a.followers.total || null;
 		//a.popularity = a.popularity;
@@ -1077,6 +990,7 @@ var insert_artistSongkick =  function(artistSongkick){
 		var poolRDS = db.getPoolRDS()
 		var sreq = new sql.Request(poolRDS);
 
+		//debugger
 		sreq.input("id", sql.Int, artistSongkick.id);
 		sreq.input("displayName", sql.VarChar(100), artistSongkick.displayName);
 
@@ -1093,10 +1007,11 @@ var insert_artistSongkick =  function(artistSongkick){
 			//console.log(res);
 
 			done(res);
-		}).catch(function(err){
-			debugger;
-			console.log(err);
 		})
+			.catch(function(err){
+				debugger;
+				console.log(err);
+			})
 	})
 }
 

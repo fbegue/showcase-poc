@@ -1,8 +1,8 @@
 var SpotifyWebApi = require('spotify-web-api-node'); // Express web server framework
-
+var fetchRetry = require('../utility/limiter').fetchRetry
 var PromiseThrottle = require("promise-throttle");
 var rp = require('request-promise');
-const fetch = require('node-fetch');
+
 let sql = require("mssql")
 var _ = require('lodash')
 const transform = require('lodash').transform
@@ -83,6 +83,8 @@ module.exports.getAuth =  function(req,res){
 			//just so that we can return the user info right away
 			me.getSpotifyWebApi(req.headers.origin)
 				.then(api => {
+
+					//testing:
 					api.setAccessToken(r.access_token);
 					api.setRefreshToken(r.refresh_token);
 					api.getMe()
@@ -406,15 +408,54 @@ var getUserProfile =  function(req,u){
 		//	https://api.spotify.com/v1/users/{user_id}
 		let uri = "https://api.spotify.com/v1/users/"+ u.id;
 		let options = {uri:uri, headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
-		rp(options)
+		fetchRetry(options.uri,options,3,300)
 			.then(function (r) {
 				done(r);
 			}, function (err) {
 				console.error('getUserProfile failed');
 				console.error(err);
+				fail(err)
 			});
 	})
 }
+
+// me.refreshUserProfile = function (req,id){
+// 	getUserProfile(req,{id:id})
+// 		.then(r =>{
+// 			//testing: 2nd arg is for faking only
+// 			// db_mongo_api.refreshStaticUser(r,"123028477#2")
+// 			db_mongo_api.refreshStaticUser(r)
+// 				.then(r =>{
+// 					console.log(r);
+// 				})
+// 		})
+// }
+
+//todo: to prevent un-needed spotify calls to refresh users
+//should just have a TTL on an all_users repo that we can compare against
+var refreshUserProfile =  function(req,user){
+    return new Promise(function(done, fail) {
+		getUserProfile(req,{id:user.id})
+			.then(r =>{
+				user.images = r.images
+			done(r)
+			},e =>{fail(e)})
+    })
+}
+
+//testing: on network
+
+// me.refreshUserProfile = function (req,id){
+// 	getUserProfile(req,{id:id})
+// 		.then(r =>{
+// 			//testing: 2nd arg is for faking only
+// 			// db_mongo_api.refreshStaticUser(r,"123028477#2")
+// 			db_mongo_api.refreshStaticUser(r)
+// 				.then(r =>{
+// 					console.log(r);
+// 				})
+// 		})
+// }
 
 me.fetchSpotifyUsers = function (req,res) {
 	db_mongo_api.fetchSpotifyUsers()
@@ -527,6 +568,8 @@ var getUserPlaylistFriends =  function(req){
 						ids.forEach(i =>{profileProms.push(limiterSpotify.schedule(getUserProfile,req,{id:i},{}))})
 						// ids.forEach(i =>{profileProms.push(getUserProfile(req,{id:i}))})
 
+						//fetch all user profiles of all users from playlists
+
 						Promise.all(profileProms)
 							.then(presults =>{
 								//console.log(presults);
@@ -581,7 +624,9 @@ var getUserPlaylistFriends =  function(req){
 								users_res = _.uniqBy(users_res,'id')
 								users_res = users_res.filter(i =>{return !(i.id === req.body.user.id)})
 
-								//testing:
+								//note: attempt to fetch all users from created set
+								//and mark the return users w/ isUser so UI knows whether they are clickable to add as friend
+
 								var fetchProms = [];
 								users_res.forEach(u =>{
 									fetchProms.push(db_mongo_api.fetchStaticUser(u))
@@ -1209,6 +1254,7 @@ me.getRecentlyPlayedTracks=  function(req,res){
 //static user methods =================================================
 //=====================================================================
 
+
 //todo: api will timeout if it has to do any resolves :(
 
 
@@ -1220,21 +1266,32 @@ me.fetchStaticUser = function(req,res){
 
 	async function asyncBatchFetch() {
 		try {
-			//console.log("batchFetch");
-			//console.log("fetchStaticUser",req.body.friend.id);
-
-
-			//note: Object Destructuring and Property Shorthand to get object w/ reduced set of properties
-			console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
+			//console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 			const userResult = await db_mongo_api.fetchStaticUser(req.body.friend)
+
+			var refreshes = []
+
+			//refreshes.push(refreshUserProfile(req,userResult.related_users[0].id))
+			//note:refreshUserProfile will replaces images in place
+
+			//todo: rate-limit issue when logging in fresh
+			//made sure refreshUserProfile uses fetchRetry, but lots of things under me
+			//could be causing that now that this is here
 
 			var shallow = true;
 			if(userResult === null){
-				console.log("fetchStaticUser couldn't locate",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
+				//note: Object Destructuring and Property Shorthand to get object w/ reduced set of properties
+				console.log("fetchStaticUser will initialize new user:",
+					(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 				shallow = false;
 			}else{
-
+				userResult.related_users.forEach(u =>{
+					refreshes.push(refreshUserProfile(req,u))
+				})
 			}
+
+			var ignored = await Promise.all(refreshes);
+			refreshes.length > 0 ? console.log("refreshed userResult.related_users"):{};
 			//console.log("got user",userResult.id);
 
 			//todo: little different then next two
@@ -1284,7 +1341,7 @@ me.fetchStaticUser = function(req,res){
 			}
 
 			//testing: payload looks the same either way
-			var payload = JSON.parse(JSON.stringify(req.body.friend))
+			var payload = JSON.parse(JSON.stringify(userResult))
 			payload = {...payload,artists:{artists:resolvedArtists,stats:null},
 				tracks: resolvedTracks,albums: resolvedAlbums}
 
@@ -1316,7 +1373,7 @@ me.fetchStaticUser = function(req,res){
 			return payload
 
 		} catch (e) {
-			console.log("asyncBatchFetch failed", e);
+			console.log("asyncBatchFetch failed", e.error);
 		}
 	}
 	asyncBatchFetch()
@@ -1596,9 +1653,13 @@ var getArtistTopTracks  =  function(req){
 		console.log("getArtistTopTracks");
 		//console.log("$getArtistTopTracks",req.body.id);
 		req.body.spotifyApi.getArtistTopTracks(req.body.artist.id, 'ES')
-			.then(r =>{done(r.body.tracks)},e =>{
-				console.error(e);
-				fail(e)
+			.then(r =>{
+				var ids = r.body.tracks.slice(0,5).map(r =>{return {id:r.id,name:r.name}})
+				done(ids)
+				//note: on failure, still resolve w/ notice as such
+				},e =>{
+				debugger
+				console.error(e);done({failure:e})
 			})
 		//.then(r => { res.send(r.body.tracks)},err =>{res.status(500).send(err)})
 	})
@@ -1607,7 +1668,7 @@ var getArtistTopTracks  =  function(req){
 me.getArtistTopTracks = function(req,res){
 	getArtistTopTracks(req)
 		.then(r => {res.send(r)})
-		.catch(e =>{res.status(500).send(e)})
+		//.catch(e =>{res.status(500).send(e)})
 };
 
 
@@ -1648,37 +1709,6 @@ var getArtistAlbums =  function(req,artist_id){
 }
 
 
-//source: https://blog.bearer.sh/add-retry-to-api-calls-javascript-node/
-//spotify docs: https://developer.spotify.com/documentation/web-api/
-
-function fetchRetry(url, options = {}, retries = 3, backoff = 300) {
-	const retryCodes = [408, 500, 502, 503, 504, 522, 524]
-	return fetch(url, options)
-		.then(res => {
-			if (res.ok) return res.json()
-			if (retries > 0 && retryCodes.includes(res.status)) {
-				setTimeout(() => {
-					//testing: not including 429 in the retryCodes array
-					//and instead just handling by itself practically means that
-					//you never hit this loop except for an actual error
-
-					//todo: would like to force these errors to see how their handled
-					//console.log("retry after",res.headers.get('retry-after'))
-					//res.headers.get('retry-after') * 1000
-					console.log("backoff*2",backoff*2);
-
-					return fetchRetry(url, options, retries - 1, backoff*2) /* 3 */
-				}, backoff)
-			} else {
-				//console.log("retry after",res.headers.get('retry-after'))
-				return fetchRetry(url, options, retries - 1, res.headers.get('retry-after'))
-			}
-		})
-		.catch( e=> {
-			console.error(e)
-		})
-}
-module.exports.fetchRetry =fetchRetry;
 
 //todo: thought about getting popularity here as well
 //but these are simplified album objects
@@ -1694,7 +1724,7 @@ var getArtistAlbumsRange =  function(req,artist_id){
 			},
 			json: true
 		};
-		console.log(options.uri);
+		//console.log(options.uri);
 		fetchRetry(options.uri,options,3,300)
 			// rp(options)
 			.then(r => {
@@ -1705,7 +1735,7 @@ var getArtistAlbumsRange =  function(req,artist_id){
 				//only do the 2nd fetch if we need to
 				if(r.total > 50){
 					options.uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?include_groups=album,single&offset=" + (r.total -1).toString() + "&limit=10"
-					console.log(options.uri);
+					//console.log(options.uri);
 					fetchRetry(options.uri,options,3,300)
 						.then(r2 => {
 
@@ -1895,9 +1925,10 @@ me.createPlaylist = function(req,res){
 	req.body.spotifyApi.createPlaylist(req.body.user.id,req.body.playlist.name, { 'description': 'My description', 'public': true })
 		.then(r => {
 			var payload = [];
-			req.body.songs.forEach(id =>{
-				payload.push("spotify:track:" + id)
+			req.body.songs.forEach(songOb =>{
+				payload.push("spotify:track:" + songOb.id)
 			})
+
 			spotifyApi.addTracksToPlaylist(r.body.id,payload)
 				.then(function(data) {
 					console.log('Added tracks to playlist!');
@@ -1926,8 +1957,18 @@ me.createPlaylist = function(req,res){
 // };
 
 //this is exposed for use by songkick only pretty much?
+
+// process.on('unhandledRejection', (reason, p) => {
+// 	console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+// 	console.log(reason.stack);
+// 	// application specific logging, throwing an error, or other logic here
+// });
+
+
+
 me.searchArtist  =  function(req){
 	return new Promise(function(done, fail) {
+
 		//console.log("searchArtists",req.body.artist.name);
 		//todo: only fixing for songkick for now
 		//will return to test later when this endpoint is back up on UI
@@ -1937,6 +1978,10 @@ me.searchArtist  =  function(req){
 		nameClean = nameClean.replace(/[^a-zA-Z\s]/g, "");
 		nameClean = encodeURIComponent(nameClean)
 
+		if(nameClean === ""){
+			done({artist: req.body.artist,failure:{reason:"bad name parse",parseValue:nameClean}})
+		}
+
 		let uri = "https://api.spotify.com/v1/search?query=" + nameClean + "&type=artist&offset=0&limit=20"
 		let options = {
 			uri:uri,
@@ -1944,15 +1989,23 @@ me.searchArtist  =  function(req){
 				'User-Agent': 'Request-Promise',
 				"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()
 			},
+			artist:{name:req.body.artist},
 			json: true
 		};
-		//console.log(options.uri);
 		fetchRetry(options.uri,options,3,300)
 			// req.body.spotifyApi.searchArtists(req.body.artist.name)
 			.then(function (r) {
+				//console.log(options.uri);
+				if(r.failure){
+					done({artist: r.options.artist,failure:r.failure})
+				}
+				// if(options.uri === "https://api.spotify.com/v1/search?query=Madi%20Sipes%20%20The%20Painted%20Blue&type=artist&offset=0&limit=20"){
+				// 	debugger
+				// }
+
 				done({artist: req.body.artist, result: r})
-				//res.send(r);
 			}, function (err) {
+				debugger
 				console.error(err);
 				fail(err);
 			});
@@ -2267,7 +2320,7 @@ me.resolvePlaylists = function(req,res){
 
 						var resolverPromises = [];
 						//set this in memory before we start trying to qualify genres
-						resolverPromises.push(db_api.setFG())
+						//resolverPromises.push(db_api.setFG())
 
 						var fullyResolvedPlayobs = [];
 						playobs.forEach(playob => {

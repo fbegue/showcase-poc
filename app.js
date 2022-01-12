@@ -33,6 +33,21 @@ var  db_api = require('./apis/db_api.js');
 
 var  db = require('./db.js');
 var  db_seed = require('./db_seed.js');
+var matcher = require("./utility/matcher")
+
+// setTimeout(e =>{
+// 	var t1 = matcher.inferGenreFamily("bubblegrunge")
+// 	var t2 = matcher.inferGenreFamily("bubblerock")
+// 	var t3 = matcher.inferGenreFamily("hippie rap")
+
+//todo: noticed that BRUTAL DEATHCORE exists in all_genres but not DEATHCORE
+//modify matchStr to also split all genres too? hmmm
+
+//var t4 = matcher.inferGenreFamily("deathcore")
+// 	debugger;
+// },2000)
+
+
 //=================================================
 //express features
 
@@ -451,7 +466,7 @@ module.exports.handler = (event, context) => {
 	//console.log("HANDLER",outsideHandlerVar);
 	outsideHandlerVar = 1
 	context.callbackWaitsForEmptyEventLoop = false;
-	console.log(`EVENT: ${JSON.stringify(event)}`);
+	//console.log(`EVENT: ${JSON.stringify(event)}`);
 	return awsServerlessExpress.proxy(server, event, context, 'PROMISE').promise;
 };
 

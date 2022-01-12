@@ -1,6 +1,6 @@
-var clientAtlas = require('../db').clientAtlas
-var getClientAtlas = require('../db').getClientAtlas
-var clientAtlasProm = require('../db').clientAtlasProm
+//var clientAtlas = require('../db').clientAtlas
+//var getClientAtlas = require('../db').getClientAtlas
+//var clientAtlasProm = require('../db').clientAtlasProm
 var db = require('../db')
 var genreFam_map = require('./db_api').genreFam_map
 
@@ -69,29 +69,29 @@ me.testAtlas =  function(){
 	})
 }
 
-me.testAtlas2 =  function(){
-	return new Promise(function(done, fail) {
-		//var dbo = client.db("soundfound");
-		var clientAtlas = getClientAtlas()
-		//console.log("testAtlas",client);
-		var dbo = clientAtlas.db("soundfound");
-		dbo.collection('users').find({}).toArray().then(r2 =>{
-			done(r2)
-		})
-	})
-}
+// me.testAtlas2 =  function(){
+// 	return new Promise(function(done, fail) {
+// 		//var dbo = client.db("soundfound");
+// 		var clientAtlas = getClientAtlas()
+// 		//console.log("testAtlas",client);
+// 		var dbo = clientAtlas.db("soundfound");
+// 		dbo.collection('users').find({}).toArray().then(r2 =>{
+// 			done(r2)
+// 		})
+// 	})
+// }
 
-me.testAtlas3 =  function(){
-	return new Promise(function(done, fail) {
-		db.getConnectClientAtlas()
-			.then(clientAtlas =>{
-				var dbo = clientAtlas.db("soundfound");
-				dbo.collection('users').find({}).toArray().then(r2 =>{
-					done(r2)
-				})
-			})
-	})
-}
+// me.testAtlas3 =  function(){
+// 	return new Promise(function(done, fail) {
+// 		db.getConnectClientAtlas()
+// 			.then(clientAtlas =>{
+// 				var dbo = clientAtlas.db("soundfound");
+// 				dbo.collection('users').find({}).toArray().then(r2 =>{
+// 					done(r2)
+// 				})
+// 			})
+// 	})
+// }
 
 //testing: wait on promise instead?
 // async function testAtlasAsync() {
@@ -110,24 +110,29 @@ me.testAtlas3 =  function(){
 
 
 //===========================================================
+//note: recall that these uriRemote/uriLocalCluster are the same server, just used different auth methods here
 const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
 const uriLocalCluster = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
+
+//note: deprecated Robo3T db
 const uriLocalDB = "mongodb://localhost:27017"
+
 let uri = null;
 
 
 if(process.env.AWS_SESSION_TOKEN === undefined){
-	//console.log("connecting to local mongo atlas instance");
+	console.log("connecting to local mongo atlas instance");
 	uri = uriLocalCluster
 	//testing:
 	//uri = uriLocalDB;
 }
 else{
-	//console.log("connecting to remote mongo atlas instance");
+	console.log("connecting to remote mongo atlas instance");
 	uri = uriRemote
 }
 
-clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+let clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 //===========================================================
 
 //note: snippet that surrounds all of these calls b/c I can't figure out wtf is wrong here
@@ -238,6 +243,25 @@ me.insertStaticUsers =  function(payload){
 }
 
 
+me.refreshStaticUser =  function(user,fake){
+	return new Promise(function(done, fail) {
+
+		clientAtlas.connect()
+			.then(ignored => {
+				//console.log("user.id",user.id);
+				var dbo = clientAtlas.db("soundfound");
+				dbo.collection('users').updateOne({id:fake || user.id},
+					//todo: just images for now
+					{ $set: {images:user.images}
+				})
+					.then(r =>{
+						r.modifiedCount === 1 ? done(r) : fail("refreshStaticUser couldn't update" + user.id)
+					})
+			},e =>{console.error(e);fail(e)})
+	})
+}
+
+
 //todo: snippet
 me.saveSnapshotPlaylists =  function(user,snapMap){
 	return new Promise(function(done, fail) {
@@ -296,6 +320,7 @@ me.fetch =  function(param){
 							r.forEach(ra =>{
 								events = events.concat(ra);
 							})
+
 							console.log(events.length);
 							done(events)
 						})

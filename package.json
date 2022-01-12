@@ -27,7 +27,8 @@
     "run-middleware": "^0.9.10",
     "serverless-http": "^2.7.0",
     "songkick-api-node": "^1.0.4",
-    "spotify-web-api-node": "^4.0.0"
+    "spotify-web-api-node": "^4.0.0",
+    "wordsninja": "^1.0.0"
   },
   "devDependencies": {
     "chromedriver": "^75.0.0",

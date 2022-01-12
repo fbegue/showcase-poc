@@ -1,8 +1,13 @@
 const sql = require('mssql')
+var os = require("os");
+
+//todo: pulling db_api in at any point = `db.getPoolRDS is not a function` anywhere it'
 //const db_api = require('./apis/db_api')
 //const config = {/*...*/}
 
-var config = {
+var IM = require('./utility/inMemory')
+
+var config_local = {
 	"user": 'test',
 	"password": 'test',
 	"server": 'DESKTOP-TMB4Q31\\SQLEXPRESS',
@@ -41,7 +46,14 @@ var config_remote = {
 	}
 };
 
-
+var config = null
+if(os.hostname() === "DESKTOP-TMB4Q31"){
+	config=config_local
+	console.log("connecting to sql server: DESKTOP-TMB4Q31\\SQLEXPRESS");
+}else{
+	config=config_rds
+	console.log("connecting to sql server: DESKTOP-TMB4Q31\\SQLEXPRESS");
+}
 
 // var client =  function(){
 // 	return new Promise(function(done, fail) {
@@ -124,6 +136,7 @@ var getConnectClientAtlas =  function(){
 	})
 }
 
+//testing: only here for test purposes
 var connectClientAtlas =  function(){
 	return new Promise(function(done, fail) {
 
@@ -240,46 +253,46 @@ let clientAtlasProm = null;
 //const poolPromise = {};
 
 
-var getGenres =  function(poolRDS){
-	return new Promise(function(done, fail) {
-		//var poolRDS = db.getPoolRDS()
-		var sreq = new sql.Request(poolRDS);
+// var getGenres =  function(poolRDS){
+// 	return new Promise(function(done, fail) {
+// 		//var poolRDS = db.getPoolRDS()
+// 		var sreq = new sql.Request(poolRDS);
+//
+// 		let gQry = "select g.id,g.name as name,f.id as family_id, f.name as family_name" +
+// 			" from genre_family gf join genres g on gf.genre_id=g.id join families f on f.id = gf.family_id"
+// 		sreq.query(gQry).then(function (res) {
+// 			done(res.recordset);
+// 		}).catch(function (err) {
+// 			//console.log(err);
+// 			fail(err);
+// 		})
+// 	})
+// }
+//
+// var setGenresQualifiedMap =  function(pool){
+// 	return new Promise(function(done, fail) {
+// 		getGenres(pool)
+// 			.then(genres => {
+// 				module.exports.genresQualifiedMap = {};
+// 				genres.forEach(g => {
+// 					module.exports.genresQualifiedMap[g.name] = g
+// 				})
+// 				db_api.setFG(pool).then(r =>{
+// 					console.log("setInMemory finished");
+// 					done("setGenresQualifiedMap")
+// 				},e =>{fail(e)})
+//
+// 			},e =>{fail(e)})
+// 	})
+// }
 
-		let gQry = "select g.id,g.name as name,f.id as family_id, f.name as family_name" +
-			" from genre_family gf join genres g on gf.genre_id=g.id join families f on f.id = gf.family_id"
-		sreq.query(gQry).then(function (res) {
-			done(res.recordset);
-		}).catch(function (err) {
-			//console.log(err);
-			fail(err);
-		})
-	})
-}
-
-var setGenresQualifiedMap =  function(pool){
-	return new Promise(function(done, fail) {
-		getGenres(pool)
-			.then(genres => {
-				module.exports.genresQualifiedMap = {};
-				genres.forEach(g => {
-					module.exports.genresQualifiedMap[g.name] = g
-				})
-				done("setGenresQualifiedMap")
-			},e =>{fail(e)})
-	})
-}
-
-var getGenresQualifiedMap =  function(){
-	return module.exports.genresQualifiedMap;
-}
 
 var poolRDS = {}
- const poolPromise = new sql.ConnectionPool(config_rds)
-//const poolPromise = new sql.ConnectionPool(config)
+const poolPromise = new sql.ConnectionPool(config)
 	.connect()
 	.then(pool => {
 		console.log('Connected to MSSQL')
-		setGenresQualifiedMap(pool).then(msg =>{
+		IM.setGenresQualifiedMap(pool).then(msg =>{
 			console.log(msg);
 			return pool
 		})
@@ -293,7 +306,8 @@ var getPoolRDS = function(){
 }
 
 module.exports = {
-	sql, poolPromise,poolRDS,getPoolRDS,getGenresQualifiedMap,clientAtlas,getClientAtlas,connectClientAtlas,clientAtlasProm,getConnectClientAtlas
+	sql, poolPromise,poolRDS,getPoolRDS,connectClientAtlas
+	//clientAtlas,getClientAtlas,clientAtlasProm,getConnectClientAtlas
 }
 //module.exports.connect = client.connect()
 	//.then(r =>{"client.connect() complete"},e =>{console.error("mongo client.connect() error",e);})
