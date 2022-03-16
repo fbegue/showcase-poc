@@ -3,7 +3,7 @@
 //var clientAtlasProm = require('../db').clientAtlasProm
 var db = require('../db')
 var genreFam_map = require('./db_api').genreFam_map
-
+var app = require('../app')
 //----------------------------------
 
 const { MongoClient } = require('mongodb');
@@ -107,10 +107,7 @@ me.testAtlas =  function(){
 // 	}
 // }
 
-
-
 //===========================================================
-//note: recall that these uriRemote/uriLocalCluster are the same server, just used different auth methods here
 const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
 const uriLocalCluster = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
 
@@ -118,8 +115,6 @@ const uriLocalCluster = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mon
 const uriLocalDB = "mongodb://localhost:27017"
 
 let uri = null;
-
-
 if(process.env.AWS_SESSION_TOKEN === undefined){
 	console.log("connecting to local mongo atlas instance");
 	uri = uriLocalCluster
@@ -136,11 +131,27 @@ let clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopolo
 //===========================================================
 
 //note: snippet that surrounds all of these calls b/c I can't figure out wtf is wrong here
+var dbTest;
+clientAtlas.connect(function(err, database) {
+	if(err) throw err;
+	dbTest = database;
+})
 
-// clientAtlas.connect()
-// 	.then(ignored => {
-//   var dbo = clientAtlas.db("soundfound");
-// 	},e =>{console.error(e);fail(e)})
+me.testAtlasProm =  function(){
+	return new Promise(function(done, fail) {
+					//var dbo = clientAtlas.db("soundfound");
+					dbTest.collection('9480').find({}).toArray()
+						.then(r2 =>{
+							console.log("events",r2.length);
+							done(r2)
+						}).catch(e =>{
+						console.log("MongoClient connect test failure",e);
+						fail(e);
+					})
+
+	})
+}
+
 
 me.testAtlasProm =  function(){
 	return new Promise(function(done, fail) {
@@ -176,23 +187,31 @@ async function testAtlasAsync() {
 }
 
 me.testAtlasAsync = testAtlasAsync;
-// var seedMongoGenre =  function(){
-// 	return new Promise(function(done, fail) {
-//
-// 		clientAtlas.connect()
-// 			.then(ignored => {
-// 				var dbo = clientAtlas.db("soundfound");
-// 				Object.keys(genreFam_map).forEach(g => {
-//
-// 				})
-// 				dbo.collection('genres').insertMany(payload).then(r2 =>{
-// 					done(r2)
-// 				})
-// 			},e =>{console.error(e);fail(e)})
-// 	})
-// }
+
+me.testAtlasAsync2 = async function() {
+
+	try {
+		var client = app.getMongoClient()
+		console.log(client.db().databaseName);
+		var dbo = client.db("soundfound");
+		return dbo.collection('users').find({}).toArray()
+			.then(r =>{
+				console.log("testAtlasAsync:",r.length);
+				return r
+			},e =>{
+				console.error("testAtlasAsync failure:",e);
+				throw(e)
+			})
+
+	} catch(e) {
+		//console.log("testAtlasAsync2",e);
+		throw(e)
+	}
+}
 //===================================================================
 //soundfound api
+
+
 
 //always empties the DB before inserting
 me.insert =  function(events){
@@ -280,8 +299,10 @@ me.fetchStaticUser =  function(user){
 			.then(ignored => {
 				//console.log("user.id",user.id);
 				var dbo = clientAtlas.db("soundfound");
+				// dbo.collection('users').find({id:user.id}).toArray()
 				dbo.collection('users').find({id:user.id}).toArray()
 					.then(arr =>{
+
 						arr[0] ? done(arr[0]) : done(null)
 						// r[0] ? done(r[0]) : fail('couldnt find user' + user.id)
 					})

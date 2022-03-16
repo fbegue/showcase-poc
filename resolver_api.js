@@ -1,7 +1,10 @@
 var rp = require('request-promise');
 const sApi = require('./apis/spotify_api')
-
-
+// var fetchTry = require('./utility/limiter').fetchTry
+var fetchTry = require('./utility/limiter').fetchTry
+var limiter = require('./utility/limiter').limiter
+var async = require('async')
+const fetch = require('node-fetch');
 //todo: started working on it but realized this is songkick specific
 //designed to take in songkickArtist objects like {id: #######, displayName:""}
 
@@ -29,7 +32,7 @@ module.exports.spotifySearch  = function(artist){
 		var searchReq =  function(options){
 			return new Promise(function(done, fail) {
 				let op = JSON.parse(JSON.stringify(options));
-				rp(options).then(function(res){
+				fetchTry(options.uri,options).then(function(res){
 					//  console.log(res);
 					// console.log(op);
 					//todo: in the future, probably need better checking on this
@@ -98,8 +101,22 @@ module.exports.spotifySearch  = function(artist){
  * @param payload An array of 50 artist ids
  * @returns {Promise<unknown>}
  */
-module.exports.spotifyArtists = function(payload,req){
+
+var test =  function(r){
+    return new Promise(function(done, fail) {
+		console.log("test",r);
+    done(r)
+    })
+}
+
+var wait =  function(input,timeout){
 	return new Promise(function(done, fail) {
+		console.log("retry-after...",timeout);
+		setTimeout(e =>{done(input)},timeout)
+	})
+}
+module.exports.spotifyArtists = function(req,payload){
+
 		//console.log("spotifyArtists payload",payload.length);
 		var multiArtistStr = "";
 		payload.forEach(function(id,i){
@@ -117,20 +134,99 @@ module.exports.spotifyArtists = function(payload,req){
 			},
 			json: true
 		};
-
 		//console.log(options.uri);
-		rp(options).then(r => {
-			// r.artists.forEach(a =>{
-			// 	if(a === null){
-			// 		console.log(a);
-			// 	}
-			// })
-			//console.log("$r",r);
-			done(r)
-		},err =>{
-			fail(err)
-		})
-	})
+		return limiter.schedule(rp,options)
+			.catch(e =>{
+				debugger
+			})
+
+		//--------------------------------------------------------
+
+		var count = 0;
+		var myFunction = function(callback, results,) {
+			console.log(++count);
+			console.log(this);
+			process.nextTick(function() {
+				if (count < 5) { // Fail 5 times
+					return callback({ message: 'this failed' }, null);
+				}
+				callback(null, { message: 'this succeeded' });
+			});
+		};
+
+		// var fetchIt = function(callback, results) {
+		// 	test().then(r =>{
+		// 		callback(null, { message: r });
+		// 	},e =>{
+		// 		return callback({ message: 'this failed' }, null);
+		// 	})
+		// }
+
+		var fetchIt = function(callback, results) {
+			fetch(this.uri,this)
+			// .then(res => res.json())
+				.then(res =>{
+					if(res.status === 429){
+						wait(res,res.headers.get('retry-after'))
+							.then(res => res.json())
+							.then(r =>{
+								return callback({ message: r.error }, null);
+							},e =>{
+								debugger
+							})
+						// setTimeout(() =>{
+						// 	res.json().then(r =>{
+						// 		return callback({ message: r.error }, null);
+						// 	},e =>{
+						// 		debugger
+						// 	})
+						//
+						// },res.headers.get('retry-after'))
+
+					}else{
+						callback(null, res);
+					}
+			},e =>{
+					debugger
+				return callback({ message:e }, null);
+			})
+		}
+
+		// async.retry({times: 3, interval: 500}, fetchIt.bind(options),
+		//  function(err, result) {
+		// 	if(err){
+		// 		debugger
+		// 	}else{
+		// 		done(result)
+		// 	}
+		//     // do something with the result
+		// });
+
+		//--------------------------------------------------------
+
+		// fetchTry(options.uri,options).then(r => {
+		// 	// r.artists.forEach(a =>{
+		// 	// 	if(a === null){
+		// 	// 		console.log(a);
+		// 	// 	}
+		// 	// })
+		// 	//console.log("$r",r);
+		// 	if(r === undefined){
+		// 		debugger
+		// 	}
+		// 	done(r)
+		// },err =>{
+		// 	fail(err)
+		// })
+		//--------------------------------------------------------
+		//console.log(options.uri)
+		//return fetchTry(options.uri,options)
+		// 	.then(res =>{
+		// 	   done(res)
+		// },e =>{
+		// 		debugger
+		// 	fail(e)
+		// })
 };
 
 

@@ -22,6 +22,7 @@ var express = require('express'); // Express web server framework
 var bodyParser = require('body-parser');
 var app = express();
 var cors = require('cors');
+var os = require("os");
 const runMiddleware = require('run-middleware');
 runMiddleware(app);
 module.exports.app = app;
@@ -30,7 +31,7 @@ var spotify_api = require('./apis/spotify_api.js');
 var db_mongo_api = require('./apis/db_mongo_api.js');
 var songkick_api = require('./apis/songkick_api.js');
 var  db_api = require('./apis/db_api.js');
-
+var ltest = require('./utility/limiterTest').test
 var  db = require('./db.js');
 var  db_seed = require('./db_seed.js');
 var matcher = require("./utility/matcher")
@@ -110,11 +111,12 @@ app.use(function (req, res, next) {
 	//console.log(req.headers);
 
 	function set(){
-		console.log("set passing:",req.headers.origin);
+		//console.log("set passing:",req.headers.origin);
 		spotify_api.getSpotifyWebApi(req.headers.origin)
 			.then(api =>{
 				api.setAccessToken(req.body.auth.access_token);
 				api.setRefreshToken(req.body.auth.refresh_token);
+
 				req.body.spotifyApi =api;
 				req.body.user = req.body.auth.user
 				//console.log("auth middleware used",req.body.auth.user.display_name);
@@ -158,6 +160,7 @@ var port = 8888;
 app.listen(port);
 
 
+
 //=================================================
 //register routes
 
@@ -183,7 +186,13 @@ var jstr = function(ob){
 }
 
 const colors = require('colors/safe');
-console.error = function(msg){console.log(colors.red(msg))};
+console.error = function(msg,ob){
+
+	if(os.hostname() === "DESKTOP-TMB4Q31" && msg === "Missing x-apigateway-event or x-apigateway-context header(s)"){
+		//note: disable these gateway warnings when running locally
+	}else{
+		console.log(colors.red(msg),ob?ob:null)};
+	}
 console.warn = function(msg){console.log(colors.yellow(msg))};
 console.good = function(msg){console.log(colors.green(msg))};
 
@@ -227,6 +236,20 @@ app.post('/api/postinfo', (req, res) => {
 	// res.header("Access-Control-Allow-Headers", "*");
 	// res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
 	res.send({ application: 'soundfound', version: package.version,body:req.body });
+});
+
+
+app.post('/api/testlimit', (req, res) => {
+	var start = Date.now()
+	ltest(req)
+		.then(r =>{
+			//console.log(r)
+			console.log("finished",Math.abs(new Date() - start) / 600);
+			debugger
+			res.send({ result: r});
+		},e =>{console.error(e)
+			res.status(500).send(e)
+		});
 });
 
 //testing:
@@ -461,14 +484,35 @@ app.post('/api/testRDS2', (req, res) => {
 ///module.exports.handler = serverless(app);
 const server = awsServerlessExpress.createServer(app);
 
+
+const { MongoClient } = require('mongodb');
+let client = new MongoClient("mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/",
+	{ useNewUrlParser: true, useUnifiedTopology: true });
+const clientPromise = client.connect();
+
 let outsideHandlerVar = 0;
-module.exports.handler = (event, context) => {
-	//console.log("HANDLER",outsideHandlerVar);
+module.exports.handler = async function(event, context){
+	console.log("HANDLER",outsideHandlerVar);
+	client = await clientPromise;
+	// Use the client to return the name of the connected database.
+	//return client.db().databaseName;
+
 	outsideHandlerVar = 1
 	context.callbackWaitsForEmptyEventLoop = false;
 	//console.log(`EVENT: ${JSON.stringify(event)}`);
 	return awsServerlessExpress.proxy(server, event, context, 'PROMISE').promise;
 };
+
+module.exports.mongoClient = client
+module.exports.getMongoClient = function(){return client}
+app.post('/api/testNewMongo', (req, res) => {
+db_mongo_api.testAtlasAsync2()
+	.then(r =>{
+		res.send({ result: r});
+	},e =>{
+		res.status(500).send(e)
+	})
+});
 
 
 

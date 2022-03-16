@@ -760,6 +760,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//   "notFound": true,
 											//   "familyAgg": null
 											// }
+
+											//todo: replace w/ new limiter
 											searches.push(limiterSpotify.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
 										}
 										else{
@@ -1111,6 +1113,27 @@ module.exports.fetchUserEvents =  function(req, res,next){
 	})
 };
 
+
+module.exports.searchArtistSongkick = async function(artistOb,artistSongkick_id){
+	try {
+		var sres = await songkickApi.searchArtists({ query: artistOb.name });
+		return sres?.[0] || null
+
+		//note: had planned on checking if I had incoming artistIdSongkick
+		// - if so, get their events; otherwise, search for them so I can get events
+
+		//getArtistUpcomingEvents
+		//sres[0] ? fetchId = sres[0].id:{};
+		//var events = await songkickApi.getArtistUpcomingEvents(fetchId)
+
+	} catch (error) {
+		console.error(error);
+		// expected output: ReferenceError: nonExistentFunction is not defined
+		// Note - error messages will vary depending on browser
+	}
+
+
+}
 
 //testing:
 //module.exports.fuzzy_compare = fuzzy_compare;

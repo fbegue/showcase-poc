@@ -49,11 +49,14 @@ var config_remote = {
 var config = null
 if(os.hostname() === "DESKTOP-TMB4Q31"){
 	config=config_local
-	console.log("connecting to sql server: DESKTOP-TMB4Q31\\SQLEXPRESS");
+	console.log("connecting to sql server:" + config_local.server);
 }else{
 	config=config_rds
-	console.log("connecting to sql server: DESKTOP-TMB4Q31\\SQLEXPRESS");
+	console.log("connecting to sql server" + config_rds.server);
 }
+
+// console.log("FORCE config_rds:" + config_rds.server);
+// config=config_rds
 
 // var client =  function(){
 // 	return new Promise(function(done, fail) {
@@ -109,34 +112,9 @@ const { MongoClient } = require('mongodb');
 
 let clientAtlas = {};
 
-var getConnectClientAtlas =  function(){
-	return new Promise(function(done, fail) {
-		const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
-		const uriLocal = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
-		let uri = null;
-		if(process.env.AWS_SESSION_TOKEN === undefined){
-			console.log("connecting to local mongo atlas instance");
-			uri = uriLocal
-		}
-		else{
-			console.log("connecting to remote mongo atlas instance");
-			uri = uriRemote
-		}
-
-		clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-		clientAtlas.connect()
-			.then(r =>
-			{
-				console.log("clientAtlas connected");
-				done(clientAtlas)
-
-			}
-		,e =>{console.error(e);fail(e)})
-			//var client = getClientAtlas()
-	})
-}
-
 //testing: only here for test purposes
+//todo: recall connections are all made at top of apis/db_mongo_api.js
+//b/c couldn't figure out how to get this shit to work properly
 var connectClientAtlas =  function(){
 	return new Promise(function(done, fail) {
 
@@ -156,10 +134,13 @@ var connectClientAtlas =  function(){
 		//uri = "mongodb+srv://<AWS access key>:<AWS secret key>@cluster0.th2x5.mongodb.net/myFirstDatabase?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:<session token (for AWS IAM Roles)>";
 		//const uri = `mongodb+srv://${encodeURIComponent(process.env.AWS_ACCESS_KEY_ID)}:${encodeURIComponent(process.env.AWS_SECRET_ACCESS_KEY)}@cluster0.th2x5.mongodb.net/myFirstDatabase?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&authMechanismProperties=AWS_SESSION_TOKEN:${encodeURIComponent(process.env.AWS_SESSION_TOKEN)}`
 
+		//todo: at some point I became confused and thought that I had a local cluster and a remote one?
+		//but both of these configs are just mechanisms to hit the remote one
 		//the env's are magic?
 		//https://stackoverflow.com/questions/67198660/why-cant-my-aws-lambda-node-js-app-access-my-mongodb-atlas-cluster
 		const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
 		const uriLocal = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
+
 		let uri = null;
 		if(process.env.AWS_SESSION_TOKEN === undefined){
 			console.log("connecting to local mongo atlas instance");

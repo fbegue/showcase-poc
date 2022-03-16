@@ -1,7 +1,7 @@
-var rp = require('request-promise');
+//var rp = require('request-promise');
 let sql = require("mssql");
 var _ = require('lodash')
-
+var rp = require('request-promise');
 var app = require('./app');
 // var jstr =  require('./app').jstr;
 const sApi = require('./apis/spotify_api');
@@ -10,6 +10,8 @@ const db_api = require('./apis/db_api')
 const util = require('./util')
 const db = require('./db')
 const IM = require('./utility/inMemory')
+var fetchTry = require('./utility/limiter').fetchTry
+let limiter =  require('./utility/limiter').limiter
 
 //=================================================
 //utilities
@@ -160,12 +162,7 @@ module.exports.getPage = function(body,key,req){
 		baseUrl = baseUrl + "type=artist&after=" + after + "&limit=50"
 		//console.log("baseUrl",baseUrl);
 		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
-
-		function get(options) {
-			console.log(options.uri);
-			return rp(options);
-		}
-		get(options)
+		fetchTry(options.uri,options)
 			.then(r =>{
 				done(r);
 			},e =>{
@@ -194,15 +191,22 @@ module.exports.getPages = function(req,body,key){
 
 		options.uri = baseUrl + q1 + 0 + q2
 
+		var ops = [];
 		for(var x=1; x<= num;x++){
-			function get(x,options){
-				options.uri = baseUrl + q1 + 50*x + q2
-				//console.log(options.uri);
-				return rp(options);
+			options.uri = baseUrl + q1 + 50*x + q2
+			ops.push(options)
+			// function get(x,options){
+			// 	options.uri = baseUrl + q1 + 50*x + q2
+			// 	//console.log(options.uri);
+			// 	return fetchTry(options.uri,options);
+			// }
+			var task = function (options) {
+				return  limiter.schedule(fetchTry,options.uri,options)
 			}
+			promises = ops.map(task);
 			//note: something about rp doesn't work the way I thought it would
 			//promises.push(limiterSpotify.schedule(get(options)));
-			promises.push(limiterSpotify.schedule(get,x,options));
+			//promises.push(limiterSpotify.schedule(get,x,options));
 		}
 		Promise.all(promises).then(r => {
 			//console.log('here');
@@ -270,9 +274,14 @@ module.exports.resolveArtists = function(req,artists){
 			}
 		});
 		payload.length ? payloads.push(payload):{};
-		payloads.forEach(function(pay){
-			promises.push(limiterSpotify.schedule(resolver_api.spotifyArtists,pay,req,{}))
-		});
+		// payloads.forEach(function(pay){
+		// 	promises.push(limiterSpotify.schedule(resolver_api.spotifyArtists,pay,req,{}))
+		// });
+
+		var task = function (pay) {
+			return resolver_api.spotifyArtists(pay,req)
+		}
+		promises = payloads.map(task);
 
 		Promise.all(promises).then(results => {
 			//console.log("resolveArtists finished execution:",Math.abs(new Date() - startDate) / 600);
@@ -322,12 +331,12 @@ module.exports.resolveArtists2 = function(req,artists){
 		// var resultOb = {artists:artists.slice(71,artists.length -1)};
 
 		var fakeCheck =  function(resultOb){
-		    return new Promise(function(done, fail) {
+			return new Promise(function(done, fail) {
 				//console.log("checkDBForArtistGenres IS DISABLED!");
 				resultOb.payload = resultOb.artists;
 				resultOb.db = [];
-		    done(resultOb)
-		    })
+				done(resultOb)
+			})
 		}
 		// db_api.checkDBForArtistGenres(resultOb,'artists')
 		fakeCheck(resultOb,'artists')
@@ -353,11 +362,20 @@ module.exports.resolveArtists2 = function(req,artists){
 					}
 				});
 				payload.length ? payloads.push(payload):{};
-				payloads.forEach(function(pay){
-					promises.push(limiterSpotify.schedule(resolver_api.spotifyArtists,pay,req,{}))
-				});
 
-				Promise.all(promises).then(results => {
+				//prepare n requests to map to intermediate function
+				var task = async function (pay) {
+					return await resolver_api.spotifyArtists(req,pay)
+					// var spotifyArtist= await resolver_api.spotifyArtists(req,pay)
+					//var artistSongkick = await sApi.getArtistInfo(pay,req)
+					//return {...spotifyArtist,...artistSongkick}
+				}
+
+
+				var ps = payloads.map(task);
+				//ps = ps.concat(payloads.map(task2))
+				Promise.all(ps).then(results => {
+
 					if(results.length === 0){
 						console.warn("zero length resolveArtists result");
 						done(r.artists)
@@ -365,6 +383,12 @@ module.exports.resolveArtists2 = function(req,artists){
 
 						var artistPay = [];
 						results.forEach(function(r) {
+							if(!r){
+								console.log(r);
+								console.log(results);
+								debugger
+							}
+
 							r.artists.forEach(function (a) {
 								if (a === null) {
 									console.warn("bad resolveArtists value found while unwinding", a);
@@ -378,15 +402,33 @@ module.exports.resolveArtists2 = function(req,artists){
 
 						db_api.commitArtistGenres(artistPay)
 							.then(ignored =>{
+
 								var result = resultOb.db.concat(artistPay)
 								done(result)
+
+								//testing: putting this on EVERY artist resolve is too much
+								//var task2 = async function (pay) {return await sApi.getArtistInfo(req,pay)}
+								// var ps2 = artistPay.map(task2)
+								// Promise.all(ps2).then(results => {
+
+								// artistPay.forEach((a,i,arr) =>{
+								// 	var info = _.find(results, function(r) {return r.id === a.id});
+								// 	arr[i] = {...arr[i],...info}
+								// })
+
+								// var result = resultOb.db.concat(artistPay)
+								// done(result)
+								//})
+
 							})
 					}
 
 					// console.log(resolved.length === 0);
 					// resolved.length === 0 ? resolved = null:{};
 					// done(resolved)
-				},e => {fail(e);})
+				},e => {
+					debugger
+					fail(e);})
 
 			})//check
 	})
@@ -441,7 +483,7 @@ module.exports.resolvePlaylists = function(body){
 
 		function getPages(options) {
 			//console.log(options.uri);
-			return rp(options).then(data => {
+			return fetchTry(options.uri,options).then(data => {
 				//console.log("data",data.items.length);
 				options.store = options.store.concat(data.items);
 				//console.log("cacheIT",cacheIT[options.playlist_id].length);
