@@ -2,7 +2,7 @@
   "author": "Spotify",
   "name": "web-api-auth-examples",
   "description": "Basic examples of the Spotify authorization flows through OAuth 2",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "deploy": "sls deploy function -f app",
     "commit": "npm version minor --force && git add . && git commit -m"
