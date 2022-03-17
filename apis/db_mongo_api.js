@@ -131,29 +131,26 @@ let clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopolo
 //===========================================================
 
 //note: snippet that surrounds all of these calls b/c I can't figure out wtf is wrong here
-var dbTest;
+var SFDB;
 clientAtlas.connect(function(err, database) {
 	if(err) throw err;
-	dbTest = database;
+	SFDB = database.db('soundfound');
 })
 
 me.testAtlasProm =  function(){
 	return new Promise(function(done, fail) {
-					//var dbo = clientAtlas.db("soundfound");
-					dbTest.collection('9480').find({}).toArray()
-						.then(r2 =>{
-							console.log("events",r2.length);
-							done(r2)
-						}).catch(e =>{
-						console.log("MongoClient connect test failure",e);
-						fail(e);
-					})
-
+		SFDB.collection('9480').find({}).toArray()
+			.then(r2 =>{
+				console.log("events",r2.length);
+				done(r2)
+			}).catch(e =>{
+			console.log("MongoClient connect test failure",e);
+			fail(e);
+		})
 	})
 }
 
-
-me.testAtlasProm =  function(){
+me.testAtlasProm_old =  function(){
 	return new Promise(function(done, fail) {
 		clientAtlas.connect()
 			.then(ignored =>
@@ -208,9 +205,9 @@ me.testAtlasAsync2 = async function() {
 		throw(e)
 	}
 }
+
 //===================================================================
 //soundfound api
-
 
 
 //always empties the DB before inserting
@@ -218,65 +215,46 @@ me.insert =  function(events){
 	return new Promise(function(done, fail) {
 
 
-		clientAtlas.connect()
-			.then(ignored => {
-				var dbo = clientAtlas.db("soundfound");
-				//infer correct collection from one sample event
-				// dbo.collection(events[0].venue.metroArea.id).insert(events).then(r =>{
-				// 	done(r)
-				// })
-				console.log("committing to mongo collection:",events[0].venue.metroArea.id);
-				var c = events[0].venue.metroArea.id.toString()
-				dbo.collection(c).deleteMany({}).then(r =>{
-					dbo.collection(c).insertMany(events).then(r2 =>{
-						done(r2)
-					})
-				})
-				//todo: can't figure out the easy way to do a massive insert if not already in collection wtf?
-				//it can't really be a find and insert if not found right?
+		//infer correct collection from one sample event
+		// dbo.collection(events[0].venue.metroArea.id).insert(events).then(r =>{
+		// 	done(r)
+		// })
+		console.log("committing to mongo collection:",events[0].venue.metroArea.id);
+		var c = events[0].venue.metroArea.id.toString()
+		SFDB.collection(c).deleteMany({}).then(r =>{
+			SFDB.collection(c).insertMany(events).then(r2 =>{
+				done(r2)
+			})
+		})
+		//todo: can't figure out the easy way to do a massive insert if not already in collection wtf?
+		//it can't really be a find and insert if not found right?
 
-				// https://docs.mongodb.com/stitch/mongodb/actions/collection.insertMany/
-				// https://docs.mongodb.com/stitch/mongodb/actions/collection.updateMany/
-
-				//.updateMany({},events,{"upsert":true}).then(r =>{
-			},e =>{console.error(e);fail(e)})
-
-
-
+		// https://docs.mongodb.com/stitch/mongodb/actions/collection.insertMany/
+		// https://docs.mongodb.com/stitch/mongodb/actions/collection.updateMany/
 	})
 }
-
 
 me.insertStaticUsers =  function(payload){
 	return new Promise(function(done, fail) {
-		clientAtlas.connect()
-			.then(ignored => {
-				var dbo = clientAtlas.db("soundfound");
-				payload[0].updatedAt = new Date().toISOString()
-				dbo.collection('users').insertMany(payload).then(r2 =>{
-					done(r2)
-				})
-			},e =>{console.error(e);fail(e)})
-
+		payload[0].updatedAt = new Date().toISOString()
+		SFDB.collection('users').insertMany(payload).then(r2 =>{
+			done(r2)
+		})
 	})
 }
-
 
 me.refreshStaticUser =  function(user,fake){
 	return new Promise(function(done, fail) {
 
-		clientAtlas.connect()
-			.then(ignored => {
-				//console.log("user.id",user.id);
-				var dbo = clientAtlas.db("soundfound");
-				dbo.collection('users').updateOne({id:fake || user.id},
-					//todo: just images for now
-					{ $set: {images:user.images}
-				})
-					.then(r =>{
-						r.modifiedCount === 1 ? done(r) : fail("refreshStaticUser couldn't update" + user.id)
-					})
-			},e =>{console.error(e);fail(e)})
+		//console.log("user.id",user.id);
+		SFDB.collection('users').updateOne({id:fake || user.id},
+			//todo: just images for now
+			{ $set: {images:user.images}
+			})
+			.then(r =>{
+				r.modifiedCount === 1 ? done(r) : fail("refreshStaticUser couldn't update" + user.id)
+			})
+
 	})
 }
 
@@ -284,8 +262,7 @@ me.refreshStaticUser =  function(user,fake){
 //todo: snippet
 me.saveSnapshotPlaylists =  function(user,snapMap){
 	return new Promise(function(done, fail) {
-		var dbo = client.db("soundfound");
-		dbo.collection('users').updateOne({id:user.id},{$set : {snapMap:snapMap}})
+		SFDB.collection('users').updateOne({id:user.id},{$set : {snapMap:snapMap}})
 			.then(r2 =>{
 				done(r2)
 			})
@@ -294,62 +271,47 @@ me.saveSnapshotPlaylists =  function(user,snapMap){
 
 me.fetchStaticUser =  function(user){
 	return new Promise(function(done, fail) {
-
-		clientAtlas.connect()
-			.then(ignored => {
-				//console.log("user.id",user.id);
-				var dbo = clientAtlas.db("soundfound");
-				// dbo.collection('users').find({id:user.id}).toArray()
-				dbo.collection('users').find({id:user.id}).toArray()
-					.then(arr =>{
-
-						arr[0] ? done(arr[0]) : done(null)
-						// r[0] ? done(r[0]) : fail('couldnt find user' + user.id)
-					})
-			},e =>{console.error(e);fail(e)})
-
-
+		SFDB.collection('users').find({id:user.id}).toArray()
+			.then(arr =>{
+				arr[0] ? done(arr[0]) : done(null)
+				// r[0] ? done(r[0]) : fail('couldnt find user' + user.id)
+			})
 	})
 }
 
 me.fetch =  function(param){
 	return new Promise(function(done, fail) {
 
+		var events = [];
+		console.log("fetching...");
 
-		clientAtlas.connect()
-			.then(ignored => {
-
-				var events = [];
-				console.log("fetching...");
-				var dbo = clientAtlas.db("soundfound");
-
-				if(param === 'all'){
-					var states = {"OH":[
-							{"displayName":"Columbus", "id":9480},
-							{"displayName":"Cleveland", "id":14700},
-							{"displayName":"Cincinnati", "id":22040},
-							// {"displayName":"Dayton", "id":3673},
-							{"displayName":"Toledo", "id":5649}
-						]};
-					var proms = [];
-					states['OH'].forEach(m =>{
-						//console.log("m",m.id);
-						proms.push(dbo.collection(m.id.toString()).find().toArray())
+		if(param === 'all'){
+			var states = {"OH":[
+					{"displayName":"Columbus", "id":9480},
+					{"displayName":"Cleveland", "id":14700},
+					{"displayName":"Cincinnati", "id":22040},
+					// {"displayName":"Dayton", "id":3673},
+					{"displayName":"Toledo", "id":5649}
+				]};
+			var proms = [];
+			states['OH'].forEach(m =>{
+				//console.log("m",m.id);
+				proms.push(SFDB.collection(m.id.toString()).find().toArray())
+			})
+			Promise.all(proms)
+				.then(r =>{
+					r.forEach(ra =>{
+						events = events.concat(ra);
 					})
-					Promise.all(proms)
-						.then(r =>{
-							r.forEach(ra =>{
-								events = events.concat(ra);
-							})
 
-							console.log(events.length);
-							done(events)
-						})
-				}else{
-					events = events.concat(dbo.collection(param).find().toArray())
+					console.log(events.length);
 					done(events)
-				}
-			},e =>{console.error(e);fail(e)})
+				})
+		}else{
+			events = events.concat(SFDB.collection(param).find().toArray())
+			done(events)
+		}
+
 
 	})
 }
@@ -358,33 +320,25 @@ me.fetchSpotifyUsers =  function(){
 	return new Promise(function(done, fail) {
 		//console.log("user.id",user.id);
 		//testing:
-		clientAtlas.connect()
-			.then(ignored =>{
-				var dbo = clientAtlas.db("soundfound");
-				done(dbo.collection('spotifyUsers').find({}).toArray());
-			})
-
+		done(SFDB.collection('spotifyUsers').find({}).toArray());
 	})
 }
 
 me.fetchUser =  function(id){
 	return new Promise(function(done, fail) {
 		console.log("user id",id);
-		clientAtlas.connect()
-			.then(ignored =>
-				{
-					var dbo = clientAtlas.db("soundfound");
-					dbo.collection('users').find({id:id}).toArray()
-						.then(users =>{
+		{
+			SFDB.collection('users').find({id:id}).toArray()
+				.then(users =>{
 
-							//console.log("events",r2.length);
-							done(users[0])
-						}).catch(e =>{
-						console.log("MongoClient connect test failure",e);
-						fail(e);
-					})
-				}
-				,e =>{console.error(e);fail(e)})
+					//console.log("events",r2.length);
+					done(users[0])
+				}).catch(e =>{
+				console.log("MongoClient connect test failure",e);
+				fail(e);
+			})
+		}
+
 	})
 }
 
@@ -392,17 +346,53 @@ me.fetchUser =  function(id){
 
 me.insertSpotifyUsers =  function(payload){
 	return new Promise(function(done, fail) {
-
-		clientAtlas.connect()
-			.then(ignored => {
-				var spotifyUsers = require('../example data objects/spotifyUsers').spotifyUsers
-				var dbo = clientAtlas.db("soundfound");
-				dbo.collection('spotifyUsers').insertMany(spotifyUsers).then(r2 =>{
-					done(r2)
-				})
-			},e =>{console.error(e);fail(e)})
-
+		var spotifyUsers = require('../example data objects/spotifyUsers').spotifyUsers
+		SFDB.collection('spotifyUsers').insertMany(spotifyUsers).then(r2 =>{
+			done(r2)
+		})
 	})
+}
+
+/** @func addFriend
+ * @param user
+ * @param payload:{}   => a single user to be added as a friend to related_users
+ * - TRUE => set all related_users to friend:true
+ * - FALSE => "" to friend:false
+ * @param flag if set, changes behavior of payload as above
+ * */
+me.addFriend =  async function(user,payload,flag){
+	var cUsers;
+
+	 if(flag){
+		var user = await me.fetchUser(user.id)
+		cUsers = user.related_users.map(r =>{return {...r,friend:payload}})
+	}
+	else{
+		var user = await me.fetchUser(user.id)
+		var cfriends = user.related_users.filter(r => r.friend)
+		 //console.log({cfriends});
+		cUsers = [...user.related_users,payload];
+	}
+
+	var r = await SFDB.collection('users').updateOne({id:user.id},
+		{ $set: {
+				related_users:cUsers
+			}})
+	if(r.modifiedCount === 1){return r}
+	else{
+		throw("refreshStaticUser couldn't update" + user.id);
+	}
+
+}
+
+me.removeUser =  async function(user){
+	var r = await SFDB.collection('users').deleteOne({id:user.id})
+
+	if(r.deletedCount === 1){return r}
+	else{
+		throw("refreshStaticUser couldn't update" + user.id);
+	}
+
 }
 
 

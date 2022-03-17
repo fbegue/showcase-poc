@@ -89,6 +89,7 @@ module.exports.getAuth =  function(req,res){
 					//testing:
 					api.setAccessToken(r.access_token);
 					api.setRefreshToken(r.refresh_token);
+
 					api.getMe()
 						.then(data => {
 							r.user = data.body
@@ -176,7 +177,8 @@ var getTokens =  function(code,clientOrigin){
 // }
 
 //var global_refresh_franky = "AQDn9X-9Jq2e-gbcZgf-U4eEzJadw2R6cFlXu1zKY-kxo3CEY4FaLtwL8tw7YcO8QPd2h3OXcSTvOQwKG5kmpOz2Nm6MTrHfM0r4UGQ7A7Aa-z8tywMvbgVyWmgLcEXDlVw";
-var global_refresh_franky = "AQBGzTcLEq-PKIDeU98H-XNVK52-BG5YcmDlI8sI1Sbg6xP2XAlyms79t0gztNy6Ru19IlI8WJut_U61M2j9ka5Xg0EFl_LkmjxHGVZhurKS65xszInAA9X9-7J3CQclUcU"
+var global_refresh_frankyy = "AQBGzTcLEq-PKIDeU98H-XNVK52-BG5YcmDlI8sI1Sbg6xP2XAlyms79t0gztNy6Ru19IlI8WJut_U61M2j9ka5Xg0EFl_LkmjxHGVZhurKS65xszInAA9X9-7J3CQclUcU"
+var global_refresh_franky = "AQBwJS5mnAtUzilNEQIrW6OdcyUODHY-BctGCO6n8bI4zqSZeX88uF68tDIz_MyauMo6HexVEfGkYLc2GZiBQosZ4oBuLltzGbFZ7D4PA8aUCseSnHUvrtKPyJxY0hSar5I"
 //todo: expired!
 var global_refresh_dan = "AQA8qMva_Ccbqk1bN8RdpiT4fKgsgG2X7j1I_sM1B6ChylMZGaJkXfNTpml4Bg9HyYXwiUbTO7A8g1XjI_hdqn6FDUKhg55XFDzXouWLvBJDmx9IayQBX_j4KeLl79jbqHs"
 
@@ -1063,8 +1065,10 @@ var getRecentlyPlayedTracks =  function(req){
 	return new Promise(function(done, fail) {
 		//var trackOb = {};
 		//note: always a max of 50 tracks
+
 		var task = function () {
-			let options = {uri:"https://api.spotify.com/v1/me/top/tracks", headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
+			let options = {uri:"https://api.spotify.com/v1/me/top/tracks",
+				headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
 			return limiter.schedule(fetchTry,options.uri,options)
 			//return limiter.schedule(rp,{uri:"https://api.spotify.com/v1/me/top/tracks"})
 			//return limiter.schedule(req.body.spotifyApi.getMyRecentlyPlayedTracks({limit : 50}))
@@ -1387,6 +1391,8 @@ me.fetchStaticUser = function(req,res){
 			//console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 			let userResult = await db_mongo_api.fetchStaticUser(req.body.friend)
 			var refreshes = []
+			var currentUser = await req.body.spotifyApi.getMe()
+			var selfFetch = currentUser.body.id === req.body.friend.id
 
 			var shallow = true;
 			if(userResult === null){
@@ -1396,10 +1402,7 @@ me.fetchStaticUser = function(req,res){
 				shallow = false;
 				userResult = req.body.friend
 			}else{
-				//note: only refresh all related_users for primary user
-				var currentUser = await req.body.spotifyApi.getMe()
-				var refreshProfiles = currentUser.body.id === req.body.friend.id
-				if(refreshProfiles){
+				if(selfFetch){
 					var task = function (u) {return refreshUserProfile(this,u)}
 
 					//testing: load
@@ -1427,12 +1430,12 @@ me.fetchStaticUser = function(req,res){
 			//testing: this is slow as shit
 			var getInfos = false;
 			//var getInfos = currentUser.body.id === req.body.friend.id;
+
 			let resolvedArtists = null;
 			if(shallow){
 				resolvedArtists = await resolver.resolveArtists2(req,userResult.artists.artists)
 				//note: forgot why, but disabled mutate inline?
 				resolver.resolveArtistsCachedGenres(resolvedArtists,'saved')
-
 
 				if(getInfos){
 					var task2 = async function (pay) {return await me.getArtistInfo(req,pay)}
@@ -1458,21 +1461,24 @@ me.fetchStaticUser = function(req,res){
 
 			console.log("resolvedArtists",resolvedArtists.length);
 
-			var resolvedTopArtists = await getTopArtists(req)
+			var resolvedTopArtists = [];
+			if(selfFetch){
+				resolvedTopArtists = await getTopArtists(req)
+				console.log("resolvedTopArtists",resolvedTopArtists.length);
 
-			if(getInfos){
-				var task2 = async function (pay) {return await me.getArtistInfo(req,pay)}
-				var ps2 = resolvedTopArtists.map(task2)
-				var iResults = await Promise.all(ps2)
+				if(getInfos){
+					var task2 = async function (pay) {return await me.getArtistInfo(req,pay)}
+					var ps2 = resolvedTopArtists.map(task2)
+					var iResults = await Promise.all(ps2)
 
-				resolvedTopArtists.forEach((a,i,arr) =>{
-					var info = _.find(iResults, function(r) {return r.id === a.id});
-					arr[i] = {...arr[i],...info}
-				})
+					resolvedTopArtists.forEach((a,i,arr) =>{
+						var info = _.find(iResults, function(r) {return r.id === a.id});
+						arr[i] = {...arr[i],...info}
+					})
+				}
 
+			}else{console.warn("getTopArtists skipped")}
 
-			}
-			console.log("resolvedTopArtists",resolvedTopArtists.length);
 
 
 			//todo: this has it's own mechanism for mutating albums w/ artist genres
@@ -1491,9 +1497,13 @@ me.fetchStaticUser = function(req,res){
 			//testing: reduced payload for now
 			//resolveTracksStatsOb.tracks = resolveTracksStatsOb.tracks.slice(0,2500)
 
-			//let resolveRecentTracksOb = {tracks:[]}
-			let resolveRecentTracksOb = await getRecentlyPlayedTracks(req)
-			console.log("resolvedTracks",resolveRecentTracksOb.tracks.length)
+			let resolveRecentTracksOb = {tracks:[]}
+			if(selfFetch){
+				resolveRecentTracksOb = await getRecentlyPlayedTracks(req)
+				console.log("resolvedTracks",resolveRecentTracksOb.tracks.length)
+			}else{console.warn("resolvedTracks skipped")}
+
+
 
 
 			//testing:disabled (enabled = 500 on server, but not locally?)

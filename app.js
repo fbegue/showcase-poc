@@ -30,6 +30,7 @@ module.exports.app = app;
 var spotify_api = require('./apis/spotify_api.js');
 var db_mongo_api = require('./apis/db_mongo_api.js');
 var songkick_api = require('./apis/songkick_api.js');
+var testSuite = require('./testing/suite')
 var  db_api = require('./apis/db_api.js');
 var ltest = require('./utility/limiterTest').test
 var  db = require('./db.js');
@@ -126,7 +127,7 @@ app.use(function (req, res, next) {
 		})
 	}
 	function setFake(){
-		//console.log("faking auth middleware");
+		console.error("faking auth middleware");
 
 		spotify_api.getCheatyToken(req.headers.origin)
 			.then(api =>{
@@ -142,7 +143,7 @@ app.use(function (req, res, next) {
 				req.body.spotifyApi.getMe()
 					.then(c => {
 						req.body.user = {display_name: c.body.display_name, id: c.body.id.toString()}
-						console.log("setFake to:",req.body.user .display_name + " | " + req.body.user .id);
+						console.log("setFake to:",req.body.user.display_name + " | " + req.body.user.id);
 						next()
 					}).catch(e => {
 					console.error("setFake error", e);
@@ -175,6 +176,13 @@ for(var key in songkick_api) {
 	if(songkick_api[key] instanceof Function) {
 		//console.log(key);
 		app.post("/" + key, songkick_api[key]);
+	}
+}
+
+for(var key in testSuite) {
+	if(testSuite[key] instanceof Function) {
+		//console.log(key);
+		app.post("/" + key, testSuite[key]);
 	}
 }
 
