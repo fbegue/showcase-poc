@@ -462,7 +462,8 @@ module.exports.resolveArtistsCachedGenres = function(artists,source){
 		arr[i]['strGenres'] = strGenres
 
 		a.familyAgg = util.familyFreq(a);
-		a.source = source
+
+		!(a.source) ? a.source = source:{};
 	})
 	return artists;
 }

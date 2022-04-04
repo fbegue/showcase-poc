@@ -179,6 +179,9 @@ var getTokens =  function(code,clientOrigin){
 //var global_refresh_franky = "AQDn9X-9Jq2e-gbcZgf-U4eEzJadw2R6cFlXu1zKY-kxo3CEY4FaLtwL8tw7YcO8QPd2h3OXcSTvOQwKG5kmpOz2Nm6MTrHfM0r4UGQ7A7Aa-z8tywMvbgVyWmgLcEXDlVw";
 var global_refresh_frankyy = "AQBGzTcLEq-PKIDeU98H-XNVK52-BG5YcmDlI8sI1Sbg6xP2XAlyms79t0gztNy6Ru19IlI8WJut_U61M2j9ka5Xg0EFl_LkmjxHGVZhurKS65xszInAA9X9-7J3CQclUcU"
 var global_refresh_franky = "AQBwJS5mnAtUzilNEQIrW6OdcyUODHY-BctGCO6n8bI4zqSZeX88uF68tDIz_MyauMo6HexVEfGkYLc2GZiBQosZ4oBuLltzGbFZ7D4PA8aUCseSnHUvrtKPyJxY0hSar5I"
+
+var global_refresh_josh ="AQDCCKE5PpnL4R9xZ991j0d9MVijWGdhfX9qxvC2krMEcbuEWcf7aHRFHLVnAoPnPFneWCSISZCL3w7_NKrJcmHl3Y4zjfI3jknNezedI6IN5Nbv-Y1IqgdPwQ7k-dqZBd4"
+
 //todo: expired!
 var global_refresh_dan = "AQA8qMva_Ccbqk1bN8RdpiT4fKgsgG2X7j1I_sM1B6ChylMZGaJkXfNTpml4Bg9HyYXwiUbTO7A8g1XjI_hdqn6FDUKhg55XFDzXouWLvBJDmx9IayQBX_j4KeLl79jbqHs"
 
@@ -1401,6 +1404,7 @@ me.fetchStaticUser = function(req,res){
 					(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 				shallow = false;
 				userResult = req.body.friend
+
 			}else{
 				if(selfFetch){
 					var task = function (u) {return refreshUserProfile(this,u)}
@@ -1416,6 +1420,7 @@ me.fetchStaticUser = function(req,res){
 				}
 			}
 
+			//note: empty if we're initing new user
 			var updated = await Promise.all(refreshes);
 			updated.forEach((u,i,arr) =>{
 				userResult.related_users.forEach(ru =>{
@@ -1433,8 +1438,34 @@ me.fetchStaticUser = function(req,res){
 
 			let resolvedArtists = null;
 			if(shallow){
+
+				//todo: when we're shallow, we still have source info. resolveArtists2 doesn't care about that
+				//so we'll preserve them here and re-apply? keeps resolveArtists2 from becoming to complicated but still...?
+				var sourceMap = {};
+
+				userResult.artists.artists.forEach(a =>{
+					if(!(sourceMap[a.id])){sourceMap[a.id] = a.source
+					}else{sourceMap[a.id] = 'both'}
+				})
+
 				resolvedArtists = await resolver.resolveArtists2(req,userResult.artists.artists)
-				//note: forgot why, but disabled mutate inline?
+
+				var sourcedTop = {}
+				resolvedArtists.forEach(ra =>{
+					if(!(sourceMap[ra.id] === 'both')){
+						ra.source =sourceMap[ra.id]
+					}else{
+						if(!(sourcedTop[ra.id])){
+							sourcedTop[ra.id] = 'sourced'
+							ra.source = 'top'
+						}else{
+							ra.source = 'saved'
+						}
+					}
+				})
+
+				//note: in the same logic as above - these could (will) be mixed 'saved'/'top' when shallow
+				//so resolveArtistsCachedGenres was modified to only force 'saved' here if there isn't already one there
 				resolver.resolveArtistsCachedGenres(resolvedArtists,'saved')
 
 				if(getInfos){
@@ -1547,6 +1578,7 @@ me.fetchStaticUser = function(req,res){
 			//note: storeStaticUserLocal also appends related_users
 
 			var moddedPayload = await me.storeStaticUserLocal(req,shallow ? null:payload)
+
 			if(moddedPayload){payload = moddedPayload}
 
 
@@ -1604,90 +1636,90 @@ me.storeStaticUserLocal =  function(req,payload){
 				payload.related_users = rel.all_users
 
 				//testing: adding some users manually
-				if(req.body.friend.id !== '123028477'){
-					var d = {
-						"friend":true,
-						"FLAG":"EXAMPLE ADDED",
-						"display_name" : "Daniel Niemiec",
-						"external_urls" : {
-							"spotify" : "https://open.spotify.com/user/123028477"
-						},
-						"href" : "https://api.spotify.com/v1/users/123028477",
-						"id" : "123028477",
-						"type" : "user",
-						"uri" : "spotify:user:123028477",
-						"images" : [
-							{
-								"height" : null,
-								"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
-								"width" : null
-							}
-						]
-					}
-					payload.related_users.push(d)
-				}
-				if(req.body.friend.id !== '123028477#2'){
-					var d = {
-						"friend":true,
-						"FLAG":"EXAMPLE ADDED",
-						"display_name" : "Daniel Niemiec#2",
-						"external_urls" : {
-							"spotify" : "https://open.spotify.com/user/123028477"
-						},
-						"href" : "https://api.spotify.com/v1/users/123028477",
-						"id" : "123028477#2",
-						"type" : "user",
-						"uri" : "spotify:user:123028477",
-						"images" : [
-							{
-								"height" : null,
-								"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
-								"width" : null
-							}
-						]
-					}
-					payload.related_users.push(d)
-				}
-				if(req.body.friend.id !== '123028477#3'){
-					var d = {
-						"friend":true,
-						"FLAG":"EXAMPLE ADDED",
-						"display_name" : "Daniel Niemiec#3",
-						"external_urls" : {
-							"spotify" : "https://open.spotify.com/user/123028477"
-						},
-						"href" : "https://api.spotify.com/v1/users/123028477",
-						"id" : "123028477#3",
-						"type" : "user",
-						"uri" : "spotify:user:123028477#3",
-						"images" : [
-							{
-								"height" : null,
-								"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
-								"width" : null
-							}
-						]
-					}
-					payload.related_users.push(d)
-				}
-				if(req.body.friend.id !== 'dacandyman01'){
-					var d2 = {
-						"friend":true,
-						"FLAG":"EXAMPLE ADDED",
-						"display_name":"Franky Begue",
-						"external_urls":{"spotify":"https://open.spotify.com/user/dacandyman01"},
-						"href":"https://api.spotify.com/v1/users/dacandyman01",
-						"id":"dacandyman01",
-						"images":[{"height":null,"url":"https://scontent-dfw5-2.xx.fbcdn.net/v/t1.6435-1/p320x320/44591294_1856692227700100_9156849281271857152_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=0c64ff&_nc_ohc=ugv9DAyzYV8AX_u23Gn&_nc_ht=scontent-dfw5-2.xx&edm=AP4hL3IEAAAA&oh=00_AT8x8hagRMZHWeI1CV1GyJUMbhFGN1drumqxjHMDsn_2tg&oe=61DDA67D","width":null}],
-						"product":"premium",
-						"type":"user",
-						"uri":"spotify:user:dacandyman01",
-						"followers":{"href":null,"total":38},
-						"email":"eugene.f.begue@gmail.com",
-						"country":"US",
-						"explicit_content":{"filter_enabled":false,"filter_locked":false}}
-					payload.related_users.push(d2)
-				}
+				//if(req.body.friend.id !== '123028477'){
+				// 	var d = {
+				// 		"friend":true,
+				// 		"FLAG":"EXAMPLE ADDED",
+				// 		"display_name" : "Daniel Niemiec",
+				// 		"external_urls" : {
+				// 			"spotify" : "https://open.spotify.com/user/123028477"
+				// 		},
+				// 		"href" : "https://api.spotify.com/v1/users/123028477",
+				// 		"id" : "123028477",
+				// 		"type" : "user",
+				// 		"uri" : "spotify:user:123028477",
+				// 		"images" : [
+				// 			{
+				// 				"height" : null,
+				// 				"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
+				// 				"width" : null
+				// 			}
+				// 		]
+				// 	}
+				// 	payload.related_users.push(d)
+				// }
+				// if(req.body.friend.id !== '123028477#2'){
+				// 	var d = {
+				// 		"friend":true,
+				// 		"FLAG":"EXAMPLE ADDED",
+				// 		"display_name" : "Daniel Niemiec#2",
+				// 		"external_urls" : {
+				// 			"spotify" : "https://open.spotify.com/user/123028477"
+				// 		},
+				// 		"href" : "https://api.spotify.com/v1/users/123028477",
+				// 		"id" : "123028477#2",
+				// 		"type" : "user",
+				// 		"uri" : "spotify:user:123028477",
+				// 		"images" : [
+				// 			{
+				// 				"height" : null,
+				// 				"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
+				// 				"width" : null
+				// 			}
+				// 		]
+				// 	}
+				// 	payload.related_users.push(d)
+				// }
+				// if(req.body.friend.id !== '123028477#3'){
+				// 	var d = {
+				// 		"friend":true,
+				// 		"FLAG":"EXAMPLE ADDED",
+				// 		"display_name" : "Daniel Niemiec#3",
+				// 		"external_urls" : {
+				// 			"spotify" : "https://open.spotify.com/user/123028477"
+				// 		},
+				// 		"href" : "https://api.spotify.com/v1/users/123028477",
+				// 		"id" : "123028477#3",
+				// 		"type" : "user",
+				// 		"uri" : "spotify:user:123028477#3",
+				// 		"images" : [
+				// 			{
+				// 				"height" : null,
+				// 				"url" : "https://scontent-ort2-2.xx.fbcdn.net/v/t1.18169-1/p320x320/15094378_10154116279302749_8365848785354290791_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=0c64ff&_nc_ohc=RXtfnwEPYfgAX98Y7wt&_nc_ht=scontent-ort2-2.xx&tp=6&oh=df6539e97331192f11e369d16ad9945f&oe=60E0C2BD",
+				// 				"width" : null
+				// 			}
+				// 		]
+				// 	}
+				// 	payload.related_users.push(d)
+				// }
+				// if(req.body.friend.id !== 'dacandyman01'){
+				// 	var d2 = {
+				// 		"friend":true,
+				// 		"FLAG":"EXAMPLE ADDED",
+				// 		"display_name":"Franky Begue",
+				// 		"external_urls":{"spotify":"https://open.spotify.com/user/dacandyman01"},
+				// 		"href":"https://api.spotify.com/v1/users/dacandyman01",
+				// 		"id":"dacandyman01",
+				// 		"images":[{"height":null,"url":"https://scontent-dfw5-2.xx.fbcdn.net/v/t1.6435-1/p320x320/44591294_1856692227700100_9156849281271857152_n.jpg?_nc_cat=107&ccb=1-5&_nc_sid=0c64ff&_nc_ohc=ugv9DAyzYV8AX_u23Gn&_nc_ht=scontent-dfw5-2.xx&edm=AP4hL3IEAAAA&oh=00_AT8x8hagRMZHWeI1CV1GyJUMbhFGN1drumqxjHMDsn_2tg&oe=61DDA67D","width":null}],
+				// 		"product":"premium",
+				// 		"type":"user",
+				// 		"uri":"spotify:user:dacandyman01",
+				// 		"followers":{"href":null,"total":38},
+				// 		"email":"eugene.f.begue@gmail.com",
+				// 		"country":"US",
+				// 		"explicit_content":{"filter_enabled":false,"filter_locked":false}}
+				// 	payload.related_users.push(d2)
+				// }
 				//console.log(typeof db_mongo_api.insertStaticUsers)
 				db_mongo_api.insertStaticUsers([payload])
 				done(payload)

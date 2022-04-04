@@ -24,14 +24,17 @@ var danUser2 = {
 //add friends to user
 
 
-me.addFriends  = function(req,res){
+me.addFriend  = function(req,res){
 	//var ids = [citizenUser.id]
-	 db_mongo_api.addFriend(frankyUser,{...citizenUser,friend:true})
+
+
+	// db_mongo_api.addFriend(frankyUser,{...citizenUser,friend:true})
 	//db_mongo_api.addFriend(frankyUser,true)
+	db_mongo_api.addFriend(req.body.auth.user,{...req.body.friend,friend:true})
 		.then(r =>{
 			res.send(r)
 		},e =>{
-			debugger
+
 			res.status(500).send(e)
 		})
 

@@ -18,8 +18,15 @@ https://stackoverflow.com/questions/50866472/restarting-aws-lambda-function-to-c
 
 ### Showcase-POC
 
-- DB seeding @ http://localhost:8888/api/insertStatic
+DB seeding
+- http://localhost:8888/api/insertStatic
 
+Events fetch (always empties the DB before inserting)
+- http://localhost:8888/fetchMetroEvents
+
+Config
 - switch sql instance by changing config passed to `poolPromise` in `db.js`
 - switch mongo instance by changing uri in `apis/db_mongo_api.js`
+
+
 
