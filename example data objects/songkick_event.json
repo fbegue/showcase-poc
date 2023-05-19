@@ -1,0 +1,69 @@
+{
+    "_id": {
+        "$oid": "62ad189daf7ed410f9a04b6c"
+    },
+    "id": 39922124,
+    "displayName": "Omni at The Summit (July 25, 2021)",
+    "type": "Concert",
+    "uri": "https://www.songkick.com/concerts/39922124-omni-at-summit?utm_source=47817&utm_medium=partner",
+    "status": "ok",
+    "popularity": 0.003138,
+    "start": {
+        "date": "2021-07-25",
+        "datetime": "2021-07-25T20:30:00-0400",
+        "time": "20:30:00"
+    },
+    "performance": [{
+        "id": 75443945,
+        "displayName": "Omni",
+        "billing": "headline",
+        "billingIndex": 1,
+        "artist": {
+            "id": 123676,
+            "displayName": "Omni",
+            "uri": "https://www.songkick.com/artists/123676-omni?utm_source=47817&utm_medium=partner",
+            "identifier": [{
+                "mbid": "d15a5ebb-c677-427d-9a31-47e1f236b620",
+                "href": "https://api.songkick.com/api/3.0/artists/mbid:d15a5ebb-c677-427d-9a31-47e1f236b620.json"
+            }, {
+                "mbid": "921e7995-ab81-47dd-adf3-c8e012b31080",
+                "href": "https://api.songkick.com/api/3.0/artists/mbid:921e7995-ab81-47dd-adf3-c8e012b31080.json"
+            }, {
+                "mbid": "4c1007ce-df7b-4768-a6cb-cd5e41b10678",
+                "href": "https://api.songkick.com/api/3.0/artists/mbid:4c1007ce-df7b-4768-a6cb-cd5e41b10678.json"
+            }, {
+                "mbid": "1ba617b4-1dcb-4949-b4e9-904f9c811b66",
+                "href": "https://api.songkick.com/api/3.0/artists/mbid:1ba617b4-1dcb-4949-b4e9-904f9c811b66.json"
+            }, {
+                "mbid": "40d21d2d-e270-44a1-98cb-5d83f82d59c1",
+                "href": "https://api.songkick.com/api/3.0/artists/mbid:40d21d2d-e270-44a1-98cb-5d83f82d59c1.json"
+            }]
+        }
+    }],
+    "ageRestriction": null,
+    "flaggedAsEnded": false,
+    "venue": {
+        "id": 36816,
+        "displayName": "The Summit",
+        "uri": "https://www.songkick.com/venues/36816-summit?utm_source=47817&utm_medium=partner",
+        "metroArea": {
+            "displayName": "Columbus",
+            "country": {
+                "displayName": "US"
+            },
+            "state": {
+                "displayName": "OH"
+            },
+            "id": 9480,
+            "uri": "https://www.songkick.com/metro-areas/9480-us-columbus?utm_source=47817&utm_medium=partner"
+        },
+        "lat": 40.00854,
+        "lng": -83.00057
+    },
+    "location": {
+        "city": "Columbus, OH, US",
+        "lat": 40.00854,
+        "lng": -83.00057
+    },
+    "metro_id": 9480
+}

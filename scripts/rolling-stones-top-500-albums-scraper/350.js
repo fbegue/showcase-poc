@@ -1,0 +1,2 @@
+//src:
+module.exports.albums =
