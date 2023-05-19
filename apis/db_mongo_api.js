@@ -109,23 +109,29 @@ me.testAtlas =  function(){
 
 //===========================================================
 const uriRemote = "mongodb+srv://cluster0.th2x5.mongodb.net/soundfound?authSource=$external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority"
+//todo: above didn't work as of 10-22-22
+const uriRemote2 = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/admin?authSource=admin&replicaSet=atlas-hb0l1q-shard-0"
 const uriLocalCluster = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
 
 //note: deprecated Robo3T db
 const uriLocalDB = "mongodb://localhost:27017"
 
 let uri = null;
+
 if(process.env.AWS_SESSION_TOKEN === undefined){
 	console.log("connecting to local mongo atlas instance");
-	uri = uriLocalCluster
+	//uri = uriRemote2
 	//testing:
-	//uri = uriLocalDB;
+	uri = uriLocalDB;
 }
 else{
 	console.log("connecting to remote mongo atlas instance");
 	uri = uriRemote
 }
 
+//note: override
+console.log("override: connecting to remote mongo atlas instance");
+uri = uriRemote2;
 
 let clientAtlas = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 //===========================================================
@@ -259,6 +265,34 @@ me.refreshStaticUser =  function(user,fake){
 }
 
 
+
+me.trackUserPlaylist =  async function(user,playlist){
+	var nTracked;
+	var field = "playlistsTracked"
+	var user = await me.fetchUser(user.id)
+	//todo: asserting playlistsTracked (maybe belongs in template for user objects)
+	var cTracked = user.playlistsTracked || [];
+
+	//testing: track my own updated/created godamit!
+
+	playlist.myCreated = new Date().toISOString();
+	playlist.myUpdated = new Date().toISOString()
+
+	nTracked = [...cTracked,playlist];
+
+	var r = await SFDB.collection('users').updateOne({id:user.id},
+		{ $set: {
+				[field]:nTracked
+			}})
+	if(r.modifiedCount === 1){
+		return {result:r,playlist:playlist}}
+	else{
+		debugger
+		throw("refreshStaticUser couldn't update" + user.id);
+	}
+
+}
+
 //todo: snippet
 me.saveSnapshotPlaylists =  function(user,snapMap){
 	return new Promise(function(done, fail) {
@@ -285,13 +319,15 @@ me.fetch =  function(param){
 		var events = [];
 		console.log("fetching...");
 
+		//todo: just OH + LA right now
 		if(param === 'all'){
 			var states = {"OH":[
 					{"displayName":"Columbus", "id":9480},
 					{"displayName":"Cleveland", "id":14700},
 					{"displayName":"Cincinnati", "id":22040},
 					// {"displayName":"Dayton", "id":3673},
-					{"displayName":"Toledo", "id":5649}
+					{"displayName":"Toledo", "id":5649},
+					{"displayName":"Los Angeles", "id":90305}
 				]};
 			var proms = [];
 			states['OH'].forEach(m =>{
@@ -305,9 +341,11 @@ me.fetch =  function(param){
 					})
 
 					console.log(events.length);
+
 					done(events)
 				})
 		}else{
+
 			events = events.concat(SFDB.collection(param).find().toArray())
 			done(events)
 		}
@@ -353,24 +391,25 @@ me.insertSpotifyUsers =  function(payload){
 	})
 }
 
-/** @func addFriend
+/** @func modifyFriends
  * @param user
- * @param payload:{}   => a single user to be added as a friend to related_users
+ * @param payload:{}  => a single user to be added as a friend to related_users
  * - TRUE => set all related_users to friend:true
  * - FALSE => "" to friend:false
  * @param flag if set, changes behavior of payload as above
  * */
-me.addFriend =  async function(user,payload,flag){
+
+me.modifyFriends =  async function(user,payload){
 	var cUsers;
 
-	 if(flag){
+	if(payload === true || payload === false){
 		var user = await me.fetchUser(user.id)
 		cUsers = user.related_users.map(r =>{return {...r,friend:payload}})
 	}
 	else{
 		var user = await me.fetchUser(user.id)
 		var cfriends = user.related_users.filter(r => r.friend)
-		 //console.log({cfriends});
+		//console.log({cfriends});
 		cUsers = [...user.related_users,payload];
 	}
 

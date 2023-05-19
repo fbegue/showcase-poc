@@ -794,7 +794,7 @@ var insert_genre = function (genre, phase) {
 							//todo: lazy mapping
 							fid = IM.familyMapName[inferedFam.family]
 						}else{
-							console.warn("orphan genre:" + genre);
+							//console.warn("orphan genre:" + genre);
 						}
 					}
 

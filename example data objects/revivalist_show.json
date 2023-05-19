@@ -1,0 +1,78 @@
+[
+{
+    "id" : 40115418,
+    "displayName" : "The Revivalists with The Record Company at KEMBA Live! (April 5, 2022)",
+    "type" : "Concert",
+    "uri" : "https://www.songkick.com/concerts/40115418-revivalists-at-kemba-live?utm_source=47817&utm_medium=partner",
+    "status" : "ok",
+    "popularity" : 0.031349,
+    "start" : {
+        "date" : "2022-04-05",
+        "datetime" : "2022-04-05T19:00:00-0400",
+        "time" : "19:00:00"
+    },
+    "performance" : [
+        {
+            "id" : 76002586,
+            "displayName" : "The Revivalists",
+            "billing" : "headline",
+            "billingIndex" : 1,
+            "artist" : {
+                "id" : 593309,
+                "displayName" : "The Revivalists",
+                "uri" : "https://www.songkick.com/artists/593309-revivalists?utm_source=47817&utm_medium=partner",
+                "identifier" : [
+                    {
+                        "mbid" : "ed4a08e1-2a79-4538-b519-87bb2ee0fd9d",
+                        "href" : "https://api.songkick.com/api/3.0/artists/mbid:ed4a08e1-2a79-4538-b519-87bb2ee0fd9d.json"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : 75774213,
+            "displayName" : "The Record Company",
+            "billing" : "support",
+            "billingIndex" : 2,
+            "artist" : {
+                "id" : 5036328,
+                "displayName" : "The Record Company",
+                "uri" : "https://www.songkick.com/artists/5036328-record-company?utm_source=47817&utm_medium=partner",
+                "identifier" : [
+                    {
+                        "mbid" : "609295c8-5587-4c22-b354-a40e71ddcf62",
+                        "href" : "https://api.songkick.com/api/3.0/artists/mbid:609295c8-5587-4c22-b354-a40e71ddcf62.json"
+                    }
+                ]
+            }
+        }
+    ],
+    "ageRestriction" : null,
+    "flaggedAsEnded" : false,
+    "venue" : {
+        "id" : 777,
+        "displayName" : "KEMBA Live!",
+        "uri" : "https://www.songkick.com/venues/777-kemba-live?utm_source=47817&utm_medium=partner",
+        "metroArea" : {
+            "displayName" : "Columbus",
+            "country" : {
+                "displayName" : "US"
+            },
+            "state" : {
+                "displayName" : "OH"
+            },
+            "id" : 9480,
+            "uri" : "https://www.songkick.com/metro-areas/9480-us-columbus?utm_source=47817&utm_medium=partner"
+        },
+        "lat" : 39.96969,
+        "lng" : -83.00979
+    },
+    "location" : {
+        "city" : "Columbus, OH, US",
+        "lat" : 39.96969,
+        "lng" : -83.00979
+    },
+    "metro_id" : 9480
+}
+
+]

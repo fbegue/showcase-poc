@@ -2,7 +2,7 @@
 //https://github.com/schnogz/songkick-api-node
 //All requests to the library will be returned a promise and when resolved the response will be JSON.
 var Bottleneck = require("bottleneck");
-
+const limiter = require('../utility/limiter').limiter
 // var spotifyApi = null;
 //
 // setTimeout(e =>{
@@ -232,7 +232,7 @@ var fetch_metro_events = function(metro,dateFilter){
 					console.info("getting" + metro.displayName + " " + metro.id + " page {" + page_count + "}...");
 					songkickApi.getLocationUpcomingEvents(metro.id,params)
 						.then(function(events){
-
+debugger
 							//console.info(JSON.stringify(events, null,4));
 
 							var filterInRange = function(event){
@@ -305,6 +305,9 @@ var fetch_metro_events = function(metro,dateFilter){
 								page_count++;
 								get()
 							}
+						},e =>{
+							console.error("get_events failure",e)
+							debugger
 						})
 				};
 
@@ -321,6 +324,7 @@ var fetch_metro_events = function(metro,dateFilter){
 		//metros.forEach(function(metro){
 		//    promises.push(get_events(metro))
 		//})
+
 
 		promises.push(get_events(metro));
 
@@ -400,6 +404,7 @@ var fetch_metro_events = function(metro,dateFilter){
 							performance.artists.push(perf.artist.displayName)
 
 						});
+						debugger
 
 						//haven't created entry for date yet
 						if(dates.indexOf(newDate) == -1){
@@ -497,12 +502,11 @@ var fetch_metro_events = function(metro,dateFilter){
 
 //testing args: fake_metro_events
 
-	//todo: MOVE
-var limiterSpotify = new Bottleneck({
-		maxConcurrent: 15,
-		minTime: 100,
-		trackDoneStatus: true
-	});
+// var limiterSpotify = new Bottleneck({
+// 		maxConcurrent: 15,
+// 		minTime: 100,
+// 		trackDoneStatus: true
+// 	});
 
 //todo: holy shit this is bad
 // process.on('unhandledRejection', (reason, p) => {
@@ -516,6 +520,30 @@ var limiterSpotify = new Bottleneck({
 // 	// application specific logging, throwing an error, or other logic here
 // });
 
+// var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed.json")
+var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json")
+// var revivalists  = require("../example data objects/revivalist_show")
+// var _9480  = require("../example data objects/9480.497.bak.json")
+var _9480  = require("../example data objects/9480.102222-bak.clean.json")
+_9480 = _9480.filter(e =>{return e.performance.length === 2})
+
+var fetch_metro_events_file =  function(){
+    return new Promise(function(done, fail) {
+		//done(Los_Angeles_Songkick_parsed);
+		// Los_Angeles_Songkick_parsed = Los_Angeles_Songkick_parsed.filter(e =>{
+		//
+		// 	//testing: lets just ignore first sat,sun
+		// 	return e.start.date > "2022-11-13"
+		// })
+
+
+		done(Los_Angeles_Songkick_parsed)
+    	//done(Los_Angeles_Songkick_parsed.slice(0,5))
+
+		// done(revivalists)
+		//done(_9480.slice(0,5))
+    })
+}
 module.exports.fetchMetroEvents =  function(req, res,next){
 	//testing: how we do these batch calls (just setting the req.body.spotifyApi
 	//as if it was coming from the UI so everything shoooould just be seemless)
@@ -541,7 +569,10 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 				//req.body.dateFilter.end = new Date().addDays(30).toISOString();
 				//req.body.dateFilter.end = new Date().addDays(90).toISOString();
 				//req.body.dateFilter.end = new Date().addDays(366).toISOString();
-
+			}
+			else if(req.body.dateFilter.disabled){
+				req.body.dateFilter.start = new Date('December 17, 1995 03:24:00')
+				req.body.dateFilter.end = new Date().toISOString()
 			}
 
 			//--------------------------------------------------------------
@@ -560,8 +591,10 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 				console.info("fetchMetroEvents end date:",req.body.dateFilter.end);
 				//testing:
 				//fake_metro_events('events',5)
-				fetch_metro_events(req.body.metro, req.body.dateFilter)
+				fetch_metro_events_file(req.body.metro, req.body.dateFilter)
+				// fetch_metro_events(req.body.metro, req.body.dateFilter)
 					.then(function (events) {
+
 						//todo: why was I checking for next here?
 						// if (next) {next(events)} else {
 
@@ -601,21 +634,6 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 						//wheras 'lastLook' for all songkick artists is a json object describing the last time we looked
 						//for GENRES in each resolver utility - exactly the same as a spotify artist 'lastLook'
 
-
-						//so the plan here will be:
-
-						// 1)   check if we know of a match between songkick and spotify
-						//      AND pull down existing genre info for:
-						//      1.b) just songkick
-						//      1.b) the spotify match
-
-						// 2) attempt to leven match on all spotify artists
-						// 2.a) pull down genres w/ lastLook on new matches
-
-						// 3 Spotify free text artist search?
-						// 4) puppet
-
-
 						var AASMatch = [];
 
 						//testing:
@@ -651,7 +669,13 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								//todo: what is this?
 								///results.shift();
 
-								//make a map of the matches we got so we can filter a payload for step (2)
+								//note: separate results into
+
+								// matched (w/ genres) (used to create map to filter on later)
+
+								// matched w/ no genres and no match (just used to report back) - the fact that these
+								// results weren't put in matched array means they will put onto searches list
+
 								results.forEach(r =>{
 
 									//recording matches to filter out later
@@ -695,22 +719,20 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								var artistSongkicksLevenMatches = [];
 								var deadSpotify
 
-								//filter out matched reported above
+								//note: matchedMap created from array splitting above
 								var matchedMap = {}
 								metrOb.aas_match_genres.forEach(r =>{
 									matchedMap[r.id] =  r;
 								})
 
 
-
-
-
 								//testing:
 								console.warn("auto-failing LevenMatch results");
 
-								//note: r = {id = 8769199,name = "Signs of the Swarm", genres = Array(0),familyAgg = null}
+								//note: prepare searches - filtering out those in matchedMap created above
 								results.forEach(r =>{
-									//testing:
+
+									//testing: disabled leven_match retry, instead just always search if not matched above
 									r.error = true;
 									if(r.error === undefined){
 
@@ -747,7 +769,11 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										//to marking spotify artists in my db with a flag for whether or not we've tried to match them with songkick already
 										//THEN there will NEVER be a repeat request to searchArtist and this will somehow fix it??
 
-										//testing: if
+
+
+										//note:
+										//todo: according to comments below, notFound = couldn't find GENRES, not necessarily a MATCH
+										//so these songkick artist's w/ spotify match, but the match doesn't have any genres
 										if(r.notFound){
 
 											// if(r.id === 10184411){
@@ -761,18 +787,12 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//   "familyAgg": null
 											// }
 
-											//todo: replace w/ new limiter
-											searches.push(limiterSpotify.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
+											searches.push(limiter.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
 										}
 										else{
 											//found artist_artistSongkick, but with no genres
-											//means we've already binded these, but
-
-											//debugger
-											//console.log("");
+											debugger
 										}
-
-										// searches.push(limiterSpotify.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
 									}
 								});
 
@@ -801,11 +821,11 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									var newMatches = [];
 									var newMatches_genres = [];
 									var rejectedMatches = [];
-									var noMatches = [];
+									var spotifySearch_artists_noMatches = [];
 
-									//testing: we do a tiny bit of results unwinding but otherwise this is
-									//the object we would like to return
-									var obs = [];
+									//todo:
+									//note: apparantly the commit calls return ... something interesting
+									var commit_artistSongkick_with_match_results = [];
 
 									var aas_promises = [];
 
@@ -820,15 +840,20 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									//so if we couldn't find a search result, we quit
 									//but if we do, we know it's also a new artist_artistSongkick entry
 
-
+									//note: process search results
 									results.forEach(r =>{
+
+										//note: couldn't find the artist
+
 										//todo: dbl check necessary?
 										//todo: larger requests are sometimes timing out?
 										if(!(r.result) || r.result.artists.items === null || r.result.artists.items.length === 0  ){
 
-											noMatches.push(r.artist)}
+											spotifySearch_artists_noMatches.push(r.artist)}
 
+										//note: found artist, so submit artist, artist_songkick and match to db
 										else{
+
 											var artist = JSON.parse(JSON.stringify(r.result.artists.items[0]));
 											var artistSongkick= JSON.parse(JSON.stringify(r.artist));
 
@@ -851,11 +876,11 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//note: if we got here, we know there is at least no CORRELATION between an artist and artistSongkick
 											//but it's possible we've already stored the artist w/ genres
 
-
+											// debugger
 											aas_promises.push(db_api.commit_artistSongkick_with_match(artist,artistSongkick,artist_artistSongkick));
 
 											//todo: bc we mutated it? or does this just not mater anyways right? we don't NEED to return anything here
-											obs.push(artistSongkick)
+											commit_artistSongkick_with_match_results.push(artistSongkick)
 
 											//testing: disabled / old as shit
 											var processFuzzy = function (item) {
@@ -940,14 +965,13 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									})//results.each
 
 									//testing:
-									console.info("no artist-artistSongkick Matches",noMatches.length);
+									console.info("no artist-artistSongkick Matches",spotifySearch_artists_noMatches.length);
 									console.info("committing new artist-artistSongkick matches",aas_promises.length);
 									// console.info(rejectedMatches);
 									// console.info(newMatches);
 
 
-									// topTracksAsync().then(r => {
-									// Promise.all(aas_promises).then(r => {
+									//note: submit all matches to DB + insert raw events into mongo
 									aas_promises.push(db_mongo_api.insert(events));
 									Promise.all(aas_promises).then(r => {
 										// db_mongo_api.insert(events).then(r => {
@@ -956,8 +980,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										console.info("fetchMetroEvents finished execution:",Math.abs(new Date() - startDateCache) / 600);
 										console.info("all events, artists and genres committed!");
 
-										res.send(obs)
-										//done(obs)
+										res.send({artist_artistSongkick_committed:commit_artistSongkick_with_match_results,spotifySearch_artists_noMatches:spotifySearch_artists_noMatches})
+
 									}, error =>{ console.info("mongo events insert error",error);})
 
 								},error =>{ console.info("$searches error",error);})
@@ -1039,14 +1063,17 @@ module.exports.resolveEvents=  function(req,res,next){
 		.then(events =>{
 			//console.info(app.jstr(events));
 			console.info("fetched events:",events.length);
+
 			var promises = [];
 			var perfMap = {}
 			events.forEach(e =>{
 				e.performance.forEach(p =>{
 					perfMap[p.id] = p;
+
 					//trying a little trick to send ancillary data with request
 					async function check(artist,perf) {
 						var match  = await db_api.checkDBFor_artist_artistSongkick_match(artist);
+
 						return {match:match,perf:perf}
 					}
 					promises.push(check(p.artist,p));
@@ -1061,6 +1088,7 @@ module.exports.resolveEvents=  function(req,res,next){
 				results.forEach(r =>{
 					perfMap[r.perf.id].artist = r.match;
 				});
+
 
 				//but binding them back is still n^n (although, mostly not too many performances)
 				events.forEach(e =>{

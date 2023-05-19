@@ -190,11 +190,14 @@ module.exports.getPages = function(req,body,key){
 		var promises = [];
 
 		options.uri = baseUrl + q1 + 0 + q2
-
 		var ops = [];
+		ops.push(JSON.parse(JSON.stringify(options)))
+
 		for(var x=1; x<= num;x++){
+[]
 			options.uri = baseUrl + q1 + 50*x + q2
-			ops.push(options)
+			ops.push(JSON.parse(JSON.stringify(options)))
+
 			// function get(x,options){
 			// 	options.uri = baseUrl + q1 + 50*x + q2
 			// 	//console.log(options.uri);

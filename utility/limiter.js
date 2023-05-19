@@ -26,8 +26,8 @@ var Bottleneck = require("bottleneck");
 //docs:
 //https://github.com/SGrondin/bottleneck
 var limiter = new Bottleneck({
-	// maxConcurrent: 10,
-	//minTime: 100,
+	//maxConcurrent: 4,
+	// minTime: 100,
 	//testing: at 86~89 it starts failing
 	trackDoneStatus: true
 });
@@ -39,15 +39,20 @@ var limiter = new Bottleneck({
 // - 12.5s | 19.5s - 32s NO CONFIG, r*500
 
 var target = 200;
-var mod = 500
+var mod = 50
 limiter.on("failed", async (res, jobInfo) => {
+
 	//todo: realized that res that I PASS here is different than theh one that comes BACK..or something
 	try{
-		//debugger
-		var t = null;
+		console.log(res);
+		//default retry time
+		var t = 10;
 		var uri = null;
 		if(!(res.headers)){
-			t = res.response.headers['retry-after']
+			if(res.response){
+				t = res.response.headers['retry-after']
+			}
+
 			//uri = res.response.url.replace("https://api.spotify.com/v1","")
 		}else{
 			res.headers.forEach(function(val, key) { if(key === 'retry-after'){t = val} });
@@ -55,13 +60,16 @@ limiter.on("failed", async (res, jobInfo) => {
 
 		t = parseInt(t)
 
-		if(jobInfo.args[0].uri){
-			uri = jobInfo.args[0].uri.replace("https://api.spotify.com/v1","").slice(0,20)
-		}else{
+		if(jobInfo.args[0].uri) {
+			uri = jobInfo.args[0].uri.replace("https://api.spotify.com/v1", "").slice(0, 20)
+		}else if(jobInfo.args[0].url){
+				uri = jobInfo.args[0].url
+		}else if(typeof jobInfo.args[0] === 'string'){
 			uri = jobInfo.args[0].replace("https://api.spotify.com/v1","").slice(0,20)
+		}else{
+			uri = jobInfo.args[0].url
 		}
 
-		//
 		// const id = jobInfo.options.id || uri
 		const id =  uri
 		//console.warn(`Job ${id} failed: ${ob.error}`);
@@ -73,6 +81,7 @@ limiter.on("failed", async (res, jobInfo) => {
 	debugger
 	}
 });
+
 module.exports.limiter =limiter;
 
 var fake =  function(r){
@@ -84,7 +93,7 @@ var fake =  function(r){
 function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
 	const failureCodes = [400,401]
-	console.log(url);
+	//console.log(url);
 	return fetch(url, options)
 		.then(res => {
 			//debugger
@@ -113,11 +122,50 @@ function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 		})
 		.catch( e=> {
 
-			//console.error(e)
+			console.error(e)
+			debugger
 			throw e
 		})
 }
 module.exports.fetchTry =fetchTry;
+
+function fetchTryAPI(callback, req,arg, retries = 3, backoff = 300) {
+	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
+	const failureCodes = [400,401]
+	//console.log(url);
+	return callback(arg)
+		.then(res => {
+			//debugger
+			if (res.ok){
+				return res.json()
+					.then(r =>{
+						if(r === undefined){
+							debugger
+						}
+						return r} )
+				//return res.json()
+			}
+			else{
+				//note: just throwing out to catch
+				throw res
+				// //testing: was carefully parsing failure from here?
+				// return res.json()
+				// 	.then(r =>{
+				// 		debugger
+				// 		var thrown = {time:t,error:r.error}
+				// 		throw(thrown)
+				// 	},e =>{
+				// 		debugger
+				// 	})
+			}
+		})
+		.catch( e=> {
+			//console.error(e)
+			throw e
+		})
+}
+module.exports.fetchTryAPI =fetchTryAPI;
+
 
 function fetchHandleRetry(uri,options){
 	then(res => {

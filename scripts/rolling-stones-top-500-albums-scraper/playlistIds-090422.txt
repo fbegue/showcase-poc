@@ -1,0 +1,17 @@
+new playlist ids [
+  '0luxtMaOdQQzaLHf9dIjIV',
+  '6LZ7gYXTrcv8ig5HinoKPP',
+  '6XqyyBqtcs8YKuWOdM2itc',
+  '2GvOyRsTha5BKHKotZs1vd',
+  '7Kj0GYQY6cTk5s8bBPw1AS',
+  '1Erz2xZPn2PbcYCcu0JJ3y',
+  '6rjLlmAL16rqsyBjEXHhYX',
+  '4G1EgEciIGpgF8MerjivrD',
+  '6u4uCUBS8RiTGQnBFZSLLc',
+  '5hxSWLgfXRSYVrfHDE2rLr',
+  '0ZmzrsNXBFODPikyAzNmef',
+  '3tdGddtiYZ40BBZx20JnyH',
+  '2Gkvp7hvj58WEUyCXQ6RiM',
+  '79cOA8DYU1ZjXx9gsWPpuW',
+  '0cn3lyIv1eLW8SQyxZaOyS'
+]

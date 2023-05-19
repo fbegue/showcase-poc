@@ -1,9 +1,5 @@
 ###lambda
 
-//before deploying:
-- change sql instance
-- (mongo can take care of itself, unless I was using old Robo3T copy)
-
 //deploy a (the) function
 `npm run deploy`
 

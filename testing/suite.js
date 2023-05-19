@@ -7,8 +7,15 @@ var me = module.exports;
 
 //add new users
 var frankyUser = {
-	display_name:"Franky Begue",
-	id:"dacandyman01"
+	"display_name":"Franky Begue",
+	"id":"dacandyman01",
+	"friend":false,
+	"isUser":true
+}
+
+var joshUser = {
+	display_name:"tipshishat",
+	id:"tipshishat"
 }
 
 var citizenUser = {
@@ -24,13 +31,14 @@ var danUser2 = {
 //add friends to user
 
 
-me.addFriend  = function(req,res){
+me.modifyFriends  = function(req,res){
 	//var ids = [citizenUser.id]
 
 
 	// db_mongo_api.addFriend(frankyUser,{...citizenUser,friend:true})
 	//db_mongo_api.addFriend(frankyUser,true)
-	db_mongo_api.addFriend(req.body.auth.user,{...req.body.friend,friend:true})
+	//db_mongo_api.modifyFriends(joshUser,false)
+	db_mongo_api.modifyFriends(req.body.auth.user,{...req.body.friend,friend:true})
 		.then(r =>{
 			res.send(r)
 		},e =>{
@@ -40,11 +48,26 @@ me.addFriend  = function(req,res){
 
 }
 
+me.findFriend  = function(req,res){
+	//var ids = [citizenUser.id]
 
+	// db_mongo_api.addFriend(frankyUser,{...citizenUser,friend:true})
+	//db_mongo_api.addFriend(frankyUser,true)
+	db_mongo_api.fetchUser("tipshishat")
+		.then(r =>{
+			res.send(r)
+		},e =>{
+
+			res.status(500).send(e)
+		})
+
+}
+
+//note: can't do this w/out using that user's refresh token
 me.rebuildUser  = async function(req,res){
 
 	try{
-		await db_mongo_api.removeUser(frankyUser)
+		await db_mongo_api.removeUser(citizenUser)
 		await spotify_api.storeStaticUser(req,res)
 
 	} catch(e){

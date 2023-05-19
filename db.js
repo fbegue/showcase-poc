@@ -23,8 +23,8 @@ var config_rds = {
 	"user": 'admin',
 	"password": 'Cy4NuJPvLGF8',
 	"server": 'soundfound-db.crqf6gmeo1va.us-east-1.rds.amazonaws.com',
-	// "database": 'soundfound-db',
-	"database": 'soundfound',
+	// "database": 'soundfound',
+	"database": 'SampleDatabase',
 	"port": 1433,
 	"dialect": "mssql",
 	// "requestTimeout":16000,
@@ -55,8 +55,9 @@ if(os.hostname() === "DESKTOP-TMB4Q31"){
 	console.log("connecting to sql server" + config_rds.server);
 }
 
-// console.log("FORCE config_rds:" + config_rds.server);
-// config=config_rds
+
+//console.log("FORCE config_rds:" + config_rds.server);
+//config=config_rds
 
 // var client =  function(){
 // 	return new Promise(function(done, fail) {
@@ -142,6 +143,7 @@ var connectClientAtlas =  function(){
 		const uriLocal = "mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/"
 
 		let uri = null;
+
 		if(process.env.AWS_SESSION_TOKEN === undefined){
 			console.log("connecting to local mongo atlas instance");
 			uri = uriLocal

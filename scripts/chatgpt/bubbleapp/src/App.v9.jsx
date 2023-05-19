@@ -7,59 +7,14 @@ if (typeof Highcharts === "object") {
 	networkgraph(Highcharts);
 }
 
-const NetworkGraph = ({ data }) => {
-	const options = {
-		chart: {
-			type: 'networkgraph',
-			height: '100%',
-		},
-		title: {
-			text: 'Artists and Their Genres',
-		},
-		series: [
-			{
-				data_old: data.map(({ artist, genres }) => ({
-					name: artist,
-					genres: genres,
-				})),
-				nodes: data.map(({ artist }, i) => ({
-					id: i,
-					name: artist,
-					marker: {
-						radius: 10,
-					},
-				})),
-				data: [
-					['Artist A', 'Artist B'],
-					['account', 'for'],
-					['add', 'up'],
-					],
-				marker: {
-					radius: 10,
-				},
-				type: 'networkgraph',
-				layoutAlgorithm: {
-					enableSimulation: true,
-				},
-				keys: ['from', 'to'],
-				dataLabels: {
-					enabled: true,
-					linkFormat: '{point.to}',
-				},
-				events: {
-					click: function (event) {
-						console.log(event.point);
-					},
-				},
-			},
-		],
-	};
+//src:
+//https://www.highcharts.com/docs/chart-and-series-types/network-graph
+//https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/demo/network-graph/
 
-	return <HighchartsReact highcharts={Highcharts} options={options} />;
-};
-import React from 'react';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+
+// import React from 'react';
+// import Highcharts from 'highcharts';
+// import HighchartsReact from 'highcharts-react-official';
 
 const NetworkGraph = ({ artists }) => {
 
@@ -70,13 +25,18 @@ const NetworkGraph = ({ artists }) => {
 		},
 		plotOptions: {
 			networkgraph: {
-				keys: ['from', 'to']
+				keys: ['from', 'to'],
+				layoutAlgorithm: {
+					enableSimulation: true,
+					friction: -0.9
+				}
 			}
 		},
 		series: [{
 			dataLabels: {
 				enabled: true,
-				format: '{point.name}'
+				format: '{point.name}',
+				linkFormat: ''
 			},
 			data: [],
 			nodes: [],
@@ -93,6 +53,8 @@ const NetworkGraph = ({ artists }) => {
 			if (!nodes[genre]) {
 				nodes[genre] = { name: genre, id: genre };
 			}
+			//record links
+
 			links.push({
 				from: artist.artist,
 				to: genre
@@ -103,10 +65,28 @@ const NetworkGraph = ({ artists }) => {
 		}
 	});
 
+	let nodeSizeMap = {};
+	links.forEach(fromToOb =>{
+		if(!nodeSizeMap[fromToOb.to]){nodeSizeMap[fromToOb.to] = 1}
+		else{nodeSizeMap[fromToOb.to]++}
+	})
+
+	let nodeValues =  Object.values(nodes);
+	nodeValues.forEach(tuple =>{
+		if(nodeSizeMap[tuple.id]){
+			tuple.marker ={radius: nodeSizeMap[tuple.id]*5}
+		}
+		else{
+			tuple.marker ={radius: 4}
+		}
+
+	})
+	 //debugger
 	// Add nodes and links to series
 	options.series[0].data = Object.values(nodes);
 	options.series[0].nodes = Object.values(nodes);
 	options.series[0].data = links;
+	//debugger
 
 	return (
 		<div>
@@ -115,4 +95,35 @@ const NetworkGraph = ({ artists }) => {
 	);
 }
 
-export default NetworkGraph;
+
+let artists =
+	[  {
+		artist: 'Artist A',
+		genres: ['rock', 'pop', 'jazz'],
+	},
+		{
+			artist: 'Artist B',
+			genres: ['pop', 'hip hop', 'electronic'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist D',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist E',
+			genres: ['country', 'jazz', 'blues'],
+		},
+		{
+			artist: 'Artist F',
+			genres: ['hip hop', 'electronic', 'blues'],
+		},
+	];
+
+function App(props) {
+	return <NetworkGraph artists={artists}/>;
+}
+export default App;

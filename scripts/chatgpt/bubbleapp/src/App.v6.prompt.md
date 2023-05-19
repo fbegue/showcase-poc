@@ -1,4 +1,6 @@
-given an list of artists and their genres, write react using functional components to make a packed bubble chart using highcharts-react library, where the name of each bubble is a genre, and the size of the bubble is related to how many times a genre appears across all of the artists. example data:  [
+## prompt
+
+given an list of artists and their genres, write react using functional components to make a packed bubble chart using highcharts-react library. make a series from each genre. the bubbles inside each series should represent artists in that genre. example data:  [
   {
     artist: 'Artist A',
     genres: ['rock', 'pop', 'jazz'],
@@ -12,3 +14,6 @@ given an list of artists and their genres, write react using functional componen
     genres: ['country', 'folk', 'blues'],
   },
 ];
+
+## changes
+- initially formed no data b/c it mixed up 

@@ -22,6 +22,62 @@ const artists = [
 		artist: 'Artist C',
 		genres: ['country', 'folk', 'blues'],
 	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
+	{
+		artist: 'Artist C',
+		genres: ['country', 'folk', 'blues'],
+	},
 ];
 
 
@@ -31,7 +87,7 @@ const processData = (artists) => {
 	artists.forEach((artist) => {
 		artist.genres.forEach((genre) => {
 			if (genre in genres) {
-				genres[genre] += 1;
+				genres[genre] += 10;
 			} else {
 				genres[genre] = 1;
 			}

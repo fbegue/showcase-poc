@@ -29,14 +29,30 @@ var spotify_api = require('../spotify_api')
 
 var me = module.exports;
 
+
+me.unfollowPlaylist = async function(req){
+	try{
+		//todo: was getting some kind of bad-gateway when I would try n number of these?
+		//id = "2pLwtgs1CEYAMcUyP2enWt"
+		var r = await req.body.spotifyApi.unfollowPlaylist(req.body.playlistId)
+		return r
+	} catch(e){
+		debugger
+		console.error(e)
+	}
+}
+
+
 //todo: duplicated from spotify_api.js
 //tweaked as async
+//todo: doesn't work tho
+//don't understand the difference between awaiting spotify_api.pageIt.bind here and .then() below?
 
-me.getUserPlaylists = async function(req){
+me.getUserPlaylistsAsync = async function(req){
     try{
         var r = await req.body.spotifyApi.getUserPlaylists('dacandyman01', {limit: 50})
 		debugger
-		var pages = await spotify_api.pageIt.bind(null,req,null)
+		 var pages = await spotify_api.pageIt.bind(null,req,null,null)
 		debugger
 		return pages
     } catch(e){
@@ -45,20 +61,42 @@ me.getUserPlaylists = async function(req){
     }
 }
 
-me.unfollowMany = async function(req){
-    try{
-		var plays = await me.getUserPlaylists(req)
-		debugger
-    } catch(e){
-        console.error(e)
-    }
+me.getUserPlaylists =  function(req){
+    return new Promise(function(done, fail) {
+		req.body.spotifyApi.getUserPlaylists('dacandyman01', {limit: 50})
+			//this,req,key,skip,data
+			.then(spotify_api.pageIt.bind(null, req, null, null))
+			.then(function (body) {
+				done(body)
+			})
+	})
 }
 
-me.unfollowPlaylist = async function(req){
+
+
+//todo: updated unfollowPlaylist
+me.unfollowMany = async function(req){
 	try{
-		var r = req.body.spotifyApi.unfollowPlaylist(req.body.id)
+		var body1 = await me.getUserPlaylists(req)
+		var blame = body1.items.filter(r => r.name === "Columbus-Weekly")
+		blame = blame.map(p => p.id)
+		//blame = blame.slice(0,blame.length/2)
+		//var blame2 = blame.slice(0,2)
+
+		var task = async function (playid) {
+			try{
+				var response = await limiter.schedule(me.unfollowPlaylist,req,playid)
+
+				return response;
+			}catch(e){
+				debugger
+			}
+		}
+		var proms = blame.map(task);
+		var mresults = await Promise.all(proms)
+		debugger
 	} catch(e){
+		debugger
 		console.error(e)
 	}
 }
-

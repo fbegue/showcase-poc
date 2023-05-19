@@ -100,6 +100,7 @@ const Graph = () => {
 		});
 	});
 
+	debugger
 	// Create links between genres and artists
 	Object.keys(genres).forEach((genre) => {
 		genres[genre].artists.forEach((artist) => {
@@ -110,6 +111,7 @@ const Graph = () => {
 		});
 	});
 
+	debugger
 	// Create the Highcharts options object
 	const options = {
 		chart: {

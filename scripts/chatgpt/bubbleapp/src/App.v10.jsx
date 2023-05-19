@@ -11,60 +11,90 @@ if (typeof Highcharts === "object") {
 // import Highcharts from 'highcharts';
 // import HighchartsReact from 'highcharts-react-official';
 
-const NetworkGraph = ({ artists }) => {
+const NetworkGraph = ({ data }) => {
+	// define nodes and links arrays to store the data for the graph
+	const nodes = [];
+	const links = [];
 
+	// iterate through the data array to populate nodes and links
+	data.forEach((artist) => {
+		// for each artist, iterate through their genres and add them as nodes
+		artist.genres.forEach((genre) => {
+			// check if the genre node already exists, and if not, add it to the nodes array
+			const genreNode = nodes.find((node) => node.id === genre);
+			if (!genreNode) {
+				nodes.push({
+					id: genre,
+					size: 1,
+					isGenre: true,
+				});
+			} else {
+				genreNode.size += 1;
+			}
+
+			// add a link between the artist node and the genre node
+			links.push({
+				source: artist.artist,
+				target: genre,
+				value: 1,
+			});
+		});
+
+		// add the artist node to the nodes array
+		nodes.push({
+			id: artist.artist,
+			size: 0.5,
+			isGenre: false,
+		});
+	});
+
+	// define the options for the chart
 	const options = {
 		chart: {
 			type: 'networkgraph',
-			height: '100%'
+			height: '100%',
+		},
+		title: {
+			text: 'Artist Genres Network Graph',
 		},
 		plotOptions: {
 			networkgraph: {
-				keys: ['from', 'to']
-			}
-		},
-		series: [{
-			dataLabels: {
-				enabled: true,
-				format: '{point.name}'
+				keys: ['from', 'to'],
+				layoutAlgorithm: {
+					enableSimulation: true,
+					friction: -0.9,
+				},
+				marker: {
+					radius: 10,
+				},
+				nodes: {
+					size: 'size',
+					colorByPoint: true,
+					states: {
+						hover: {
+							color: '#ffa31a',
+						},
+					},
+				},
+				tooltip: {
+					pointFormatter: function () {
+						return this.isGenre ? `<b>${this.id}</b>` : this.id;
+					},
+				},
 			},
-			data: [],
-			nodes: [],
-			type: 'networkgraph'
-		}]
+		},
+		series: [
+			{
+				data: links,
+				nodes: nodes,
+				type: 'networkgraph',
+				name: 'Artist Genres',
+			},
+		],
 	};
 
-	const nodes = {};
-	const links = [];
-
-	// Map all genres to nodes and artists to links
-	artists.forEach((artist) => {
-		artist.genres.forEach((genre) => {
-			if (!nodes[genre]) {
-				nodes[genre] = { name: genre, id: genre };
-			}
-			links.push({
-				from: artist.artist,
-				to: genre
-			});
-		});
-		if (!nodes[artist.artist]) {
-			nodes[artist.artist] = { name: artist.artist, id: artist.artist };
-		}
-	});
-
-	// Add nodes and links to series
-	options.series[0].data = Object.values(nodes);
-	options.series[0].nodes = Object.values(nodes);
-	options.series[0].data = links;
-
-	return (
-		<div>
-			<HighchartsReact highcharts={Highcharts} options={options} />
-		</div>
-	);
-}
-
+	return <HighchartsReact highcharts={Highcharts} options={options} />;
+};
 
 let artists =
 	[  {
@@ -90,6 +120,6 @@ let artists =
 	];
 
 function App(props) {
-	return <NetworkGraph artists={artists}/>;
+	return <NetworkGraph data={artists}/>;
 }
 export default App;

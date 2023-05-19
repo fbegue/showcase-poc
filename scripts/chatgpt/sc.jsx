@@ -62,11 +62,13 @@ const options = {
 };
 
 const BubbleChart = () => {
-	const chart = 	const <div></div>
-
 	return (
-);
+		<div>
+			<Bubble data={data} options={options} />
+		</div>
+	);
 };
 
 export default BubbleChart;
+
 

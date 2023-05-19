@@ -22,6 +22,7 @@ setFG =  function(poolRDS){
 			console.log("$familyMap has been set in memory");
 			console.log("$familyMapName has been set in memory");
 
+
 			//console.log(me.familyMap);
 			//console.log(res.recordset);
 			done(res);

@@ -32,6 +32,8 @@ var db_mongo_api = require('./apis/db_mongo_api.js');
 var songkick_api = require('./apis/songkick_api.js');
 var testSuite = require('./testing/suite')
 var  db_api = require('./apis/db_api.js');
+var experimental_api = require('./apis/experimental_api');
+var playlist_api = require('./apis/spotify_api/playlist_api')
 var ltest = require('./utility/limiterTest').test
 var  db = require('./db.js');
 var  db_seed = require('./db_seed.js');
@@ -127,7 +129,7 @@ app.use(function (req, res, next) {
 		})
 	}
 	function setFake(){
-		console.error("faking auth middleware");
+		//console.error("faking auth middleware");
 
 		spotify_api.getCheatyToken(req.headers.origin)
 			.then(api =>{
@@ -143,7 +145,7 @@ app.use(function (req, res, next) {
 				req.body.spotifyApi.getMe()
 					.then(c => {
 						req.body.user = {display_name: c.body.display_name, id: c.body.id.toString()}
-						console.log("setFake to:",req.body.user.display_name + " | " + req.body.user.id);
+						//console.log("setFake to:",req.body.user.display_name + " | " + req.body.user.id);
 						next()
 					}).catch(e => {
 					console.error("setFake error", e);
@@ -157,7 +159,7 @@ app.use(function (req, res, next) {
 
 var port = 8888;
 
-//console.log('Listening on ' + port);
+console.log('Listening on ' + port);
 app.listen(port);
 
 
@@ -167,14 +169,14 @@ app.listen(port);
 
 for(var key in spotify_api) {
 	if(spotify_api[key] instanceof Function) {
-		//console.log(key);
+		console.log(key);
 		app.post("/" + key, spotify_api[key]);
 	}
 }
 
 for(var key in songkick_api) {
 	if(songkick_api[key] instanceof Function) {
-		//console.log(key);
+		console.log(key);
 		app.post("/" + key, songkick_api[key]);
 	}
 }
@@ -183,6 +185,20 @@ for(var key in testSuite) {
 	if(testSuite[key] instanceof Function) {
 		//console.log(key);
 		app.post("/" + key, testSuite[key]);
+	}
+}
+
+for(var key in experimental_api) {
+	if(experimental_api[key] instanceof Function) {
+		//console.log(key);
+		app.post("/" + key, experimental_api[key]);
+	}
+}
+
+for(var key in playlist_api) {
+
+	if(playlist_api[key] instanceof Function) {
+		app.post("/" + key, playlist_api[key]);
 	}
 }
 
@@ -498,9 +514,11 @@ let client = new MongoClient("mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x
 	{ useNewUrlParser: true, useUnifiedTopology: true });
 const clientPromise = client.connect();
 
+//todo: checking if this persists over invocations (it doesn't)
+
 let outsideHandlerVar = 0;
 module.exports.handler = async function(event, context){
-	console.log("HANDLER",outsideHandlerVar);
+	//console.log("HANDLER",outsideHandlerVar);
 	client = await clientPromise;
 	// Use the client to return the name of the connected database.
 	//return client.db().databaseName;

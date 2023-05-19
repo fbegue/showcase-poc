@@ -5,11 +5,12 @@ import * as Highcharts from 'highcharts';
 import more from 'highcharts/highcharts-more';
 more(Highcharts);
 
+//
+// import React from 'react';
+// import Highcharts from 'highcharts';
+// import HighchartsReact from 'highcharts-react-official';
 
-//import React from 'react';
-// import PackedBubbleChart from './PackedBubbleChart';
-
-const artists = [
+const data = [
 	{
 		artist: 'Artist A',
 		genres: ['rock', 'pop', 'jazz'],
@@ -29,136 +30,99 @@ const artists = [
 	{
 		artist: 'Artist C',
 		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
+	}
+
 ];
 
+const getSeriesData = () => {
 
-const processData = (artists) => {
-	const genres = {};
 
-	artists.forEach((artist) => {
-		artist.genres.forEach((genre) => {
-			if (genre in genres) {
-				genres[genre] += 10;
+	//note: fixed
+
+	//const genres = {};
+	// data.forEach(({ artist, genres }) => {
+	// 	genres.forEach(genre => {
+	// 		if (genres.hasOwnProperty(genre)) {
+	// 			genres[genre].push(artist);
+	// 		} else {
+	// 			genres[genre] = [artist];
+	// 		}
+	// 	});
+	// });
+
+	const genresMap = {};
+	data.forEach(({ artist, genres }) => {
+		genres.forEach(genre => {
+			console.log(genre)
+			if (genresMap[genre]) {
+				genresMap[genre].push(artist);
 			} else {
-				genres[genre] = 1;
+				genresMap[genre] = [artist];
 			}
 		});
 	});
 
-	return Object.keys(genres).map((genre) => ({
-		name: genre,
-		value: genres[genre],
-	}));
+
+
+	console.log("genres",genresMap)
+	//let out = Object.entries(genres).map(([genre, artists
+	let out = Object.entries(genresMap).map(([genre, artists]) => {
+		return {
+			name: genre,
+			data: artists.map(artist => ({ name: artist, value: 1 })),
+		};
+	});
+	console.log("out",out)
+	return out;
 };
 
-
-const PackedBubbleChart = ({ artists }) => {
-	const data = processData(artists);
-
-	const options = {
-		chart: {
-			type: 'packedbubble',
-			height: '100%',
-		},
-		title: {
-			text: 'Genres by frequency across artists',
-		},
-		tooltip: {
-			useHTML: true,
-			pointFormat: '<b>{point.name}:</b> {point.value}',
-		},
-		plotOptions: {
-			packedbubble: {
-				minSize: '20%',
-				maxSize: '100%',
-				zMin: 0,
-				zMax: 1000,
-				layoutAlgorithm: {
-					splitSeries: false,
-					gravitationalConstant: 0.02,
+const options = {
+	chart: {
+		type: 'packedbubble',
+		height: '100%',
+	},
+	title: {
+		text: 'Artist Genres',
+	},
+	tooltip: {
+		useHTML: true,
+		pointFormat: '<b>{point.name}:</b> {point.value}',
+	},
+	plotOptions: {
+		packedbubble: {
+			minSize: '30%',
+			maxSize: '120%',
+			zMin: 0,
+			zMax: 1000,
+			layoutAlgorithm: {
+				gravitationalConstant: 0.05,
+				splitSeries: true,
+				seriesInteraction: false,
+				dragBetweenSeries: true,
+				parentNodeLimit: true,
+			},
+			dataLabels: {
+				enabled: true,
+				format: '{point.name}',
+				filter: {
+					property: 'y',
+					operator: '>',
+					value: 250,
 				},
-				dataLabels: {
-					enabled: true,
-					format: '{point.name}',
-					style: {
-						textOutline: false,
-					},
+				style: {
+					color: 'black',
+					textOutline: 'none',
+					fontWeight: 'normal',
 				},
 			},
 		},
-		series: [
-			{
-				name: 'Genres',
-				data: data,
-			},
-		],
-	};
-
-	return (
-		<div>
-			<HighchartsReact highcharts={Highcharts} options={options} />
-		</div>
-	);
+	},
+	series: getSeriesData(),
 };
 
-//export default PackedBubbleChart;
-
-
-const App = () => {
-	return (
-		<div>
-			<PackedBubbleChart artists={artists} />
-		</div>
-	);
+const PackedBubbleChart = () => {
+	return <HighchartsReact highcharts={Highcharts} options={options} />;
 };
 
-export default App;
+export default PackedBubbleChart;
+

@@ -15,7 +15,8 @@ if(false){
 
 //processing
 
-var list = require('./theLovedList').list;
+//var list = require('./theLovedList').list;
+var list = require('./classics').list;
 
 var reg1 = /.*-/
 var reg2 = /(.*)-(.*)/
@@ -25,11 +26,15 @@ list.forEach(item =>{
 	if(reg1.test(item)){
 		var r = reg2.exec(item)
 
-		albums.push({artist:r[1].trim(),album:r[2].replace("ALBUM REVIEW","").trim()})
+		albums.push({type:"album",artist:r[1].trim(),name:r[2].replace("ALBUM REVIEW","").trim()})
 	}
 	else{
 		strings.push(item)
 	}
 })
 
-debugger
+module.exports.albums = albums;
+
+
+//todo: then you call resolveAlbumStringsToSamplePlaylist
+//apis/experimental_api.js

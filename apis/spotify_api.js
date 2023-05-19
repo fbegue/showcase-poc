@@ -1,5 +1,6 @@
 var SpotifyWebApi = require('spotify-web-api-node');
 var fetchTry = require('../utility/limiter').fetchTry
+var fetchTryAPI = require('../utility/limiter').fetchTryAPI
 var limiter = require('../utility/limiter').limiter
 var PromiseThrottle = require("promise-throttle");
 var rp = require('request-promise');
@@ -131,6 +132,9 @@ module.exports.refreshAuth =  function(req,res){
 // var global_access_token = "";
 var getTokens =  function(code,clientOrigin){
 	return new Promise(function(done, fail) {
+		// var code = (new Buffer(client_id + ':' + client_secret).toString('base64'))
+		// console.log({code});
+
 		var authOptions = {
 			method:"POST",
 			url: 'https://accounts.spotify.com/api/token',
@@ -142,6 +146,8 @@ var getTokens =  function(code,clientOrigin){
 			},
 			json: true
 		};
+		console.log(authOptions);
+
 
 		rp(authOptions).then(function (res) {
 			//	console.log("$res",res)
@@ -179,6 +185,7 @@ var getTokens =  function(code,clientOrigin){
 //var global_refresh_franky = "AQDn9X-9Jq2e-gbcZgf-U4eEzJadw2R6cFlXu1zKY-kxo3CEY4FaLtwL8tw7YcO8QPd2h3OXcSTvOQwKG5kmpOz2Nm6MTrHfM0r4UGQ7A7Aa-z8tywMvbgVyWmgLcEXDlVw";
 var global_refresh_frankyy = "AQBGzTcLEq-PKIDeU98H-XNVK52-BG5YcmDlI8sI1Sbg6xP2XAlyms79t0gztNy6Ru19IlI8WJut_U61M2j9ka5Xg0EFl_LkmjxHGVZhurKS65xszInAA9X9-7J3CQclUcU"
 var global_refresh_franky = "AQBwJS5mnAtUzilNEQIrW6OdcyUODHY-BctGCO6n8bI4zqSZeX88uF68tDIz_MyauMo6HexVEfGkYLc2GZiBQosZ4oBuLltzGbFZ7D4PA8aUCseSnHUvrtKPyJxY0hSar5I"
+var global_refresh_citizen = "AQA0tI-OosOKDuZjM2Im0UG5Zmd1rQOmS5XIS1pE1-uSP6EL1n49WhY3zAc0Z1stianFR_flIAoQpVs7VQk4zHbHza0TF5Iq9-8KCP8liPpbkmCCwrqYYJjx_prLJe9qi18"
 
 var global_refresh_josh ="AQDCCKE5PpnL4R9xZ991j0d9MVijWGdhfX9qxvC2krMEcbuEWcf7aHRFHLVnAoPnPFneWCSISZCL3w7_NKrJcmHl3Y4zjfI3jknNezedI6IN5Nbv-Y1IqgdPwQ7k-dqZBd4"
 
@@ -191,7 +198,7 @@ var global_refresh = global_refresh_franky
 // var global_access_token = "";
 var refresh =  function(){
 	return new Promise(function(done, fail) {
-		console.log("refresing token via global_refresh...");
+		//console.log("refresing token via global_refresh...");
 		var authOptions = {
 			method:"POST",
 			url: 'https://accounts.spotify.com/api/token',
@@ -225,6 +232,8 @@ module.exports.getCheatyToken =  function(redirectFromClient){
 		redirectFromClient ? credentials.redirectUri = redirectFromClient:{};
 		var spotifyApi = new SpotifyWebApi(credentials);
 		refresh().then(token =>{
+			console.log("setAccessToken:",token)
+		//	token = "BQAnbI90_FpDKU2naDkWf6yWrrj6xqP_jVOpVh3eBiKHvqpLZV8QgfONXJZaKV-N2osZGnVzzIEPZYca4TrOVIj5Tjs9Rn5T-eICkE1vCjLI3OpJLYE5ex71He-zUmyZYMU8dZ9TFI80isQrGzqBcO-hyPv6qXYaTSujO35d8YIXEyzPIctBOw"
 			spotifyApi.setAccessToken(token);
 			done(spotifyApi)
 		});
@@ -303,6 +312,7 @@ var me = module.exports;
 //params when called: this,req,key,skip,data
 var pageIt =  function(req,key,skip,data){
 	return new Promise(function(done, fail) {
+
 		if(skip){
 			done(data.body)
 		}else{
@@ -312,8 +322,13 @@ var pageIt =  function(req,key,skip,data){
 				//console.log("key",key);
 				resolver.getPages(req,data.body,key)
 					.then(pages =>{
-						// console.log("$",pages[0][key + "s"].items.length);
-						// console.log("$",pages[1][key + "s"].items.length);
+
+						//testing: while fixing a bug, forgot I made it so getPages only gets every page after the 1st?
+						//and then I recombine below? fuck that anyways
+
+
+						data.body.items = [];
+
 						pages.forEach(p =>{
 							if(key){
 								data.body.items = data.body.items.concat(p[key + "s"].items)
@@ -332,6 +347,7 @@ var pageIt =  function(req,key,skip,data){
 		}
 	})
 }
+me.pageIt = pageIt;
 
 //todo: something off with my 'totals'
 var preserve = null;
@@ -1001,6 +1017,7 @@ var getMySavedTracks =  function(req,shallowTracks){
 
 
 				//resolving all the artists for all the tracks
+
 				return resolver.resolveArtists2(req,artists)
 					.then(resolved =>{
 
@@ -1062,6 +1079,8 @@ var getMySavedTracks =  function(req,shallowTracks){
 			});
 	})
 }
+
+me._getMySavedTracks = getMySavedTracks
 
 
 var getRecentlyPlayedTracks =  function(req){
@@ -1171,6 +1190,7 @@ var getMySavedAlbums =  function(req,shallowAlbums){
 					albumOb = {items:shallowAlbums.map(r =>{return {album:r}})}
 				}
 				else{albumOb = pagedRes}
+
 
 				var artists = [];
 				albumOb.items.forEach(item =>{
@@ -1331,11 +1351,24 @@ var getTopArtists =  function(req){
 					}
 				})
 
+
+
 				artists =  _.uniqBy(artists, function(n) {return n.id;});
 				resolver.resolveArtistsCachedGenres(artists,'top')
+
+				artists.forEach((a,i,arr)=>{
+					termMap[a.id] ? arr[i].term = termMap[a.id]:{};
+				});
+
+				//testing: sample distribution (Josh)
+				//{"short": 24, "medium": 33, "long": 22}
+				//var count = {short:0,medium:0,long:0}
+				//artists.forEach((a,i,arr)=>{count[a.term ]++});
+
 				done(artists);
 
 				//testing: forgot to switch this over to cachedGenres
+
 				// .then(justGetFromDb =>{
 				// 	db_api.checkDBForArtistGenres({artists:artists},'artists')
 				// 		.then(result =>{
@@ -1391,7 +1424,7 @@ me.fetchStaticUser = function(req,res){
 
 	async function asyncBatchFetch() {
 		try {
-			//console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
+			console.log("fetchStaticUser",(({ id, display_name }) => ({ id, display_name }))(req.body.friend));
 			let userResult = await db_mongo_api.fetchStaticUser(req.body.friend)
 			var refreshes = []
 			var currentUser = await req.body.spotifyApi.getMe()
@@ -1519,20 +1552,23 @@ me.fetchStaticUser = function(req,res){
 			console.log("resolvedAlbums",resolvedAlbumsStatsOb.albums.length);
 
 
+
 			//testing: disabling for now
-			let resolveTracksStatsOb = {tracks:[],stats:null}
+			//let resolveTracksStatsOb = {tracks:[],stats:null}
 
-			//let resolveTracksStatsOb = await getMySavedTracks(req,shallow ? userResult.tracks.tracks:null)
-			//console.log("resolvedTracks",resolveTracksStatsOb.tracks.length)
+			let resolveTracksStatsOb = await getMySavedTracks(req,shallow ? userResult.tracks.tracks:null)
+			console.log("resolvedTracks",resolveTracksStatsOb.tracks.length)
 
-			//testing: reduced payload for now
-			//resolveTracksStatsOb.tracks = resolveTracksStatsOb.tracks.slice(0,2500)
+
+			//testing: payload size issues
+			console.warn("reducing resolveTracksStatsOb.tracks.length",resolveTracksStatsOb.tracks.length)
+			resolveTracksStatsOb.tracks = resolveTracksStatsOb.tracks.slice(0,2500)
 
 			let resolveRecentTracksOb = {tracks:[]}
 			if(selfFetch){
 				resolveRecentTracksOb = await getRecentlyPlayedTracks(req)
 				console.log("resolvedTracks",resolveRecentTracksOb.tracks.length)
-			}else{console.warn("resolvedTracks skipped")}
+			}else{console.warn("getRecentlyPlayedTracks skipped")}
 
 
 
@@ -1565,9 +1601,9 @@ me.fetchStaticUser = function(req,res){
 
 			payload.artists.artists = payload.artists.artists.map(getShallowArtist)
 
-				// r=>{
-				// return {id:r.id,name:r.name,source:r.source,
-				// 	images:r.images,type:r.type,genres:r.genres,familyAgg:r.familyAgg}})
+			// r=>{
+			// return {id:r.id,name:r.name,source:r.source,
+			// 	images:r.images,type:r.type,genres:r.genres,familyAgg:r.familyAgg}})
 			payload.albums.albums = payload.albums.albums.map(r=>{return {id:r.id,name:r.name,artists:getShallowArtists(r),images:r.images,type:r.type}})
 
 			//todo: just ignoring resolveRecentTracksOb.stats for now
@@ -1775,6 +1811,7 @@ me.storeStaticUser = function(req,res){
 					payload.albums.albums = payload.albums.albums.map(r=>{return {id:r.id,name:r.name,artists:getShallowArtists(r),images:r.images,type:r.type}})
 					payload.tracks.tracks = payload.tracks.tracks.map(r=>{return {id:r.id,name:r.name,artists:getShallowArtists(r),album:getShallowAlbum(r.album),type:r.type}})
 
+
 					//testing: faking related users
 					getUserPlaylistFriends(req).then(rel =>{
 						payload.related_users = rel.all_users
@@ -1934,7 +1971,7 @@ var getRelatedArtists =  function(req,artist_id){
 			},
 			json: true
 		};
-		console.log(options.uri);
+		//	console.log(options.uri);
 		fetchTry(options.uri,options,3,300)
 			.then(r => {
 
@@ -1949,7 +1986,7 @@ var getRelatedArtists =  function(req,artist_id){
 
 var getArtistTopTracks  =  function(req){
 	return new Promise(function(done, fail) {
-		console.log("getArtistTopTracks");
+		//console.log("getArtistTopTracks");
 		//console.log("$getArtistTopTracks",req.body.id);
 		req.body.spotifyApi.getArtistTopTracks(req.body.artist.id, 'ES')
 			.then(r =>{
@@ -1964,6 +2001,201 @@ var getArtistTopTracks  =  function(req){
 	})
 }
 
+
+//todo: little bit of repeated code (below) where for a certain use-case I never wanted to fail out?
+var getArtistTopTracks  =  function(req){
+	return new Promise(function(done, fail) {
+		//console.log("getArtistTopTracks");
+		//console.log("$getArtistTopTracks",req.body.id);
+		req.body.spotifyApi.getArtistTopTracks(req.body.artist.id, 'ES')
+			.then(r =>{
+				var ids = r.body.tracks.slice(0,5).map(r =>{return {id:r.id,name:r.name}})
+				done(ids)
+				//note: on failure, still resolve w/ notice as such
+			},e =>{
+				debugger
+				console.error(e);done({failure:e})
+			})
+		//.then(r => { res.send(r.body.tracks)},err =>{res.status(500).send(err)})
+	})
+}
+
+
+var _getArtistTopTracks =  async function(req,artistId){
+		try{
+			var res = await req.body.spotifyApi.getArtistTopTracks(artistId, 'ES')
+			return res.body.tracks
+		}catch(e){
+
+			throw e}
+}
+
+//note: example of weird spotifyApi library behavior where I can't schedule straight-spotifyApi calls
+//produces: this.getAccessToken is not a function
+//instead have to wrap like _getArtistTopTracks
+
+
+
+me.createArtistsPlaylist = async function(req,res){
+	console.log("createArtistsPlaylist",req.body.playlistName);
+	debugger
+	//testing:
+	//req.body.artists = req.body.artists.slice(0,70)
+	//todo: UI is sending some songkick ids
+	req.body.artists = req.body.artists.filter(a =>{return typeof a === 'string'});
+
+
+	//req.body.artists = req.body.artists.filter(r => typeof r.id)
+
+	try{
+		var task = async function (id) {
+			//note: id stays the same like this??
+			// delete req.body.artist
+			// req.body.artist= {id:id}
+			//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+			try{
+				//note: straight-spotifyApi
+				//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+				var response = await limiter.schedule(_getArtistTopTracks,req,id)
+				return response;
+			}catch(e){
+				debugger
+			}
+		}
+
+		var proms = req.body.artists.map(task);
+		debugger
+		var songSets = await Promise.all(proms)
+		debugger
+		var songs = [];
+		songSets.forEach(s =>{songs = songs.concat(s.slice(0,req.body.tracksLimit))})
+
+		//testing: split by day
+
+		var r =  await limiter.schedule(me.createPlaylist,req,req.body.user,{name:req.body.playlistName},songs)
+		debugger
+		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+		var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user,r.playlist)
+		res.send(tracksR)
+	}catch(e){
+		debugger
+	    res.status(500).send(e)
+	}
+};
+
+
+// var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents")
+var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents-update111222")
+me.createLAEventsToArtistsPlaylist = async function(req,res){
+	console.log("createLAEventsToArtistsPlaylist");
+	req.body.tracksLimit = 2
+	req.body.artists=[];
+
+	//testing:
+	//LA_resolveEvents = LA_resolveEvents.slice(0,20);
+   let LA_artist_date_map = {}
+   let dups = [];
+   //note: make a map of each artist to their date
+	 LA_resolveEvents.forEach(e =>{
+		e.performance.forEach(p =>{
+			var isLatin = p.artist.familyAgg === "latin";
+			console.log( p.artist.familyAgg)
+			if(!LA_artist_date_map[p.artist.id] && !isLatin){
+				LA_artist_date_map[p.artist.id] = e.start.date
+			}
+			else{
+				//testing: artist listed more than once
+				dups.push(p.artist)
+			}
+		})
+	});
+
+	 console.log({dups})
+
+	//todo: someone gave me a songkick artist id maybe??
+	 LA_resolveEvents.forEach(e =>{
+		e.performance.forEach(p =>{
+			var isLatin = p.artist.familyAgg === "latin";
+			if( typeof p.artist.id === "string" && !isLatin){
+				req.body.artists.push(p.artist.id)
+			}
+		})
+	});
+
+	 debugger
+
+
+	try{
+		var task = async function (id) {
+			//note: id stays the same like this??
+			// delete req.body.artist
+			// req.body.artist= {id:id}
+			//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+			try{
+				//note: straight-spotifyApi
+				//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+				var response = await limiter.schedule(_getArtistTopTracks,req,id)
+				return response;
+			}catch(e){
+				debugger
+			}
+		}
+
+		var proms = req.body.artists.map(task);
+		var songSets = await Promise.all(proms)
+		var songs = [];
+		songSets.forEach(s =>{songs = songs.concat(s.slice(0,req.body.tracksLimit))})
+
+		//note: create map of dates to arrays to hold artist ids
+		var daySongPays = {};
+		Object.values(LA_artist_date_map).forEach(d =>{
+			daySongPays[d] = [];
+		})
+
+		songs.forEach(s =>{
+			//what was the date for this artist of this song?
+			//note: take care of possible extra artists besides event one in song
+			s.artists = s.artists.filter(a =>{
+				return LA_artist_date_map[a.id]
+			})
+			let date = LA_artist_date_map[s.artists[0].id];
+			//push the song into an array based on that date
+			// if(dayPays[date].indexOf(s.artists[0].id) === -1){
+			// 	dayPays[date].push(s.artists[0].id)
+			// }
+
+			//todo: need to compare by id not object
+			//var r = _.find(daySongPays[date],function(r){return r.id===s.id});
+
+			if(daySongPays[date].indexOf(s) === -1){
+				daySongPays[date].push(s)
+			}
+		})
+
+		var promises = []
+		Object.keys(daySongPays).forEach(d =>{
+			promises.push(limiter.schedule(me.createPlaylist,req,req.body.user,{name:"LA_"+d},daySongPays[d]))
+		})
+
+		//var r =  await limiter.schedule(me.createPlaylist,req,req.body.user,{name:req.body.playlistName},songs)
+
+		var r = await Promise.all(promises);
+		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+		var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user,r.playlist)
+		res.send(tracksR)
+	}catch(e){
+		debugger
+		res.status(500).send(e)
+	}
+};
+
+
+me.testSave = async function(req,res){
+	var rTrack = await db_mongo_api.trackUserPlaylist(req.body.user,"3evs360A5LkM7qv0NXuTgP")
+	debugger
+}
 me.getArtistTopTracks = function(req,res){
 	getArtistTopTracks(req)
 		.then(r => {res.send(r)})
@@ -1971,16 +2203,20 @@ me.getArtistTopTracks = function(req,res){
 };
 
 
-var getTracks =  function(req,payload){
-	return new Promise(function(done, fail) {
-		console.log("getTracks",payload.length);
-		req.body.spotifyApi.getTracks(payload)
-			.then(tracksres => {
-				done(tracksres.body.tracks)
-			},e =>{
-				fail(e)
-			})
-	})
+var getTracks =  async function(req,payload){
+		try{
+			console.log("getTracks",payload.length);
+
+			var res =  await req.body.spotifyApi.getTracks(payload)
+			return res.body.tracks
+			// if(res.failure){
+			// 	return {artist: r.options.artist,failure:r.failure}
+			// }
+			// return {artist: req.body.artist, result: r}
+
+		}catch(e){
+			throw e
+		}
 }
 
 
@@ -2022,40 +2258,64 @@ var getAlbums =  function(req,payload){
 	})
 }
 
-var resolveAlbumTracks =  function(req,id){
-	return new Promise(function(done, fail) {
+var resolveAlbumTracks =  async function(req,id){
+
+	var fitTry = async function(req,id){
+		try{
+			var res = await req.body.spotifyApi.getAlbumTracks(id, { limit : 50});return res}
+			catch(e){throw e}
+	}
+
+	try{
 		console.log("resolveAlbumTracks",id);
-		req.body.spotifyApi.getAlbumTracks(id, { limit : 50})
-			.then(atres => {
-				var proms = [];
-				var payloads = [];
-				var payload = [];
+		//todo: getAccessToken is undefined? simple wrapper returns simple e w/ no retry
+		//var atres = await limiter.schedule(req.body.spotifyApi.getAlbumTracks,id, { limit : 50})
+		var atres = await limiter.schedule(fitTry,req,id,{ limit : 50})
 
-				//todo: as long as tracks don't have more than 50 songs, shouldn't need to do this
-				atres.body.items.forEach((t,i) =>{
-					if(i === 0){payload.push(t.id)}
-					else{
-						if(!(i % 50 === 0)){	payload.push(t.id)}
-						else{payloads.push(payload);payload = [];payload.push(t.id)}
-					}
-				})
-				payload.length ? payloads.push(payload):{};
-				payloads.forEach(function(pay){
-					proms.push(limiterSpotifyTest.schedule(getTracks,req,pay,{}))
-					//todo: why the fuck can't I just push API calls directly?
-					//proms.push(limiterSpotifyTest.schedule(req.body.spotifyApi.getTracks,pay))
-				});
+		//testing: works, but only 1x
+		//var atres = await req.body.spotifyApi.getAlbumTracks(id, { limit : 50})
 
-				Promise.all(proms)
-					.then(mresults =>{
-						var ret = [];
-						mresults.forEach(r =>{ret = ret.concat(r)})
-						done(mresults)
-					},e =>{fail(e)})
 
-			},e =>{fail(e)})
-	})
+		var payloads = [];
+		var payload = [];
+
+		//todo: as long as tracks don't have more than 50 songs, shouldn't need to do this
+
+		atres.body.items.forEach((t,i) =>{
+			if(i === 0){payload.push(t.id)}
+			else{
+				if(!(i % 50 === 0)){	payload.push(t.id)}
+				else{payloads.push(payload);payload = [];payload.push(t.id)}
+			}
+		})
+		payload.length ? payloads.push(payload):{};
+
+		// payloads.forEach(function(pay){
+		// 	proms.push(limiter.schedule(getTracks,req,pay,{}))
+		// 	//proms.push(limiterSpotifyTest.schedule(req.body.spotifyApi.getTracks,pay))
+		// });
+
+		var task = async function (pay) {
+			try{
+				var response = await limiter.schedule(getTracks,req,pay,{})
+				return response;
+			}catch(e){
+				debugger
+			}
+		}
+		var proms = payloads.map(task);
+
+		var mresults = await Promise.all(proms)
+		// var ret = [];
+		// mresults.forEach(r =>{ret = ret.concat(r)})
+
+		return mresults
+	}catch(e){
+		debugger
+	}
+
 }
+me.resolveAlbumTracks = resolveAlbumTracks;
 
 var resolveAlbums=  function(req,albums){
 	return new Promise(function(done, fail) {
@@ -2065,6 +2325,7 @@ var resolveAlbums=  function(req,albums){
 		var payloads = [];
 		var payload = [];
 
+		//note: what the fuck does this comment mean?
 		//todo: as long as artists don't have more than 50 albums
 
 		albums.forEach((t,i) =>{
@@ -2093,10 +2354,20 @@ var resolveAlbums=  function(req,albums){
 //todo: thought about getting popularity here as well
 //but these are simplified album objects
 
+//todo: what groups to get is a contextual problem
+//thought album,single would be most applicable, but then you have someone as classic as John Williams
+//for which album,single only reports 1993 as earliest sooo yeah..
+
+//for lil wayne though, does this make sense? being wrong by not going far back ENOUGH always must be worse than the inverse, right?
 var getArtistReleaseRange =  function(req,artist_id){
 	return new Promise(function(done, fail) {
 		//console.log("getArtistAlbumsRange",artist_id);
-		let uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?include_groups=album,single&offset=0&limit=5"
+
+		//var groups = "include_groups=album,single";
+		var groups = "include_groups=album,single,appears_on,compilation"
+		//console.log("getArtistAlbumsRange",artist_id);
+		let uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?" + groups +"&offset=0&limit=5"
+		//let uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?include_groups=album,single,compilation&offset=0&limit=5"
 		let options = {
 			uri:uri,
 			headers: {
@@ -2118,7 +2389,8 @@ var getArtistReleaseRange =  function(req,artist_id){
 
 				//only do the 2nd fetch if we need to
 				if(r.total > 50){
-					options.uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?include_groups=album,single&offset=" + (r.total -1).toString() + "&limit=10"
+					options.uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?" + groups + "&offset=" + (r.total -1).toString() + "&limit=10"
+					//options.uri = "https://api.spotify.com/v1/artists/" + artist_id + "/albums?include_groups=album,single&offset=" + (r.total -1).toString() + "&limit=10"
 					//console.log(options.uri);
 					limiter.schedule(fetchTry,options.uri,options,3,300)
 						.then(r2 => {
@@ -2164,7 +2436,7 @@ var getArtistAlbumsTimeline =  function(req,artist_id){
 
 				//note: manual filter for only full albums
 				a.items = a.items.filter(a =>{return a.album_group === 'album'})
-				console.log("albums",a.items.length);
+				//console.log("albums",a.items.length);
 
 				//todo: worth reducing?
 				//var albums = a.items.map(a =>{return {id:a.id,name:a.name,images:a.images,release_date:a.release_date}})
@@ -2223,7 +2495,7 @@ me.getArtistInfo  = function(req,res){
 		.then(r =>{
 			res.send(r)
 		},e =>{
-		    res.status(500).send(e)
+			res.status(500).send(e)
 		})
 
 }
@@ -2250,23 +2522,73 @@ var getArtistPopularity  =  function(req,artist_id){
 
 //other methods----------------------------------------------------------
 
-me.createPlaylist = function(req,res){
-	console.log("createPlaylist",req.body.songs.length);
-	req.body.spotifyApi.createPlaylist(req.body.user.id,req.body.playlist.name, { 'description': 'My description', 'public': true })
-		.then(r => {
-			var payload = [];
-			req.body.songs.forEach(songOb =>{
-				payload.push("spotify:track:" + songOb.id)
-			})
+me.createPlaylist  =  function(req,user,playlist,songs){
+    return new Promise(function(done, fail) {
+		console.log("createPlaylist",songs.length);
 
-			spotifyApi.addTracksToPlaylist(r.body.id,payload)
-				.then(function(data) {
-					console.log('Added tracks to playlist!');
-				}, function(err) {
-					console.log('Something went wrong!', err);
-				});
-			res.send(r)},err =>{res.status(500).send(err)})
-};
+		req.body.spotifyApi.createPlaylist(user.id,playlist.name, { 'description': 'My description', 'public': true })
+			.then(createPlaylistResponse => {
+				//var payload = [];
+				//songs.forEach(songOb =>{
+					//payload.push("spotify:track:" + songOb.id)
+				//})
+
+				var payloads = [];
+				var payload = [];
+				songs.forEach((s,i) =>{
+					if(i === 0){payload.push("spotify:track:" + s.id)}
+					else{
+						if(!(i % 50 === 0)){	payload.push("spotify:track:" + s.id)}
+						else{payloads.push(payload);payload = [];payload.push("spotify:track:" + s.id)}
+					}
+				})
+				payload.length ? payloads.push(payload):{};
+
+				var _addTracksToPlaylist =  async function(req,playlistId,payload){
+					try{
+
+						var res = await req.body.spotifyApi.addTracksToPlaylist(playlistId, payload)
+						return res.body.tracks
+					}catch(e){
+
+						throw e}
+				}
+
+
+
+				var task = async function (payload) {
+					//note: id stays the same like this??
+					// delete req.body.artist
+					// req.body.artist= {id:id}
+					//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+					try {
+						//note: straight-spotifyApi
+						//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+
+						//todo: somehow limiter is reporting /createArtistPlaylist as the url it's retrying - but that's not true?
+						var response = await limiter.schedule(_addTracksToPlaylist, req, createPlaylistResponse.body.id, payload)
+						return response;
+					} catch (e) {
+						debugger
+					}
+				}
+
+				var proms = payloads.map(task);
+				Promise.all(proms)
+				// spotifyApi.addTracksToPlaylist(r.body.id,payload)
+					.then(function(data) {
+						console.log('Added tracks to playlist!');
+						done({result:"success",playlist:createPlaylistResponse.body})
+					}, function(err) {
+						console.log('Something went wrong!', err);
+						debugger;
+						fail({error:err})
+					});
+
+			},err =>{fail(err)})
+    })
+}
 
 //WIP----------------------------------------------------------
 
@@ -2295,9 +2617,8 @@ me.createPlaylist = function(req,res){
 // });
 
 
-
+//todo: combine with general search below
 me.searchArtist  = async function(req){
-
 
 	//console.log("searchArtists",req.body.artist.name);
 	//todo: only fixing for songkick for now
@@ -2322,7 +2643,8 @@ me.searchArtist  = async function(req){
 			artist:{name:req.body.artist},
 			json: true
 		};
-		return fetchTry(options.uri,options,3,300)
+		// return fetchTry(options.uri,options,3,300)
+		return rp(options)
 			// req.body.spotifyApi.searchArtists(req.body.artist.name)
 			.then(function (r) {
 				//console.log(options.uri);
@@ -2335,25 +2657,64 @@ me.searchArtist  = async function(req){
 
 				return {artist: req.body.artist, result: r}
 			}, function (err) {
-				console.error(err);
+				//console.error(err);
 				throw(err);
 			});
 
 	}
+}
 
 
+/**
+ *
+ * @param req
+ * @param item {name,type}
+ * @returns {Promise<any|{artist: *, failure: {reason: string, parseValue: string}}>}
+ */
+me.searchSpotify = async function(req,item,){
+
+	//replace "US" after some names
+	let nameClean = item.name.replace(/\(US\)/g, "");
+	//replace any any weirdos
+	nameClean = nameClean.replace(/[^a-zA-Z\s\d\\.]/g, "");
+	nameClean = encodeURIComponent(nameClean)
+
+	if(nameClean === ""){
+		debugger
+		return{item:item,failure:{reason:"empty name parse"}}
+	}else{
+
+		let uri = "https://api.spotify.com/v1/search?query=" + nameClean + "&type=" + item.type + "&offset=0&limit=20"
+		let options = {
+			uri:uri,
+			headers: {
+				'User-Agent': 'Request-Promise',
+				"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()
+			},
+			json: true
+		};
 
 
-	// function fn() {
-	// 	req.body.spotifyApi.searchArtists(req.body.artistQuery)
-	// 		.then(function (r) {
-	// 			done({artist: req.body.artistQuery, result: r})
-	// 			//res.send(r);
-	// 		}, function (err) {
-	// 			console.error(err);
-	// 			fail(err);
-	// 		});
-	// }
+		return fetchTry(uri,options,3,300)
+			// req.body.spotifyApi.searchArtists(req.body.artist.name)
+			.then(function (r) {
+
+				//console.log(options.uri);
+				if(r.failure){
+					debugger
+					return {item: r.options.artist,failure:r.failure}
+				}
+				// if(options.uri === "https://api.spotify.com/v1/search?query=Madi%20Sipes%20%20The%20Painted%20Blue&type=artist&offset=0&limit=20"){
+				// 	debugger
+				// }
+
+				return {item: item, result: r[item.type + "s"]}
+			}, function (err) {
+				//console.error(err);
+				throw(err);
+			});
+
+	}
 }
 
 
@@ -2413,6 +2774,126 @@ me.completeArtist = function(req,res){
 				},err =>{res.status(500).send(err)})
 		},err =>{res.status(500).send(err)})
 
+};
+
+me.getPlaying = function(req,res){
+		let uri = "https://api.spotify.com/v1/me/player/currently-playing"
+		let options = {
+			method: "GET",
+			uri:uri,
+			headers: {
+				'User-Agent': 'Request-Promise',
+				"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()
+			},
+			json: true
+		};
+		//console.log({options});
+		rp(options)
+			.then(track => {
+				//console.log("r",r);
+				req.body.spotifyApi.getArtist(track.item.artists[0].id)
+					.then(artist =>{
+						var pay = {track:track,artist:artist.body};
+						// console.log("getPlaying",pay);
+						console.log("getPlaying finished",pay.track.item.name);
+						res.send(pay)
+					},e =>{})
+			},err =>{
+				console.log("err",err);
+				res.status(500).send(err)})
+};
+
+me.saveCurrentlyPlayingTrack = function(req,res){
+	let uri = "https://api.spotify.com/v1/me/player/currently-playing"
+	let options = {
+		method: "GET",
+		uri:uri,
+		headers: {
+			'User-Agent': 'Request-Promise',
+			"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()
+		},
+		json: true
+	};
+	//console.log({options});
+	rp(options)
+		.then(track => {
+			console.log("track",track.item.id);
+			var options2 = {
+				method:"PUT",
+				url: 'https://api.spotify.com/v1/me/tracks?ids=' + track.item.id,
+				headers: {
+					"Accept": "application/json",
+					"Content-Type": "application/json",
+					"Authorization":"Bearer " + req.body.spotifyApi.getAccessToken()
+				}
+			};
+			rp(options2)
+				.then(response =>{
+					console.log("response",response)
+					res.send({success:true})
+				},e =>{})
+		},err =>{
+			console.log("err",err);
+			res.status(500).send(err)})
+};
+
+me.pausePlay = function(req,res){
+	let uri = "https://api.spotify.com/v1/me/player"
+	let options = {
+		method: "GET",
+		uri:uri,
+		headers: {
+			'User-Agent': 'Request-Promise',
+			"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()
+		},
+		json: true
+	};
+	//console.log({options});
+
+	rp(options)
+		.then(state => {
+			//todo: state is undefined, but the request didn't "fail" soooo??
+			if(!state){
+				var err = "failure: !state success"
+				console.log("err",err);
+				res.status(500).send(err)
+			}else{
+				if(state.is_playing){
+					var options2 = {
+						method:"PUT",
+						url: "https://api.spotify.com/v1/me/player/pause",
+						headers: {
+							"Accept": "application/json",
+							"Content-Type": "application/json",
+							"Authorization":"Bearer " + req.body.spotifyApi.getAccessToken()
+						}
+					};
+				}else{
+					var options2 = {
+						method:"PUT",
+						url: "https://api.spotify.com/v1/me/player/play",
+						headers: {
+							"Accept": "application/json",
+							"Content-Type": "application/json",
+							"Authorization":"Bearer " + req.body.spotifyApi.getAccessToken()
+						}
+					};
+				}
+
+				rp(options2)
+					.then(response =>{
+						console.log("response",response)
+						res.send({success:true})
+					},err =>{
+						console.log("err",err);
+						res.status(500).send(err)
+					})
+			}
+
+		},err =>{
+			debugger
+			console.log("err",err);
+			res.status(500).send(err)})
 };
 
 //testing: method for calling endpoints from local functions (never could get it working)
@@ -2529,7 +3010,6 @@ me.testResolveArtists= function(req,res) {
 		})
 
 }
-
 
 
 me.resolvePlaylists = function(req,res){

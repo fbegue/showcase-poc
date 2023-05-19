@@ -1,0 +1,347 @@
+turn rolling stones top 100 guitarists into a JSON array with 100 objects with guitarist name and their key tracks
+
+[
+    {
+        "name": "Jimi Hendrix",
+        "keyTracks": ["Purple Haze", "The Wind Cries Mary", "Hey Joe"]
+    },
+    {
+        "name": "Eric Clapton",
+        "keyTracks": ["Layla", "Cocaine", "Crossroads"]
+    },
+    {
+        "name": "Jimmy Page",
+        "keyTracks": ["Stairway to Heaven", "Kashmir", "Whole Lotta Love"]
+    },
+    {
+        "name": "Keith Richards",
+        "keyTracks": ["Jumpin' Jack Flash", "Gimme Shelter", "Honky Tonk Women"]
+    },
+    {
+        "name": "Jeff Beck",
+        "keyTracks": ["Freeway Jam", "Cause We've Ended As Lovers", "Led Boots"]
+    },
+    {
+        "name": "B.B. King",
+        "keyTracks": ["The Thrill Is Gone", "Rock Me Baby", "Sweet Little Angel"]
+    },
+    {
+        "name": "Duane Allman",
+        "keyTracks": ["Statesboro Blues", "In Memory Of Elizabeth Reed", "Layla"]
+    },
+    {
+        "name": "Chuck Berry",
+        "keyTracks": ["Johnny B. Goode", "Roll Over Beethoven", "Maybellene"]
+    },
+    {
+        "name": "Eddie Van Halen",
+        "keyTracks": ["Eruption", "Ain't Talkin' 'Bout Love", "Jump"]
+    },
+    {
+        "name": "Pete Townshend",
+        "keyTracks": ["Pinball Wizard", "Won't Get Fooled Again", "Baba O'Riley"]
+    },
+    {
+        "name": "Stevie Ray Vaughan",
+        "keyTracks": ["Pride and Joy", "The House Is Rockin'", "Crossfire"]
+    },
+    {
+        "name": "Slash",
+        "keyTracks": ["Sweet Child O' Mine", "Paradise City", "November Rain"]
+    },
+    {
+        "name": "John Frusciante",
+        "keyTracks": ["Under the Bridge", "Scar Tissue", "Californication"]
+    },
+    {
+        "name": "Randy Rhoads",
+        "keyTracks": ["Crazy Train", "Mr. Crowley", "Diary of a Madman"]
+    },
+    {
+        "name": "Carlos Santana",
+        "keyTracks": ["Smooth", "Black Magic Woman", "Oye Como Va"]
+    },
+    {
+        "name": "Robert Johnson",
+        "keyTracks": ["Cross Road Blues", "Sweet Home Chicago", "Love in Vain"]
+    },
+    {
+        "name": "David Gilmour",
+        "keyTracks": ["Comfortably Numb", "Time", "Another Brick in the Wall Part 2"]
+    },
+    {
+        "name": "Brian May",
+        "keyTracks": ["Bohemian Rhapsody", "We Will Rock You", "Tie Your Mother Down"]
+    },
+    {
+        "name": "George Harrison",
+        "keyTracks": ["Something", "While My Guitar Gently Weeps", "Here Comes the Sun"]
+    },
+    {
+        "name": "Steve Vai",
+        "keyTracks": ["For the Love of God", "Tender Surrender", "The Audience Is Listening"]
+    },
+    {
+        "name": "John Mayer",
+        "keyTracks": ["Gravity", "Your Body Is a Wonderland", "Daughters"]
+    },
+    {
+        "name": "Mark Knopfler",
+        "keyTracks": ["Sultans of Swing", "Romeo and Juliet", "Money For Nothing"]
+    },
+    {
+        "name": "Steve Howe",
+        "keyTracks": ["Roundabout", "Starship Trooper", "Long Distance Runaround"]
+    },
+    {
+        "name": "Richie Blackmore",
+        "keyTracks": ["Highway Star", "Child in Time", "Smoke on the Water"]
+    },
+    {
+        "name": "Kurt Cobain",
+        "keyTracks": ["Smells Like Teen Spirit", "Lithium", "Come As You Are"]
+    },
+    {
+        "name": "Jack White",
+        "keyTracks": ["Seven Nation Army", "Fell in Love with a Girl", "Dead Leaves and the Dirty Ground"]
+    },
+    {
+        "name": "Ritchie Valens",
+        "keyTracks": ["La Bamba", "Come On Let's Go", "Donna"]
+    },
+    {
+        "name": "John Petrucci",
+        "keyTracks": ["Damage Control", "Glasgow Kiss", "The Dark Eternal Night"]
+    },
+    {
+        "name": "Neil Young",
+        "keyTracks": ["Heart of Gold", "Old Man", "Rockin' in the Free World"]
+    },
+    {
+        "name": "Freddie King",
+        "keyTracks": ["Going Down", "Hide Away", "Have You Ever Loved a Woman"]
+    },
+    {
+        "name": "Sonny Landreth",
+        "keyTracks": ["Uberesso", "The Milky Way Home", "Native Stepson"]
+    },
+    {
+        "name": "Billy Gibbons",
+        "keyTracks": ["Sharp Dressed Man", "La Grange", "Tush"]
+    },
+    {
+        "name": "Ronnie Wood",
+        "keyTracks": ["Miss You", "It's Only Rock 'n Roll", "Start Me Up"]
+    },
+    {
+        "name": "Muddy Waters",
+        "keyTracks": ["Got My Mojo Working", "Rollin' and Tumblin'", "I'm Ready"]
+    },
+    {
+        "name": "Hank Marvin",
+        "keyTracks": ["Apache", "F.B.I.", "Wonderful Land"]
+    },
+    {
+        "name": "Jerry Garcia",
+        "keyTracks": ["Friend of the Devil", "Touch of Grey", "Sugaree"]
+    },
+    {
+        "name": "Frank Zappa",
+        "keyTracks": ["Don't Eat the Yellow Snow", "Joe's Garage", "Cosmik Debris"]
+    },
+    {
+        "name": "Buck Dharma",
+        "keyTracks": ["(Don't Fear) The Reaper", "Godzilla", "Burnin' For You"]
+    },
+    {
+        "name": "Angus Young",
+        "keyTracks": ["Highway to Hell", "Back in Black", "You Shook Me All Night Long"]
+    },
+    {
+        "name": "Tom Morello",
+        "keyTracks": ["Killing in the Name", "Guerrilla Radio", "Sleep Now in the Fire"]
+    },
+    {
+        "name": "Jeff Healey",
+        "keyTracks": ["Angel Eyes", "See the Light", "Hideaway"]
+    },
+    {
+        "name": "Yngwie Malmsteen",
+        "keyTracks": ["Black Star", "Far Beyond the Sun", "Heaven Tonight"]
+    },
+    {
+        "name": "Buddy Guy",
+        "keyTracks": ["Stone Crazy", "Damn Right I've Got the Blues", "This Is the End"]
+    },
+    {
+        "name": "Dickey Betts",
+        "keyTracks": ["Ramblin' Man", "Jessica", "Blue Sky"]
+    },
+    {
+        "name": "Alvin Lee",
+        "keyTracks": ["I'm Going Home", "Woodchopper's Ball", "Going to the Country"]
+    },
+    {
+        "name": "John Lennon",
+        "keyTracks": ["Imagine", "Instant Karma", "Come Together"]
+    },
+    {
+        "name": "John Lee Hooker",
+        "keyTracks": ["Boom Boom", "One Bourbon, One Scotch, One Beer", "Boogie Chillen"]
+    },
+    {
+        "name": "Stevie Wonder",
+        "keyTracks": ["Superstition", "Signed, Sealed, Delivered I'm Yours", "You Are the Sunshine of My Life"]
+    },
+    {
+        "name": "T-Bone Walker",
+        "keyTracks": ["Call It Stormy Monday", "T-Bone Shuffle", "Cold, Cold Feeling"]
+    },
+    {
+        "name": "Peter Green",
+        "keyTracks": ["Black Magic Woman", "Albatross", "Oh Well"]
+    },
+    {
+        "name": "Chester Burnett",
+        "keyTracks": ["Spoonful", "Smokestack Lightnin'", "Killing Floor"]
+    },
+    {
+        "name": "Link Wray",
+        "keyTracks": ["Rumble", "Ace of Spades", "Jack the Ripper"]
+    },
+    {
+        "name": "Django Reinhardt",
+        "keyTracks": ["Minor Swing", "Nuages", "Sweet Georgia Brown"]
+    },
+    {
+        "name": "Les Paul",
+        "keyTracks": ["How High the Moon", "Vaya Con Dios", "The World Is Waiting For the Sunrise"]
+    },
+    {
+        "name": "Robbie Robertson",
+        "keyTracks": ["The Weight", "The Night They Drove Old Dixie Down", "Up on Cripple Creek"]
+    },
+    {
+        "name": "Bo Diddley",
+        "keyTracks": ["Who Do You Love", "Bo Diddley", "Road Runner"]
+    },
+    {
+        "name": "Kenny Burrell",
+        "keyTracks": ["Midnight Blue", "Chitlins Con Carne", "All Day Long"]
+    },
+    {
+        "name": "Merle Travis",
+        "keyTracks": ["Sixteen Tons", "Smoke, Smoke, Smoke That Cigarette", "Cannonball Rag"]
+    },
+    {
+        "name": "Trey Anastasio",
+        "keyTracks": ["First Tube", "Chalk Dust Torture", "Sample in a Jar"]
+    },
+    {
+        "name": "Tony Iommi",
+        "keyTracks": ["Paranoid", "Iron Man", "Children of the Grave"]
+    },
+    {
+        "name": "Ry Cooder",
+        "keyTracks": ["Little Sister", "Down in Hollywood", "Crazy 'Bout an Automobile"]
+    },
+    {
+        "name": "Doc Watson",
+        "keyTracks": ["Deep River Blues", "Doc's Guitar", "Tom Dooley"]
+    },
+    {
+        "name": "Mick Taylor",
+        "keyTracks": ["Honky Tonk Women", "Sway", "Can You Hear the Music"]
+    },
+    {
+        "name": "Roy Buchanan",
+        "keyTracks": ["Green Onions", "The Messiah Will Come Again", "Sweet Dreams"]
+    },
+    {
+        "name": "John Scofield",
+        "keyTracks": ["Hottentot", "I Can See Your House From Here", "Stranger to the Light"]
+    },
+    {
+        "name": "Derek Trucks",
+        "keyTracks": ["Down in the Flood", "Sailin' On", "Soul Serenade"]
+    },
+    {
+        "name": "Joni Mitchell",
+        "keyTracks": ["Big Yellow Taxi", "Woodstock", "A Case of You"]
+    },
+    {
+        "name": "Mike Bloomfield",
+        "keyTracks": ["Killing Floor", "Mary Ann", "Albert's Shuffle"]
+    },
+    {
+        "name": "Bert Jansch",
+        "keyTracks": ["Needle of Death", "Angie", "Running From Home"]
+    },
+    {
+        "name": "Hubert Sumlin",
+        "keyTracks": ["Killing Floor", "Hidden Charms", "How Many More Years"]
+    },
+    {
+        "name": "Ivor Mairants",
+        "keyTracks": ["Rags and Old Iron", "Echoes of France", "The Last Waltz"]
+    },
+    {
+        "name": "Paul Kossoff",
+        "keyTracks": ["All Right Now", "Oh I Wept", "The Hunter"]
+    },
+    {
+        "name": "John Campbell",
+        "keyTracks": ["It Hurts Me Too", "Blues Before Sunrise", "Chocolate Jesus"]
+    },
+    {
+        "name": "Billy Gibbons",
+        "keyTracks": ["Sharp Dressed Man", "La Grange", "Tush"]
+    },
+    {
+        "name": "Chris Rea",
+        "keyTracks": ["Fool (If You Think It's Over)", "On the Beach", "Josephine"]
+    },
+    {
+        "name": "Scotty Moore",
+        "keyTracks": ["Mystery Train", "That's All Right Mama", "Baby, Let's Play House"]
+    },
+    {
+        "name": "James Burton",
+        "keyTracks": ["Susie Q", "Fools Rush In", "I'm Yours"]
+    },
+    {
+        "name": "Gary Moore",
+        "keyTracks": ["Still Got the Blues", "Parisienne Walkways", "Out in the Fields"]
+    },
+    {
+        "name": "Vernon Reid",
+        "keyTracks": ["Cult of Personality", "Flying", "Memory of Love"]
+    },
+    {
+        "name": "Johnny Marr",
+        "keyTracks": ["How Soon Is Now?", "There Is a Light That Never Goes Out", "Bigmouth Strikes Again"]
+    },
+    {
+        "name": "John McLaughlin",
+        "keyTracks": ["My Foolish Heart", "The Dance of Maya", "Faith"]
+    },
+    {
+        "name": "Peter Frampton",
+        "keyTracks": ["Show Me the Way", "Do You Feel Like We Do", "Baby, I Love Your Way"]
+    },
+    {
+        "name": "Keith Scott",
+        "keyTracks": ["Summer of '69", "Cuts Like a Knife", "Run to You"]
+    },
+    {
+        "name": "Doyle Bramhall II",
+        "keyTracks": ["Lover's Plea", "Life By the Drop", "Harps and Drums"]
+    },
+    {
+        "name": "J.J. Cale",
+        "keyTracks": ["Cocaine", "After Midnight", "Call Me the Breeze"]
+    },
+    {
+        "name": "Jeff Beck",
+        "keyTracks": ["Freeway Jam", "Cause We've Ended As Lovers", "Led Boots"]
+    },

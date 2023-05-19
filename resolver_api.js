@@ -5,8 +5,10 @@ var fetchTry = require('./utility/limiter').fetchTry
 var limiter = require('./utility/limiter').limiter
 var async = require('async')
 const fetch = require('node-fetch');
+
 //todo: started working on it but realized this is songkick specific
 //designed to take in songkickArtist objects like {id: #######, displayName:""}
+//todo: combine with spotify_api.searchSpotify
 
 module.exports.spotifySearch  = function(artist){
 	return new Promise(function(done, fail) {

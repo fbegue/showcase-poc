@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Thurston Moore",
+    "bands": ["Sonic Youth"]
+  },
+  {
+    "name": "Steve Jones",
+    "bands": ["Sex Pistols"]
+  },
+  {
+    "name": "Peter Buck",
+    "bands": ["R.E.M.","The Minus 5"]
+  },
+  {
+    "name": "Tom Verlaine",
+    "bands": ["Television"]
+  },
+  {
+    "name": "James Hetfield",
+    "bands": ["Metallica"]
+  },
+  {
+    "name": "J Mascis",
+    "bands": ["Dinosaur Jr."]
+  },
+  {
+    "name": "Andy Summers",
+    "bands": ["The Police","The Soft Boys"]
+  },
+  {
+    "name": "Eddie Hazel",
+    "bands": ["Funkadelic"]
+  },
+  {
+    "name": "Nels Cline",
+    "bands": ["Wilco"]
+  },
+  {
+    "name": "Lou Reed",
+    "bands": ["The Velvet Underground"]
+  },
+  {
+    "name": "Mike Campbell",
+    "bands": ["Tom Petty and the Heartbreakers","The Dirty Knobs"]
+  },
+  {
+    "name": "Robby Krieger",
+    "bands": ["The Doors"]
+  },
+  {
+    "name": "Joni Mitchell",
+    "bands": ["Solo Artist"]
+  },
+  {
+    "name": "Jack White",
+    "bands": ["The White Stripes","The Raconteurs","The Dead Weather"]
+  },
+  {
+    "name": "John McLaughlin",
+    "bands": ["Mahavishnu Orchestra"]
+  },
+  {
+    "name": "Slash",
+    "bands": ["Guns N' Roses","Velvet Revolver","Slash's Snakepit","Slash featuring Myles Kennedy and the Conspirators"]
+  },
+  {
+    "name": "Dickey Betts",
+    "bands": ["The Allman Brothers Band"]
+  },
+  {
+    "name": "Peter Green",
+    "bands": ["Fleetwood Mac"]
+  },
+  {
+    "name": "Albert Collins",
+    "bands": ["The Icebreakers"]
+  },
+  {
+    "name": "John Lennon",
+    "bands": ["The Beatles","The Plastic Ono Band"]
+  },
+  {
+    "name": "Clarence White",
+    "bands": ["The Byrds"]
+  },
+  {
+    "name": "Johnny Marr",
+    "bands": ["The Smiths","The Cribs","Modest Mouse","Electronic"]
+  },
+  {
+    "name": "Ritchie Blackmore",
+    "bands": ["Deep Purple","Rainbow","Blackmore's Night"]
+  },
+  {
+    "name": "Jonny Greenwood",
+    "bands": ["Radiohead","Bodysong"]
+  },
+  {
+    "name": "Stephen Stills",
+    "bands": ["Crosby, Stills and Nash","Buffalo Springfield"]
+  },
+  {
+    "name": "Jerry Garcia",
+    "bands": ["Grateful Dead"]
+  },
+  {
+    "name": "Mark Knopfler",
+    "bands": ["Dire Straits","The Notting Hillbillies"]
+  },
+  {
+    "name": "Hubert Sumlin",
+    "bands": ["Howlin' Wolf Band","Muddy Waters Band"]
+  },
+  {
+    "name": "Mick Ronson",
+    "bands": ["David Bowie's Spiders from Mars"]
+  },
+  {
+    "name": "Steve Cropper",
+    "bands": ["Booker T. & the M.G.'s","The Blues Brothers"]
+  },
+  {
+    "name": "Randy Rhoads",
+    "bands": ["Quiet Riot","Ozzy Osbourne Band"]
+  },
+  {
+    "name": "Curtis Mayfield",
+    "bands": ["The Impressions"]
+  },
+  {
+    "name": "Billy Gibbons",
+    "bands": ["ZZ Top"]
+  },
+  {
+    "name": "Scotty Moore",
+    "bands": ["Elvis Presley's Band","The Star-Club Band"]
+  },
+  {
+    "name": "Brian May",
+    "bands": ["Queen"]
+  },
+  {
+    "name": "Angus Young",
+    "bands": ["AC/DC"]
+  },
+  {
+    "name": "Frank Zappa",
+    "bands": ["The Mothers of Invention"]
+  },
+  {
+    "name": "James Burton",
+    "bands": ["Elvis Presley's Band","Ricky Nelson's Band","Emmylou Harris's Hot Band"]
+  },
+  {
+    "name": "Les Paul",
+    "bands": ["Les Paul and Mary Ford"]
+  },
+  {
+    "name": "Pete Townshend",
+    "bands": ["The Who"]
+  }
+]

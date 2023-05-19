@@ -1,79 +1,150 @@
-import React from 'react';
-// import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import * as Highcharts from 'highcharts';
-import more from 'highcharts/highcharts-more';
-more(Highcharts);
+import React from "react";
+import Highcharts from "highcharts";
+import networkgraph from "highcharts/modules/networkgraph";
+import HighchartsReact from "highcharts-react-official";
 
-
-// /import React from 'react';
+if (typeof Highcharts === "object") {
+	networkgraph(Highcharts);
+}
+// import React from 'react';
 // import Highcharts from 'highcharts';
 // import HighchartsReact from 'highcharts-react-official';
 
-const data = [
-	{
-		artist: 'Artist A',
-		genres: ['rock', 'pop', 'jazz'],
-	},
-	{
-		artist: 'Artist B',
-		genres: ['pop', 'hip hop', 'electronic'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-	{
-		artist: 'Artist C',
-		genres: ['country', 'folk', 'blues'],
-	},
-];
+const Graph = () => {
 
-const PackedBubbleChart = () => {
+	var data = [
+		{
+			artist: 'Artist A',
+			genres: ['rock', 'pop', 'jazz'],
+		},
+		{
+			artist: 'Artist B',
+			genres: ['pop', 'hip hop', 'electronic'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+		{
+			artist: 'Artist C',
+			genres: ['country', 'folk', 'blues'],
+		},
+	];
+
+
+	const genres = {};
+	const nodes = [];
+	const links = [];
+
+	// Iterate through the data and group artists by genre
+	data.forEach((artist) => {
+		artist.genres.forEach((genre) => {
+			if (!genres[genre]) {
+				genres[genre] = { name: genre, artists: [] };
+				nodes.push(genres[genre]);
+			}
+
+			genres[genre].artists.push(artist);
+		});
+	});
+
+	// Create links between genres and artists
+	Object.keys(genres).forEach((genre) => {
+		genres[genre].artists.forEach((artist) => {
+			links.push({
+				source: genre,
+				target: artist.artist,
+			});
+		});
+	});
+
+	// Create the Highcharts options object
 	const options = {
 		chart: {
-			type: 'packedbubble',
-			height: '100%'
+			type: 'networkgraph',
+			height: '100%',
 		},
 		title: {
-			text: 'Artists by Genre'
+			text: 'Artists and Genres',
 		},
-		legend: {
-			enabled: false
+		plotOptions: {
+			networkgraph: {
+				layoutAlgorithm: {
+					enableSimulation: true,
+					friction: -0.9,
+				},
+			},
 		},
-		series: data.reduce((result, artist) => {
-			artist.genres.forEach(genre => {
-				const seriesIndex = result.findIndex(series => series.name === genre);
-				if (seriesIndex >= 0) {
-					result[seriesIndex].data.push({
-						name: artist.artist,
-						value: 1
-					});
-				} else {
-					result.push({
-						name: genre,
-						data: [{
-							name: artist.artist,
-							value: 1
-						}]
-					});
-				}
-			});
-			return result;
-		}, [])
+		series: [
+			{
+				dataLabels: {
+					enabled: true,
+				},
+				data: nodes,
+				nodes: nodes,
+				links: links,
+			},
+		],
 	};
 
 	return (
-		<HighchartsReact highcharts={Highcharts} options={options} />
+		<HighchartsReact
+			highcharts={Highcharts}
+			options={options}
+		/>
 	);
 };
 
-export default PackedBubbleChart;
+export default Graph;
