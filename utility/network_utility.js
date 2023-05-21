@@ -26,8 +26,8 @@ var Bottleneck = require("bottleneck");
 //docs:
 //https://github.com/SGrondin/bottleneck
 var limiter = new Bottleneck({
-	//maxConcurrent: 4,
-	// minTime: 100,
+	//maxConcurrent: 1,
+	minTime: 100,
 	//testing: at 86~89 it starts failing
 	trackDoneStatus: true
 });
@@ -82,13 +82,201 @@ limiter.on("failed", async (res, jobInfo) => {
 	}
 });
 
-module.exports.limiter =limiter;
-
 var fake =  function(r){
     return new Promise(function(done, fail) {
     done(r)
     })
 }
+
+var me = module.exports;
+me.limiter = limiter;
+
+
+//the node api i'm using, although very limited and unfinished it seems like its the best out there...
+//https://github.com/thelinmichael/spotify-web-api-node
+
+//thought about using 'bind' to pass the initial func and call it here
+//but works a little differently with spotifyApi which I can't control insides of
+//this.getAccessToken is not a function
+
+//instead ended up with this pageIt wrapper which didn't go exactly as planned
+//because of some response format weirdness but its still nice :)
+//getFollowedArtists is example of weirdness, and its the reason I must pass a key
+
+/**pageIt
+ * Paging using manually calculated offsets
+ * @param key Is now the singular known (artist NOT artists)
+ * @param skip shallow_<type> is passed here - if non-null, skip
+ *        also sometimes used to force skipping when testin smaller subsets
+ * */
+
+//params when called: this,req,key,skip,data
+var pageIt =  function(req,key,skip,data){
+	return new Promise(function(done, fail) {
+
+		if(skip){
+			done(data.body)
+		}else{
+			if(!(data)){data=key;key=null;}
+			if(data.body.next){
+				console.log("pageIt",data.body.next);
+				//console.log("key",key);
+				me.getPages(req,data.body,key)
+					.then(pages =>{
+
+						//testing: while fixing a bug, forgot I made it so getPages only gets every page after the 1st?
+						//and then I recombine below? fuck that anyways
+
+						data.body.items = [];
+
+						pages.forEach(p =>{
+							if(key){
+								data.body.items = data.body.items.concat(p[key + "s"].items)
+							}else{
+								data.body.items = data.body.items.concat(p.items)
+							}
+						})
+						data.body.pagedTotal = data.body.items.length;
+						console.log("pageIt finished");
+						done(data.body)
+					})
+					.catch(e =>
+					{
+						debugger;
+						console.error(e)})
+			}else{done(data.body)}
+		}
+	})
+}
+me.pageIt = pageIt;
+
+//todo: something off with my 'totals'
+var preserve = null;
+
+/**pageItAfter
+ * For endpoints that use 'next' (as opposed to offset)
+ *
+ * */
+
+var pageItAfter =  function(key,pages,req,data){
+	return new Promise(function(done, fail) {
+		//what does this binding thing mean again?
+		//console.log(data);
+		preserve === null? preserve= JSON.parse(JSON.stringify(data.body)):{};
+		if(!(data)){data=key;key=null;}
+		if(data.body.next){
+			//console.log("pageItAfter",data.body.next);
+
+			//console.log("key",key);
+			resolver.getPage(data.body,key,req)
+				.then(r =>{
+					pages.push(r)
+					if(r.artists.next){
+						pageItAfter('',pages,req,{body:{next:r.artists.next}}).then(done).catch(fail)
+					}
+					else{
+						//get the original result
+						//console.log(preserve);
+						var body = {items:preserve.artists.items}
+						pages.forEach(p =>{
+							body.items =  body.items.concat(p.artists.items)
+						})
+						preserve =null
+						done(body);
+					}
+				})
+				.catch(e => console.error(e))
+		}else{
+			preserve = null
+			done(data.body)}
+	})
+}
+me.pageItAfter = pageItAfter;
+
+
+//todo: made this non-configuraable b/c I'm so confused as to why this changed?
+//maybe I'm just being dumb but...
+me.getPage = function(body,key,req){
+	return new Promise(function(done, fail) {
+
+		var re = /.*\?/;
+		//todo: with key
+		var reAfter = /.*\?type=artist&after=(.*)&limit=50/;
+		var reRes =  re.exec(body.next);
+		var baseUrl = reRes[0]; //not an array
+		var reAfterRes =  reAfter.exec(body.next);
+		var after = reAfterRes[1];//not an array
+		var q1 = 'offset=';var q2 = '&limit=50';
+
+		//todo: with key
+		//baseUrl = baseUrl + "type=" + key + "&"}
+		baseUrl = baseUrl + "type=artist&after=" + after + "&limit=50"
+		//console.log("baseUrl",baseUrl);
+		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
+		fetchTry(options.uri,options)
+			.then(r =>{
+				done(r);
+			},e =>{
+				fail(e);
+			})
+
+	})
+}
+
+me.getPages = function(req,body,key){
+	return new Promise(function(done, fail) {
+		var re = /.*\?/;var reRes =  re.exec(body.next);
+		var baseUrl = reRes[0]; //not an array
+
+		var q1 = 'offset=';var q2 = '&limit=50';
+
+		//todo: may have to adjust how I do parse this
+		if(key){baseUrl = baseUrl + "type=" + key + "&"}
+		console.log("baseUrl",baseUrl);
+
+		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
+		var num = Math.ceil(body.total / 50)
+		console.log("total",body.total);
+		//console.log("scheduled",num);
+		var promises = [];
+
+		options.uri = baseUrl + q1 + 0 + q2
+		var ops = [];
+		ops.push(JSON.parse(JSON.stringify(options)))
+
+		for(var x=1; x<= num;x++){
+
+			options.uri = baseUrl + q1 + 50*x + q2
+			ops.push(JSON.parse(JSON.stringify(options)))
+
+			// function get(x,options){
+			// 	options.uri = baseUrl + q1 + 50*x + q2
+			// 	//console.log(options.uri);
+			// 	return fetchTry(options.uri,options);
+			// }
+		}
+
+		var task = function (options) {
+
+			return  limiter.schedule(fetchTry,options.uri,options)
+		}
+		promises = ops.map(task);
+		//note: something about rp doesn't work the way I thought it would
+		//promises.push(limiterSpotify.schedule(get(options)));
+		//promises.push(limiterSpotify.schedule(get,x,options));
+
+		debugger
+		Promise.all(promises).then(r => {
+			//console.log('here');
+			done(r);
+		},err =>{
+			debugger
+			console.error(err.error)
+			// fail(err)
+		})
+	})
+}
+
 
 function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
@@ -127,7 +315,7 @@ function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 			throw e
 		})
 }
-module.exports.fetchTry =fetchTry;
+me.fetchTry =fetchTry;
 
 function fetchTryAPI(callback, req,arg, retries = 3, backoff = 300) {
 	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
@@ -164,7 +352,7 @@ function fetchTryAPI(callback, req,arg, retries = 3, backoff = 300) {
 			throw e
 		})
 }
-module.exports.fetchTryAPI =fetchTryAPI;
+me.fetchTryAPI =fetchTryAPI;
 
 
 function fetchHandleRetry(uri,options){
@@ -249,6 +437,6 @@ function fetchRetry(url, options = {}, retries = 3, backoff = 300) {
 			throw e
 		})
 }
-module.exports.fetchRetry =fetchRetry;
+me.fetchRetry =fetchRetry;
 
 
