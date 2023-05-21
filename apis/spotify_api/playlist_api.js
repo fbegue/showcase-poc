@@ -12,9 +12,9 @@ const isArray = require('lodash').isArray
 const isObject = require('lodash').isObject
 var Bottleneck = require("bottleneck");
 
-var fetchTry = require('../../utility/limiter').fetchTry
-var fetchTryAPI = require('../../utility/limiter').fetchTryAPI
-var limiter = require('../../utility/limiter').limiter
+var fetchTry = require('../../utility/network_utility').fetchTry
+var fetchTryAPI = require('../../utility/network_utility').fetchTryAPI
+var limiter = require('../../utility/network_utility').limiter
 
 var db_mongo_api = require('../db_mongo_api')
 var db_api = require('../db_api.js');

@@ -10,8 +10,10 @@ const db_api = require('./apis/db_api')
 const util = require('./util')
 const db = require('./db')
 const IM = require('./utility/inMemory')
-var fetchTry = require('./utility/limiter').fetchTry
-let limiter =  require('./utility/limiter').limiter
+// let limiter =  require('./utility/limiter').limiter
+let network_utility =  require('./utility/network_utility')
+// var network_utility.fetchTry = network_utility.network_utility.fetchTry
+let limiter = network_utility.limiter;
 
 //=================================================
 //utilities
@@ -32,7 +34,8 @@ console.good = function(msg){console.log(colors.green(msg))};
 var Bottleneck = require("bottleneck");
 
 let limiterSpotify,limiterSpotifyTrack,limiterSpotifySearch,limiterBand,limiterWiki,limiterCamp,limiterGoogle;
-let limiters = function(){
+
+let initialize_limiters = function(){
 
 	//todo: optimize
 	limiterSpotify = new Bottleneck({
@@ -141,85 +144,9 @@ let limiters = function(){
 		}
 	});
 }
-limiters();
+initialize_limiters();
 
-//todo: made this non-configuraable b/c I'm so confused as to why this changed?
-//maybe I'm just being dumb but...
-module.exports.getPage = function(body,key,req){
-	return new Promise(function(done, fail) {
-
-		var re = /.*\?/;
-		//todo: with key
-		var reAfter = /.*\?type=artist&after=(.*)&limit=50/;
-		var reRes =  re.exec(body.next);
-		var baseUrl = reRes[0]; //not an array
-		var reAfterRes =  reAfter.exec(body.next);
-		var after = reAfterRes[1];//not an array
-		var q1 = 'offset=';var q2 = '&limit=50';
-
-		//todo: with key
-		//baseUrl = baseUrl + "type=" + key + "&"}
-		baseUrl = baseUrl + "type=artist&after=" + after + "&limit=50"
-		//console.log("baseUrl",baseUrl);
-		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
-		fetchTry(options.uri,options)
-			.then(r =>{
-				done(r);
-			},e =>{
-				fail(e);
-			})
-
-	})
-}
-
-module.exports.getPages = function(req,body,key){
-	return new Promise(function(done, fail) {
-		var re = /.*\?/;var reRes =  re.exec(body.next);
-		var baseUrl = reRes[0]; //not an array
-
-		var q1 = 'offset=';var q2 = '&limit=50';
-
-		//todo: may have to adjust how I do parse this
-		if(key){baseUrl = baseUrl + "type=" + key + "&"}
-		console.log("baseUrl",baseUrl);
-
-		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
-		var num = Math.ceil(body.total / 50)
-		console.log("total",body.total);
-		//console.log("scheduled",num);
-		var promises = [];
-
-		options.uri = baseUrl + q1 + 0 + q2
-		var ops = [];
-		ops.push(JSON.parse(JSON.stringify(options)))
-
-		for(var x=1; x<= num;x++){
-[]
-			options.uri = baseUrl + q1 + 50*x + q2
-			ops.push(JSON.parse(JSON.stringify(options)))
-
-			// function get(x,options){
-			// 	options.uri = baseUrl + q1 + 50*x + q2
-			// 	//console.log(options.uri);
-			// 	return fetchTry(options.uri,options);
-			// }
-			var task = function (options) {
-				return  limiter.schedule(fetchTry,options.uri,options)
-			}
-			promises = ops.map(task);
-			//note: something about rp doesn't work the way I thought it would
-			//promises.push(limiterSpotify.schedule(get(options)));
-			//promises.push(limiterSpotify.schedule(get,x,options));
-		}
-		Promise.all(promises).then(r => {
-			//console.log('here');
-			done(r);
-		},err =>{
-			console.error(err.error)
-			// fail(err)
-		})
-	})
-}
+var me = module.exports;
 
 
 /**
@@ -329,7 +256,6 @@ module.exports.resolveArtists2 = function(req,artists){
 		//let startDate = new Date(); console.log("resolveSpotify start time:",startDate);
 		//resolver.spotify expects batches of 50 artist's ids
 
-
 		var resultOb = {artists:artists};
 		// var resultOb = {artists:artists.slice(71,artists.length -1)};
 
@@ -438,6 +364,62 @@ module.exports.resolveArtists2 = function(req,artists){
 }
 
 
+me.resolveTracks = async function(req,playOb) {
+
+	var artists = [];
+	playOb.tracks.forEach(item => {
+		artists = artists.concat(_.get(item, 'track.artists'));
+	})
+
+	//prune duplicate artists from track aggregation
+	artists = _.uniqBy(artists, function (n) {
+		return n.id;
+	});
+
+
+	//resolving all the artists for all the tracks
+
+	return me.resolveArtists2(req, artists)
+		.then(resolvedArtists => {
+
+			var pullArtists = [];
+			var artistMap = {};
+			resolvedArtists.forEach(a => {
+				artistMap[a.id] = a
+			})
+
+			playOb.tracks.forEach(item => {
+
+				//note: theres an artist listing on both: items[0].track.album.artists AND a items[0].track.artists
+				//the difference between the album's artist(s) and a track's artist(s)
+				//well remove the album one for now
+				item.track.album ? delete item.track.album.artists : {}
+
+				//I just don't like looking at these
+				item.track.available_markets = null;
+				item.track.album ? item.track.album.available_markets = null : {}
+
+				//console.log(item);
+				item.track.artists.forEach((a, i, arr) => {
+					//note: think maybe artistMap[a.id].genres get's destroyed somehow after being accessed first time?
+
+					//todo: super weird Santana issue?
+					if (!(artistMap[a.id])) {
+						console.log("artistMap missed", a.id);
+					}
+					if (artistMap[a.id]) {
+						arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
+						me.resolveArtistsCachedGenres([arr[i]], 'saved')
+					}
+
+					// if(arr[i].id === "4pejUc4iciQfgdX6OKulQn"){
+					// 	debugger;
+					// }
+
+				})
+			})
+		})
+}
 //todo: I want to commit (cache) these in SQL for later retrieval,
 //but not if its going to take forever. the absolutely necessary thing is
 //qualifying the genres w/ their ids - maybe I should just be keeping that
@@ -474,6 +456,7 @@ module.exports.resolveArtistsCachedGenres = function(artists,source){
 //todo: should really receive one at a time
 //receives a batch of playlists and returns all tracks
 //returns an array of objects, one for each input playlist {tracks:[track],playist:{}}
+
 module.exports.resolvePlaylists = function(body){
 	return new Promise(function(done, fail) {
 
@@ -487,7 +470,7 @@ module.exports.resolvePlaylists = function(body){
 
 		function getPages(options) {
 			//console.log(options.uri);
-			return fetchTry(options.uri,options).then(data => {
+			return network_utility.fetchTry(options.uri,options).then(data => {
 				//console.log("data",data.items.length);
 				options.store = options.store.concat(data.items);
 				//console.log("cacheIT",cacheIT[options.playlist_id].length);

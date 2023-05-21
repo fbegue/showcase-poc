@@ -168,10 +168,11 @@ var pageItAfter =  function(key,pages,req,data){
 			//console.log("pageItAfter",data.body.next);
 
 			//console.log("key",key);
-			resolver.getPage(data.body,key,req)
+			me.getPage(data.body,key,req)
 				.then(r =>{
 					pages.push(r)
 					if(r.artists.next){
+						debugger
 						pageItAfter('',pages,req,{body:{next:r.artists.next}}).then(done).catch(fail)
 					}
 					else{
@@ -201,10 +202,11 @@ me.getPage = function(body,key,req){
 
 		var re = /.*\?/;
 		//todo: with key
-		var reAfter = /.*\?type=artist&after=(.*)&limit=50/;
+		var reAfter = /.*\?type=artist&limit=50&after=(.*)/;
 		var reRes =  re.exec(body.next);
 		var baseUrl = reRes[0]; //not an array
 		var reAfterRes =  reAfter.exec(body.next);
+		debugger
 		var after = reAfterRes[1];//not an array
 		var q1 = 'offset=';var q2 = '&limit=50';
 
@@ -213,7 +215,7 @@ me.getPage = function(body,key,req){
 		baseUrl = baseUrl + "type=artist&after=" + after + "&limit=50"
 		//console.log("baseUrl",baseUrl);
 		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
-		fetchTry(options.uri,options)
+		me.fetchTry(options.uri,options)
 			.then(r =>{
 				done(r);
 			},e =>{
@@ -258,14 +260,13 @@ me.getPages = function(req,body,key){
 
 		var task = function (options) {
 
-			return  limiter.schedule(fetchTry,options.uri,options)
+			return  limiter.schedule(me.fetchTry,options.uri,options)
 		}
 		promises = ops.map(task);
 		//note: something about rp doesn't work the way I thought it would
 		//promises.push(limiterSpotify.schedule(get(options)));
 		//promises.push(limiterSpotify.schedule(get,x,options));
 
-		debugger
 		Promise.all(promises).then(r => {
 			//console.log('here');
 			done(r);
@@ -315,7 +316,7 @@ function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 			throw e
 		})
 }
-me.fetchTry =fetchTry;
+me.fetchTry = fetchTry;
 
 function fetchTryAPI(callback, req,arg, retries = 3, backoff = 300) {
 	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
@@ -353,7 +354,6 @@ function fetchTryAPI(callback, req,arg, retries = 3, backoff = 300) {
 		})
 }
 me.fetchTryAPI =fetchTryAPI;
-
 
 function fetchHandleRetry(uri,options){
 	then(res => {

@@ -1,8 +1,8 @@
 var rp = require('request-promise');
 const sApi = require('./apis/spotify_api')
 // var fetchTry = require('./utility/limiter').fetchTry
-var fetchTry = require('./utility/limiter').fetchTry
-var limiter = require('./utility/limiter').limiter
+var fetchTry = require('./utility/network_utility').fetchTry
+var limiter = require('./utility/network_utility').limiter
 var async = require('async')
 const fetch = require('node-fetch');
 

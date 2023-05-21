@@ -2,7 +2,7 @@
 //https://github.com/schnogz/songkick-api-node
 //All requests to the library will be returned a promise and when resolved the response will be JSON.
 var Bottleneck = require("bottleneck");
-const limiter = require('../utility/limiter').limiter
+const limiter = require('../utility/network_utility').limiter
 // var spotifyApi = null;
 //
 // setTimeout(e =>{
