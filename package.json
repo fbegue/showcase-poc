@@ -2,12 +2,13 @@
   "author": "Spotify",
   "name": "web-api-auth-examples",
   "description": "Basic examples of the Spotify authorization flows through OAuth 2",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "scripts": {
     "deploy": "sls deploy function -f app",
     "commit": "npm version minor --force && git add . && git commit -m"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.1",
     "async": "^3.2.3",
     "aws-sdk": "^2.1328.0",
     "aws-serverless-express": "^3.4.0",
@@ -24,6 +25,7 @@
     "express": "^4.15.2",
     "fuzzyset": "^1.0.6",
     "git": "^0.1.5",
+    "googleapis": "^118.0.0",
     "lodash": "^4.17.21",
     "luxon": "^2.4.0",
     "mongodb": "4.1.1",
