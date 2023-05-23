@@ -2,7 +2,6 @@ Showcase-POC
 
 # setup
 
-
 DB seeding
 - http://localhost:8888/api/insertStatic
 
@@ -19,7 +18,13 @@ use webstorm config for `app.js`
 
 use postman to hit endpoints
 
+# commit steps (lambda)
+
+`npm run commit 'example message'`
+`git push`
+
 # deploy steps (lambda)
+
 
 //deploy a (the) function
 `npm run deploy`

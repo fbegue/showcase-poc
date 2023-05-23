@@ -34,6 +34,7 @@ var testSuite = require('./testing/suite')
 var  db_api = require('./apis/db_api.js');
 var experimental_api = require('./apis/experimental_api');
 var playlist_api = require('./apis/spotify_api/playlist_api')
+var wikipedia_api = require('./apis/wikipedia_api.js')
 var ltest = require('./utility/limiterTest').test
 var  db = require('./db.js');
 var  db_seed = require('./db_seed.js');
@@ -199,6 +200,13 @@ for(var key in playlist_api) {
 
 	if(playlist_api[key] instanceof Function) {
 		app.post("/" + key, playlist_api[key]);
+	}
+}
+
+for(var key in wikipedia_api) {
+
+	if(wikipedia_api[key] instanceof Function) {
+		app.post("/" + key, wikipedia_api[key]);
 	}
 }
 

@@ -2934,18 +2934,28 @@ me.getPlaying = function (req, res) {
 		},
 		json: true
 	};
-	//console.log({options});
+
+	console.log({options});
+
 	rp(options)
 		.then(track => {
 			//console.log("r",r);
-			req.body.spotifyApi.getArtist(track.item.artists[0].id)
-				.then(artist => {
-					var pay = {track: track, artist: artist.body};
-					// console.log("getPlaying",pay);
-					console.log("getPlaying finished", pay.track.item.name);
-					res.send(pay)
-				}, e => {
-				})
+            //todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
+			if(track){
+				req.body.spotifyApi.getArtist(track.item.artists[0].id)
+					.then(artist => {
+						var pay = {track: track, artist: artist.body};
+						// console.log("getPlaying",pay);
+						console.log("getPlaying finished", pay.track.item.name);
+						res.send(pay)
+					}, e => {
+					})
+			}else{
+				let msg = "getPlaying finished - nothing is playing right now"
+				console.warn(msg);
+				res.send({msg:msg,track:null,artist:null})
+			}
+
 		}, err => {
 			console.log("err", err);
 			res.status(500).send(err)
