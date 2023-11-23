@@ -322,6 +322,8 @@ me.fetch =  function(param){
 		//todo: just OH + LA right now
 		if(param === 'all'){
 			var states = {"OH":[
+				//testing: from octoparse, guess I created a zip-code-based collection name
+					{"displayName":"Columbus", "id":43201},
 					{"displayName":"Columbus", "id":9480},
 					{"displayName":"Cleveland", "id":14700},
 					{"displayName":"Cincinnati", "id":22040},

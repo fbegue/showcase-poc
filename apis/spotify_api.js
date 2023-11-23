@@ -2182,9 +2182,19 @@ me.createArtistsPlaylist = async function (req, res) {
 
 
 // var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents")
-var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents-update111222")
-me.createLAEventsToArtistsPlaylist = async function (req, res) {
-	console.log("createLAEventsToArtistsPlaylist");
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20231116.v4.output.resolved"
+var jsonInputFile = require(jsonInputFilePath)
+
+//testing: reduce input size
+// jsonInputFile = jsonInputFile.slice(0,2)
+
+//todo: rename LA specific stuff to generalized names
+
+let playlistName = "songkick-columbus.20231116"
+me.createPlaylistFromJson = async function (req, res) {
+
+
+	console.log("createPlaylistFromJson:",jsonInputFilePath);
 	req.body.tracksLimit = 2
 	req.body.artists = [];
 
@@ -2192,12 +2202,64 @@ me.createLAEventsToArtistsPlaylist = async function (req, res) {
 	//LA_resolveEvents = LA_resolveEvents.slice(0,20);
 	let LA_artist_date_map = {}
 	let dups = [];
+
+	//testing: sort by date
+	//todo: (should be done when we pull these)
+	jsonInputFile.sort((a, b) => {
+		const dateA = new Date(a.start.date);
+		const dateB = new Date(b.start.date);
+
+		return dateA - dateB;
+	});
+
+	//testing: pulled these out manually, not sure about accuracy
+	//todo: (should be done when we pull these)
+	let columbus_metro_names =
+		[
+			"Columbus",
+			"Newark",
+			"Loudonville",
+			"Westerville",
+			"Circleville",
+			"Chillicothe",
+			"Athens",
+			"Mt. Vernon"
+		]
+	let all_metros = [];
+	jsonInputFile = jsonInputFile.filter(e =>{
+
+		let name = e.venue.metroArea.displayName;
+
+		//note: sourced manual list
+		//if(all_metros.indexOf(name) == -1){all_metros.push(name)}
+
+       if(columbus_metro_names.indexOf(name) != -1){
+		   return e.venue.metroArea.displayName == "Columbus"
+	   }
+       else{
+       	return false
+	   }
+	})
+	console.log("pre-filtered from inputjson",jsonInputFile.length)
+	//console.log({jsonInputFile})
+
+
+
+	// let stopDate = new Date("3-31-2024")
+	// jsonInputFile = jsonInputFile.filter(e =>{
+	// 	const dateA = new Date(e.start.date);
+	// 	debugger
+	// 	return e.start.date < stopDate
+	// })
+
 	//note: make a map of each artist to their date
-	LA_resolveEvents.forEach(e => {
+	jsonInputFile.forEach(e => {
+		//console.log(e.start.date)
 		e.performance.forEach(p => {
+
 			var isLatin = p.artist.familyAgg === "latin";
-			console.log(p.artist.familyAgg)
-			if (!LA_artist_date_map[p.artist.id] && !isLatin) {
+			//console.log(p.artist.familyAgg)
+			if (!LA_artist_date_map[p.artist.id] && !isLatin){
 				LA_artist_date_map[p.artist.id] = e.start.date
 			} else {
 				//testing: artist listed more than once
@@ -2206,19 +2268,35 @@ me.createLAEventsToArtistsPlaylist = async function (req, res) {
 		})
 	});
 
-	console.log({dups})
 
-	//todo: someone gave me a songkick artist id maybe??
-	LA_resolveEvents.forEach(e => {
+	//todo: apparantly i'm not doing shit with this besides not including it in LA_artist_date_map
+	//the processing of which I've disabled below soooo...
+
+	//console.log({dups})
+
+	//todo: in cases where I couldn't resolve the artist, it looks like resolveEvents is returning
+	//performance.artist w/ the songkick numeric id (and no spotify id/genres)
+	let unresolvedArtistEvents = [];
+
+	jsonInputFile.forEach(e => {
 		e.performance.forEach(p => {
+
+			//no latin please (LA)
 			var isLatin = p.artist.familyAgg === "latin";
 			if (typeof p.artist.id === "string" && !isLatin) {
 				req.body.artists.push(p.artist.id)
 			}
+			else{
+				unresolvedArtistEvents.push(p.artist)
+			}
+
+
 		})
 	});
 
-	debugger
+
+  	//testing:
+	//req.body.artists = req.body.artists.slice(0,600)
 
 
 	try {
@@ -2229,56 +2307,68 @@ me.createLAEventsToArtistsPlaylist = async function (req, res) {
 			//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
 
 			try {
-				//note: straight-spotifyApi
+
+				//testing:
+				//example artist id: 43ZHCT0cAZBISjO8DG9PnE
+				//id = "43ZHCT0cAZBISjO8DG9PnE";
 				//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+
+				//note: straight-spotifyApi
 				var response = await limiter.schedule(_getArtistTopTracks, req, id)
 				return response;
-			} catch (e) {
+			}
+			catch (e) {
 				debugger
 			}
 		}
 
+
 		var proms = req.body.artists.map(task);
 		var songSets = await Promise.all(proms)
+
 		var songs = [];
+
 		songSets.forEach(s => {
 			songs = songs.concat(s.slice(0, req.body.tracksLimit))
 		})
 
+		//testing: create playlist for each day
+
 		//note: create map of dates to arrays to hold artist ids
-		var daySongPays = {};
-		Object.values(LA_artist_date_map).forEach(d => {
-			daySongPays[d] = [];
-		})
 
-		songs.forEach(s => {
-			//what was the date for this artist of this song?
-			//note: take care of possible extra artists besides event one in song
-			s.artists = s.artists.filter(a => {
-				return LA_artist_date_map[a.id]
-			})
-			let date = LA_artist_date_map[s.artists[0].id];
-			//push the song into an array based on that date
-			// if(dayPays[date].indexOf(s.artists[0].id) === -1){
-			// 	dayPays[date].push(s.artists[0].id)
-			// }
+		// var daySongPays = {};
+		// Object.values(LA_artist_date_map).forEach(d => {
+		// 	daySongPays[d] = [];
+		// })
+		//
+		// songs.forEach(s => {
+		// 	//what was the date for this artist of this song?
+		// 	//note: take care of possible extra artists besides event one in song
+		// 	s.artists = s.artists.filter(a => {
+		// 		return LA_artist_date_map[a.id]
+		// 	})
+		// 	let date = LA_artist_date_map[s.artists[0].id];
+		// 	//push the song into an array based on that date
+		// 	// if(dayPays[date].indexOf(s.artists[0].id) === -1){
+		// 	// 	dayPays[date].push(s.artists[0].id)
+		// 	// }
+		//
+		// 	//todo: need to compare by id not object
+		// 	//var r = _.find(daySongPays[date],function(r){return r.id===s.id});
+		//
+		// 	if (daySongPays[date].indexOf(s) === -1) {
+		// 		daySongPays[date].push(s)
+		// 	}
+		// })
+		//
+		// var promises = []
+	 	// Object.keys(daySongPays).forEach(d => {
+		// 	promises.push(limiter.schedule(me.createPlaylist, req, req.body.user, {name: playlistName}, daySongPays[d]))
+		// })
+		//var r = await Promise.all(promises);
 
-			//todo: need to compare by id not object
-			//var r = _.find(daySongPays[date],function(r){return r.id===s.id});
-
-			if (daySongPays[date].indexOf(s) === -1) {
-				daySongPays[date].push(s)
-			}
-		})
-
-		var promises = []
-		Object.keys(daySongPays).forEach(d => {
-			promises.push(limiter.schedule(me.createPlaylist, req, req.body.user, {name: "LA_" + d}, daySongPays[d]))
-		})
-
-		//var r =  await limiter.schedule(me.createPlaylist,req,req.body.user,{name:req.body.playlistName},songs)
-
-		var r = await Promise.all(promises);
+		debugger
+		var r =  await limiter.schedule(me.createPlaylist,req,req.body.user,{name:req.body.playlistName},songs)
 		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
 		var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r.playlist)
 		res.send(tracksR)
@@ -2809,12 +2899,17 @@ me.searchArtist = async function (req) {
 
 
 /**
- *
+ * @typedef {object} item
+ * @property {string} name - artist name
+ * @property {string} type - enum: album|artist|track
+ */
+/**
+ * @method
  * @param req
- * @param item {name,type}
+ * @param {...item} item
  * @returns {Promise<any|{artist: *, failure: {reason: string, parseValue: string}}>}
  */
-me.searchSpotify = async function (req, item,) {
+me.searchSpotify = async function (req, item) {
 
 	//replace "US" after some names
 	let nameClean = item.name.replace(/\(US\)/g, "");
@@ -2859,6 +2954,7 @@ me.searchSpotify = async function (req, item,) {
 
 	}
 }
+
 
 
 //exposing an endpoint that uses it to the UI

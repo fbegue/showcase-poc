@@ -5,7 +5,7 @@ src: https://www.songkick.com/metro-areas/17835-us-los-angeles-la?utf8=%E2%9C%93
 ## steps
 
 run octoparse job, export to csv
-run octo_preparse.js with new csv
+run octo_preparse.csv.js with new csv
 replace fetch_metro_events_file with generated json from above
 
 hit fetchMetroEvents

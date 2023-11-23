@@ -1,19 +1,3 @@
-//note: setup ripper 1st
-var albums = [];
-//var albums = require('../scripts/ripYoutubePlaylist/ripper').albums;
-var fif = require('../scripts/rolling-stones-top-500-albums-scraper/50').albums;
-var hun = require('../scripts/rolling-stones-top-500-albums-scraper/100').albums;
-var hun15 = require('../scripts/rolling-stones-top-500-albums-scraper/150').albums;
-var hun2 = require('../scripts/rolling-stones-top-500-albums-scraper/200').albums;
-var hun25 = require('../scripts/rolling-stones-top-500-albums-scraper/250').albums;
-var hun3 = require('../scripts/rolling-stones-top-500-albums-scraper/300').albums;
-var hun35 = require('../scripts/rolling-stones-top-500-albums-scraper/350').albums;
-var hun4 = require('../scripts/rolling-stones-top-500-albums-scraper/400').albums;
-var hun45 = require('../scripts/rolling-stones-top-500-albums-scraper/450').albums;
-var hun5 = require('../scripts/rolling-stones-top-500-albums-scraper/500').albums;
-
-albums = albums.concat(hun5).concat(hun45).concat(hun4).concat(hun35).concat(hun3).concat(hun25).concat(hun2).concat(hun15).concat(hun).concat(fif).reverse()
-
 
 var spotify_api = require('../apis/spotify_api')
 let resolver = require("../resolver")
@@ -27,6 +11,9 @@ var items = require('../scripts/experience-columbus-scraper/experienceColumbusPa
 //works fine in spotify_api @ test (getMySavedTracks)
 var difference = require('lodash').difference
 var _ = require('lodash')
+
+var artistGroupsMap = require("../scripts/gpt.artists-group-map")
+let notOnSpotify = require("../scripts/not-on-spotify")
 
 //var songs = require('../scripts/ripYoutubePlaylist/songs').songs
 
@@ -117,19 +104,6 @@ let makeAndPopulatePlaylist = async function (req, playlistTitle, songs) {
 	}
 }
 
-let artistsWithGroups = require("../scripts/rolling-stones-top-100-guitarists-scraper/artists_with_groups.chatgpt")
-let artistGroupsMap = {}
-artistsWithGroups.forEach(tuple => {
-	tuple.bands.forEach(b => {
-		if (artistGroupsMap[b]) {
-			artistGroupsMap[b].push(tuple.name)
-		} else {
-			artistGroupsMap[b] = [tuple.name]
-		}
-	})
-})
-
-artistGroupsMap["Fleetwood Mac"] = ["Lindsey Buckingham", "Stevie Nicks"]
 
 var matchArtistOfGroup = function (strArtist, strArtistMatch) {
 
@@ -169,8 +143,162 @@ var processFuzzy = function (str, matchStr) {
 	}
 }
 
+
+var getArtistTopTracks = function (req,artistOb,sampleSize) {
+	return new Promise(function (done, fail) {
+		//console.log("getArtistTopTracks");
+		//console.log("$getArtistTopTracks",req.body.id);
+
+		req.body.spotifyApi.getArtistTopTracks(artistOb.id, 'ES')
+			.then(r => {
+				var ids = r.body.tracks.slice(0,sampleSize ).map(r => {
+					return {id: r.id, name: r.name}
+				})
+				done(ids)
+				//note: on failure, still resolve w/ notice as such
+			}, e => {
+				debugger
+				console.error(e);
+				done({failure: e})
+			})
+		//.then(r => { res.send(r.body.tracks)},err =>{res.status(500).send(err)})
+	})
+}
+
+me.resolveArtistsToSamplePlaylist = async function (req, res) {
+	let artistObs = [];
+
+	req.body.items.forEach(artistString => {
+		const aob = {type:"artist",name:artistString}
+		artistObs.push(aob)
+	})
+
+	var searchAndProcessArtistItemTask = async function (item) {
+		try {
+			//ask spotify to search "type" results
+			//we pass the entire item so we can track it item w/ result
+			var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req, item)
+
+			if (response?.result.items.length > 0) {
+				//success: has "result"
+				//matchArtistResult = {item: item, queryResultItems: queryResultItems, result:{}}
+				//failure: has "flag"
+				//matchArtistResult = {item: item, queryResultItems: queryResultItems, flag: "not on Spotify"}
+				let processSearchSpotifyResult = async function (item, queryResultItems) {
+					var matchArtistResult = false;
+
+					//todo: should just be done globally on any item return
+					//cleanup report back results
+					queryResultItems.forEach(item => {
+						item.available_markets = null
+					});
+
+
+					//don't bother to search Spotify for artists we know it doesn't have in the catalog
+					if (notOnSpotify.indexOf(item.artist) !== -1) {
+						matchArtistResult = {item: item, queryResultItems: queryResultItems, flag: "not on Spotify"}
+						console.warn(matchArtistResult.flag, JSON.stringify(matchArtistResult, null, 4));
+						return matchArtistResult
+					} else {
+						//==================================================
+						//does item (track/album) have the artist we expect?
+
+						//for each track/album item
+						for (var x = 0; x < queryResultItems.length && !matchArtistResult; x++) {
+								var qItem = queryResultItems[x];
+								let matchResult = processFuzzy(item.name, qItem.name);
+								if (matchResult) {
+									// non-falsy matchResult breaks out of both loops
+									matchArtistResult = {
+										item: item,
+										result: qItem,
+										matchReason: matchResult.matchReason
+									}
+								}
+
+						}//outer-for
+
+
+						if (!matchArtistResult) {
+							matchArtistResult = {
+								item: item,
+								queryResultItems: queryResultItems,
+								flag: "failed to match query artist any result artist"
+							}
+							console.warn(matchArtistResult.flag, JSON.stringify(matchArtistResult, null, 4));
+							return matchArtistResult
+
+						} else {
+							return {
+								item: item, queryResultItems: queryResultItems, result:
+									{matchArtistResult: matchArtistResult}
+							}
+						}//fail
+					}//fail
+
+				}//processSearchSpotifyResult
+
+				return await processSearchSpotifyResult(response.item, response.result.items)
+			} else {
+				let result = {item: item, responseItems: response.result.items, flag: "searchSpotify returned nothing!"}
+				return result;
+			}
+		} catch (e) {
+			console.error(e);
+			debugger
+		}
+
+	}
+	//searchAndProcessArtistItemTask
+
+	var psartists = artistObs.map(searchAndProcessArtistItemTask);
+
+	var results = await Promise.all(psartists)
+
+	let failures = results.filter(r => !r.result)
+	let successes = results.filter(r => r.result)
+
+	console.log(`successes: ${successes.length} | failures: ${failures.length}`)
+
+	let str = ""
+	failures.forEach(f => {
+		str = str + f.item.artist.name + ","
+	})
+
+	//note: just taking the top result
+	let fullyQualifiedArtists = []
+	successes.forEach(taskResult =>{
+		fullyQualifiedArtists.push(taskResult.result.matchArtistResult.result)
+	})
+
+	var getArtistTopTracksTask = async function (item) {
+		try {
+			//ask spotify to search "type" results
+			//we pass the entire item so we can track it item w/ result
+			return network_utility.limiter.schedule(getArtistTopTracks, req, item,5)
+		} catch (e) {
+			console.error(e);
+			debugger
+		}
+
+	}
+
+	//only fetch tracks for good results
+	let tracks = []
+	var pstracks = fullyQualifiedArtists.map(getArtistTopTracksTask);
+	var trackResultSets = await Promise.all(pstracks)
+	let fullyQualifiedTracks = [];
+	trackResultSets.forEach(set =>{
+		fullyQualifiedTracks = fullyQualifiedTracks.concat(set)
+	})
+
+	await makeAndPopulatePlaylist(req, "Wonderbus-2023-Sunday", fullyQualifiedTracks)
+	debugger
+}
+//resolveArtistsToSamplePlaylist
+
+
 me.resolveArtistsTracksTuplesToPlaylist = async function (req, res) {
-	let notOnSpotify = [];
 	let tuples = require("../scripts/rolling-stones-top-100-guitarists-scraper/guitaristTrackTuples");
 	//testing:
 	//tuples = tuples.slice(0, 1)
@@ -309,7 +437,8 @@ me.resolveArtistsTracksTuplesToPlaylist = async function (req, res) {
 	})
 	await makeAndPopulatePlaylist(req, "RollingStonesTop100Guitarists", tracks)
 	debugger
-}//resolveArtistsTracksTuplesToPlaylist
+}
+//resolveArtistsTracksTuplesToPlaylist
 
 me.resolveAlbumStringsToSamplePlaylist = async function (req, res) {
 
@@ -739,30 +868,35 @@ me.removeThesePlaylists = async function (req, res) {
 }
 
 
+
 me.resolveArtists = async function (req, res) {
 
 	console.log("resolveArtists", items.length)
 
-	var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-	var withDays = items.filter(i => {
-		var found = false;
-		for (var x = 0; x < days.length; x++) {
-			found = i.Title.indexOf(days[x]) !== -1
-			if (found) {
-				break
+	//note: no idea what this was about lol
+	let removeStringsWithDays = function(){
+		var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+		var withDays = items.filter(i => {
+			var found = false;
+			for (var x = 0; x < days.length; x++) {
+				found = i.Title.indexOf(days[x]) !== -1
+				if (found) {
+					break
+				}
 			}
-		}
-		return found;
-	})
-	//todo: what the fuck is going on with lodash
-	console.log("withDays", withDays.length)
+			return found;
+		})
+		//todo: what the fuck is going on with lodash
+		console.log("withDays", withDays.length)
 
-	items = difference(items, withDays);
-	debugger
-	items.forEach(i => {
-		i.name = i.Title;
-		i.type = "artist"
-	})
+		items = difference(items, withDays);
+		debugger
+		items.forEach(i => {
+			i.name = i.Title;
+			i.type = "artist"
+		})
+	}
+	//removeStringsWithDays()
 
 	//testing:
 	//albums = albums.slice(0,150)
@@ -771,13 +905,12 @@ me.resolveArtists = async function (req, res) {
 	//debugger
 	//albums = albums.filter(a =>{return a.name === "1999"})
 
-	var notOnSpotify = ["Joni Mitchell", "Neil Young"]
 	try {
 		var task = async function (item) {
 			try {
 
-				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req, item)
 
+				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req,item)
 				//todo: change depending on context
 				var resultItems = response?.result?.artists?.items
 

@@ -35,7 +35,7 @@ var spotify_api = require('./spotify_api')
 
 let sql = require('mssql');
 
-let connect = function(){
+let connect = function () {
 	console.info("connect...");
 	try {
 		conn.connect()
@@ -47,7 +47,7 @@ let connect = function(){
 					console.info(res);
 				})
 			})
-			.catch(function(err){
+			.catch(function (err) {
 				console.info(err);
 			});
 
@@ -60,17 +60,15 @@ let connect = function(){
 //connect();
 
 
-
-
 //just checking out raw artist search
-var searchArtists = function(){
+var searchArtists = function () {
 	//console.info("searchArtists");
-	songkickApi.searchArtists({ query: 'Queen' })
-		.then((res)=>{
-			console.info(JSON.stringify(res[0],null,4));
+	songkickApi.searchArtists({query: 'Queen'})
+		.then((res) => {
+			console.info(JSON.stringify(res[0], null, 4));
 
-			if(res[0].identifier){
-				res[0].identifier.forEach(function(id){
+			if (res[0].identifier) {
+				res[0].identifier.forEach(function (id) {
 					console.info(id.mbid);
 				})
 			}
@@ -97,25 +95,27 @@ var searchArtists = function(){
 //oakland = bay area
 //cleveland = Cleveland & Cleveland Heights
 
-var findWithAttr = function(array, attr, value) {
-	for(var i = 0; i < array.length; i += 1) {
-		if(array[i][attr] === value) {
+var findWithAttr = function (array, attr, value) {
+	for (var i = 0; i < array.length; i += 1) {
+		if (array[i][attr] === value) {
 			return i;
 		}
 	}
 	return -1;
 };
 
-var count_properties = function(object){
+var count_properties = function (object) {
 	var count = 0;
 	for (var prop in object) {
-		if (object.hasOwnProperty(prop)) {count++}
+		if (object.hasOwnProperty(prop)) {
+			count++
+		}
 	}
 	return count;
 };
 
 var weekday = new Array(7);
-weekday[0] =  "Sun";
+weekday[0] = "Sun";
 weekday[1] = "Mon";
 weekday[2] = "Tues";
 weekday[3] = "Wed";
@@ -124,7 +124,7 @@ weekday[5] = "Fri";
 weekday[6] = "Sat";
 
 var weekday_full = new Array(7);
-weekday_full[0] =  "Sunday";
+weekday_full[0] = "Sunday";
 weekday_full[1] = "Monday";
 weekday_full[2] = "Tuesday";
 weekday_full[3] = "Wednesday";
@@ -136,7 +136,7 @@ weekday_full[6] = "Saturday";
  * find metros from string query
  * @function find_metros
  **/
-var find_metros = function() {
+var find_metros = function () {
 	var state_string = "OH"
 	songkickApi.searchLocations({query: 'Toledo'})
 		.then(function (results) {
@@ -151,8 +151,7 @@ var find_metros = function() {
 					if (record.city.state.displayName == state_string) {
 						json_parsed.push(record)
 					}
-				}
-				else if (record.metroarea) {
+				} else if (record.metroarea) {
 					if (record.metroarea.state.displayName == state_string) {
 						json_parsed.push(record)
 					}
@@ -178,18 +177,30 @@ var find_metros = function() {
 //find_metros()
 
 var metros = [
-	{"displayName":"Columbus",
-		"id":9480},
-	{"displayName": "Salt Lake City",
-		"id":13560},
-	{"displayName":"SF Bay Area",
-		"id":26330},
-	{"displayName":"Cleveland",
-		"id":14700},
-	{"displayName":"Cincinnati",
-		"id":22040},
-	{"displayName":"Dayton",
-		"id":3673}
+	{
+		"displayName": "Columbus",
+		"id": 9480
+	},
+	{
+		"displayName": "Salt Lake City",
+		"id": 13560
+	},
+	{
+		"displayName": "SF Bay Area",
+		"id": 26330
+	},
+	{
+		"displayName": "Cleveland",
+		"id": 14700
+	},
+	{
+		"displayName": "Cincinnati",
+		"id": 22040
+	},
+	{
+		"displayName": "Dayton",
+		"id": 3673
+	}
 ];
 
 var dateFilter = {};
@@ -200,9 +211,9 @@ dateFilter.end = '2018-07-18';
  * then get events upcoming for a single metro
  * @function get_metro_events
  **/
-var fetch_metro_events = function(metro,dateFilter){
+var fetch_metro_events = function (metro, dateFilter) {
 
-	return new Promise(function(done, fail) {
+	return new Promise(function (done, fail) {
 
 		dateFilter.start = new Date(dateFilter.start);
 		dateFilter.end = new Date(dateFilter.end);
@@ -212,8 +223,8 @@ var fetch_metro_events = function(metro,dateFilter){
 		//used for stats in return object
 		var event_count = 0;
 
-		var get_events = function(metro){
-			return new Promise(function(done1, fail) {
+		var get_events = function (metro) {
+			return new Promise(function (done1, fail) {
 				console.info("get_events");
 
 				var all_results = [];
@@ -223,19 +234,19 @@ var fetch_metro_events = function(metro,dateFilter){
 				 * recusively called until page_length invariant stops chain, hence its broken out here
 				 * @function get
 				 **/
-				var get = function(){
+				var get = function () {
 
 					var params = {};
 					params.page = page_count;
 					params.per_page = 50;
 
 					console.info("getting" + metro.displayName + " " + metro.id + " page {" + page_count + "}...");
-					songkickApi.getLocationUpcomingEvents(metro.id,params)
-						.then(function(events){
-debugger
+					songkickApi.getLocationUpcomingEvents(metro.id, params)
+						.then(function (events) {
+							debugger
 							//console.info(JSON.stringify(events, null,4));
 
-							var filterInRange = function(event){
+							var filterInRange = function (event) {
 
 								var res = true;
 								var eDate = new Date(event.start.date)
@@ -246,15 +257,23 @@ debugger
 								//if start invalid, set false and ignore end value
 								//if end invalid, set false and ignore start value unless start is false, then take start
 
-								if(dateFilter.start && dateFilter.end){
-									if(eDate < dateFilter.start){	res = false;}
-									if(eDate > dateFilter.end || !res){res = false;}
+								if (dateFilter.start && dateFilter.end) {
+									if (eDate < dateFilter.start) {
+										res = false;
+									}
+									if (eDate > dateFilter.end || !res) {
+										res = false;
+									}
 
-								}else if(dateFilter.start && !dateFilter.end) {
-									if(eDate < dateFilter.start){res = false;}
+								} else if (dateFilter.start && !dateFilter.end) {
+									if (eDate < dateFilter.start) {
+										res = false;
+									}
 
-								}else if(!dateFilter.start && dateFilter.end) {
-									if(eDate > dateFilter.end){res = false;}
+								} else if (!dateFilter.start && dateFilter.end) {
+									if (eDate > dateFilter.end) {
+										res = false;
+									}
 								}
 								// console.info(":: " + res);
 								// console.info(event.start.date);
@@ -265,10 +284,13 @@ debugger
 							var inRange = [];
 							var outRange = [];
 
-							for(var x = 0; x < events.length; x++) {
+							for (var x = 0; x < events.length; x++) {
 
-								if (filterInRange(events[x])) {inRange.push(events[x])}
-								else {outRange.push(events[x])}
+								if (filterInRange(events[x])) {
+									inRange.push(events[x])
+								} else {
+									outRange.push(events[x])
+								}
 							}
 
 							var result = {}
@@ -277,13 +299,13 @@ debugger
 							result.events = inRange;
 
 							//only push non-zero events.length results
-							if(result.events.length > 0){
+							if (result.events.length > 0) {
 								all_results.push(result)
 							}
 
 
 							//all_results is in array of per-page result.events
-							all_results.forEach(function(result){
+							all_results.forEach(function (result) {
 								event_count = event_count + result.events.length;
 							});
 
@@ -296,17 +318,16 @@ debugger
 							//if page length is < 50
 							//OR if we're starting to get zero-inrange results back, but we have SOME (for dateFilter.start)
 
-							if(events.length < 50 || (result.events.length === 0 && all_results.length !== 0)){
+							if (events.length < 50 || (result.events.length === 0 && all_results.length !== 0)) {
 
 								console.info("invariant tripped. stopping.");
 								done1(all_results)
-							}
-							else{
+							} else {
 								page_count++;
 								get()
 							}
-						},e =>{
-							console.error("get_events failure",e)
+						}, e => {
+							console.error("get_events failure", e)
 							debugger
 						})
 				};
@@ -329,7 +350,7 @@ debugger
 		promises.push(get_events(metro));
 
 		//results is an object with three fields: metro id, displayName (of metro) and the future events in that metro
-		Promise.all(promises).then(function(results){
+		Promise.all(promises).then(function (results) {
 
 			//console.info(JSON.stringify(results,null,4));
 
@@ -340,13 +361,13 @@ debugger
 			let metro_id = results[0].id;
 			let ids = {};
 
-			results.forEach(function(result){
-				result.events.forEach(function(event){
+			results.forEach(function (result) {
+				result.events.forEach(function (event) {
 
 					//console.info(JSON.parse(JSON.stringify(event)));
-					if(ids[event.id]){
+					if (ids[event.id]) {
 
-					}else{
+					} else {
 						ids[event.id] = event.id;
 						event.metro_id = metro_id;
 						//if(event.id === 35513049){	console.info(event)}
@@ -361,8 +382,8 @@ debugger
 			 * populate performance_dates array for writing later to songkick_performances
 			 * @function write_schedule
 			 **/
-			var write_schedule = function(){
-				results.forEach(function(result){
+			var write_schedule = function () {
+				results.forEach(function (result) {
 
 					//console.info("===============");
 					//console.info(result);
@@ -370,7 +391,7 @@ debugger
 
 					// if(result.displayName == "Columbus"){
 
-					result.events.forEach(function(event){
+					result.events.forEach(function (event) {
 
 
 						//todo: handle festivals differently (event.type = 'Festival')
@@ -381,7 +402,7 @@ debugger
 						var m = date.getUTCMonth() + 1
 						//var d = date.getDate()
 						var d = date.getUTCDate()
-						var y  = date.getFullYear()
+						var y = date.getFullYear()
 						var day = date.getUTCDay()
 
 						var newDate = weekday[day] + ", " + m + "-" + d + "-" + y
@@ -400,21 +421,20 @@ debugger
 						performance.id = event.id;
 
 
-						event.performance.forEach(function(perf){
+						event.performance.forEach(function (perf) {
 							performance.artists.push(perf.artist.displayName)
 
 						});
 						debugger
 
 						//haven't created entry for date yet
-						if(dates.indexOf(newDate) == -1){
+						if (dates.indexOf(newDate) == -1) {
 							dates.push(newDate);
 
 
 							performance_dates[newDate] = [];
 							performance_dates[newDate].push(performance);
-						}
-						else{
+						} else {
 							performance_dates[newDate].push(performance);
 
 							//todo: tried to eliminate duplicate performance_dates
@@ -435,8 +455,8 @@ debugger
 			//write_schedule();
 
 			console.info("----------------------");
-			console.info("# of payloads: ",results.length);
-			console.info("events length: ",events.length);
+			console.info("# of payloads: ", results.length);
+			console.info("events length: ", events.length);
 			console.info("----------------------");
 
 			done(events);
@@ -469,7 +489,7 @@ debugger
 			// });
 
 
-		}).catch(function(e){
+		}).catch(function (e) {
 			console.info(e);
 		})
 
@@ -521,14 +541,16 @@ debugger
 // });
 
 // var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed.json")
-var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json")
+//var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json")
 // var revivalists  = require("../example data objects/revivalist_show")
 // var _9480  = require("../example data objects/9480.497.bak.json")
-var _9480  = require("../example data objects/9480.102222-bak.clean.json")
-_9480 = _9480.filter(e =>{return e.performance.length === 2})
+// var _9480  = require("../example data objects/9480.102222-bak.clean.json")
+// _9480 = _9480.filter(e =>{return e.performance.length === 2})
 
-var fetch_metro_events_file =  function(){
-    return new Promise(function(done, fail) {
+	let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20231116.v4.output")
+
+var fetch_metro_events_file = function () {
+	return new Promise(function (done, fail) {
 		//done(Los_Angeles_Songkick_parsed);
 		// Los_Angeles_Songkick_parsed = Los_Angeles_Songkick_parsed.filter(e =>{
 		//
@@ -537,27 +559,28 @@ var fetch_metro_events_file =  function(){
 		// })
 
 
-		done(Los_Angeles_Songkick_parsed)
-    	//done(Los_Angeles_Songkick_parsed.slice(0,5))
+		done(inputJsonFile)
+		//done(Los_Angeles_Songkick_parsed.slice(0,5))
 
 		// done(revivalists)
 		//done(_9480.slice(0,5))
-    })
+	})
 }
-module.exports.fetchMetroEvents =  function(req, res,next){
+
+module.exports.fetchMetroEvents = function (req, res, next) {
 	//testing: how we do these batch calls (just setting the req.body.spotifyApi
 	//as if it was coming from the UI so everything shoooould just be seemless)
 	//don't like having to wrap like this though - at least it ALREADY looks like garbage!
 
 	spotify_api.getCheatyToken()
-		.then(api =>{
+		.then(api => {
 			req.body.spotifyApi = api
 
 
 			//--------------------------------------------------------------
 			//testing:
-			if(req.body.dateFilter.days){
-				Date.prototype.addDays = function(days) {
+			if (req.body.dateFilter.days) {
+				Date.prototype.addDays = function (days) {
 					var date = new Date(this.valueOf());
 					date.setDate(date.getDate() + days);
 					return date;
@@ -569,8 +592,7 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 				//req.body.dateFilter.end = new Date().addDays(30).toISOString();
 				//req.body.dateFilter.end = new Date().addDays(90).toISOString();
 				//req.body.dateFilter.end = new Date().addDays(366).toISOString();
-			}
-			else if(req.body.dateFilter.disabled){
+			} else if (req.body.dateFilter.disabled) {
 				req.body.dateFilter.start = new Date('December 17, 1995 03:24:00')
 				req.body.dateFilter.end = new Date().toISOString()
 			}
@@ -582,17 +604,18 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 			if (new Date(req.body.dateFilter.start) > new Date()) {
 				res.status(500).send({error: "start date comes after current date"})
 
-			}else if(new Date(req.body.dateFilter.end) < new Date(req.body.dateFilter.start)){
+			} else if (new Date(req.body.dateFilter.end) < new Date(req.body.dateFilter.start)) {
 				res.status(500).send({error: "end date comes before start date"})
-			}
-			else {
+			} else {
 
-				console.info("fetchMetroEvents start date:",req.body.dateFilter.start);
-				console.info("fetchMetroEvents end date:",req.body.dateFilter.end);
-				//testing:
+				console.info("fetchMetroEvents start date:", req.body.dateFilter.start);
+				console.info("fetchMetroEvents end date:", req.body.dateFilter.end);
+
+				//testing: input result of octoparse.preparse
+
 				//fake_metro_events('events',5)
 				fetch_metro_events_file(req.body.metro, req.body.dateFilter)
-				// fetch_metro_events(req.body.metro, req.body.dateFilter)
+					// fetch_metro_events(req.body.metro, req.body.dateFilter)
 					.then(function (events) {
 
 						//todo: why was I checking for next here?
@@ -615,9 +638,15 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 						 * @prop spotify_match - # new aas_matches we formed from w/ Spotify free text artist search
 						 */
 
-						var metrOb = {metro:req.body.metro,dateFilter:req.body.dateFilter,
-							artists:[], aas_match_no_genres:[],aas_match_genres:[], leven_match:[], spotify_match:[],
-							payload:[],
+						var metrOb = {
+							metro: req.body.metro,
+							dateFilter: req.body.dateFilter,
+							artists: [],
+							aas_match_no_genres: [],
+							aas_match_genres: [],
+							leven_match: [],
+							spotify_match: [],
+							payload: [],
 						};
 
 						//is there such thing as lastLook for songkick artists?
@@ -642,9 +671,9 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 						//console.info(AASMatch[0]);
 
 
-						events.forEach(ob =>{
-							ob.performance.forEach(p =>{
-								var a = {id:p.artist.id,name:p.artist.displayName};
+						events.forEach(ob => {
+							ob.performance.forEach(p => {
+								var a = {id: p.artist.id, name: p.artist.displayName};
 								metrOb.artists.push(a);
 								AASMatch.push(db_api.checkDBFor_artist_artistSongkick_match(a))
 							})
@@ -676,24 +705,22 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								// matched w/ no genres and no match (just used to report back) - the fact that these
 								// results weren't put in matched array means they will put onto searches list
 
-								results.forEach(r =>{
+								results.forEach(r => {
 
 									//recording matches to filter out later
 									//and for no matches / genres, pushing onto checkDBForArtistLevenMatch
 
-									if(r.genres.length > 0){
+									if (r.genres.length > 0) {
 
 										//matched and found genres. just recording for posterity
 										//and filtering out of next step
 										metrOb.aas_match_genres.push(r)
-									}
-									else if(r.genres.length === 0){
+									} else if (r.genres.length === 0) {
 										//
 										//matched w/ no genres
 										metrOb.aas_match_no_genres.push(r);
 										//LevenMatch.push(db_api.checkDBForArtistLevenMatch(r))
-									}
-									else{
+									} else {
 										//todo: test
 										debugger
 										//no match
@@ -704,8 +731,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								});
 
 
-								console.info("metrOb.aas_match_no_genres",metrOb.aas_match_no_genres.length);
-								console.info("metrOb.aas_match_genres",metrOb.aas_match_genres.length);
+								console.info("metrOb.aas_match_no_genres", metrOb.aas_match_no_genres.length);
+								console.info("metrOb.aas_match_genres", metrOb.aas_match_genres.length);
 
 								//console.info("LevenMatch payload",LevenMatch.length);
 
@@ -721,8 +748,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 
 								//note: matchedMap created from array splitting above
 								var matchedMap = {}
-								metrOb.aas_match_genres.forEach(r =>{
-									matchedMap[r.id] =  r;
+								metrOb.aas_match_genres.forEach(r => {
+									matchedMap[r.id] = r;
 								})
 
 
@@ -730,11 +757,11 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								console.warn("auto-failing LevenMatch results");
 
 								//note: prepare searches - filtering out those in matchedMap created above
-								results.forEach(r =>{
+								results.forEach(r => {
 
 									//testing: disabled leven_match retry, instead just always search if not matched above
 									r.error = true;
-									if(r.error === undefined){
+									if (r.error === undefined) {
 
 										//record LevenMatch we found
 										//todo: evaluate these new matches integrity
@@ -750,11 +777,9 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										//or my levenmatching, but lets try one more time to link
 										//spotify and songkick artists before we just work with the songkick
 										//artist and try to resolve genres for it
-									}
-									else if(matchedMap[r.id]){
+									} else if (matchedMap[r.id]) {
 										//they had genres = qualified spotify-songkick w/ genres
-									}
-									else{
+									} else {
 										//testing:
 										delete r.error;
 
@@ -770,11 +795,10 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										//THEN there will NEVER be a repeat request to searchArtist and this will somehow fix it??
 
 
-
 										//note:
 										//todo: according to comments below, notFound = couldn't find GENRES, not necessarily a MATCH
 										//so these songkick artist's w/ spotify match, but the match doesn't have any genres
-										if(r.notFound){
+										if (r.notFound) {
 
 											// if(r.id === 10184411){
 											// 	debugger;
@@ -787,9 +811,13 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//   "familyAgg": null
 											// }
 
-											searches.push(limiter.schedule(spotify_api.searchArtist,{body:{artist:r,spotifyApi:req.body.spotifyApi}},{}))
-										}
-										else{
+											searches.push(limiter.schedule(spotify_api.searchArtist, {
+												body: {
+													artist: r,
+													spotifyApi: req.body.spotifyApi
+												}
+											}, {}))
+										} else {
 											//found artist_artistSongkick, but with no genres
 											debugger
 										}
@@ -798,13 +826,13 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 
 
 								//console.info("leven_match",metrOb.leven_match.length);
-								console.info("queries #",searches.length);
+								console.info("queries #", searches.length);
 								//console.info("metrobArtists #",artistSongkicks.length);
 								//searches = searches.slice(0,5)
 								//console.info("queries #",searches.length);
 
 								//todo: re-enable
-								 var combined_promises = artistSongkicksLevenMatches.concat(searches);
+								var combined_promises = artistSongkicksLevenMatches.concat(searches);
 								//var combined_promises = searches;
 								// var combined_promises = [];
 
@@ -841,21 +869,22 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									//but if we do, we know it's also a new artist_artistSongkick entry
 
 									//note: process search results
-									results.forEach(r =>{
+									results.forEach(r => {
 
 										//note: couldn't find the artist
 
 										//todo: dbl check necessary?
 										//todo: larger requests are sometimes timing out?
-										if(!(r.result) || r.result.artists.items === null || r.result.artists.items.length === 0  ){
+										if (!(r.result) || r.result.artists.items === null || r.result.artists.items.length === 0) {
 
-											spotifySearch_artists_noMatches.push(r.artist)}
+											spotifySearch_artists_noMatches.push(r.artist)
+										}
 
 										//note: found artist, so submit artist, artist_songkick and match to db
-										else{
+										else {
 
 											var artist = JSON.parse(JSON.stringify(r.result.artists.items[0]));
-											var artistSongkick= JSON.parse(JSON.stringify(r.artist));
+											var artistSongkick = JSON.parse(JSON.stringify(r.artist));
 
 											var artist_artistSongkick = {
 												artist_id: artist.id,
@@ -864,7 +893,7 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//todo: #
 
 											//testing: needs to be reduced
-											artistSongkick = {id:artistSongkick.id,displayName:artistSongkick.name}
+											artistSongkick = {id: artistSongkick.id, displayName: artistSongkick.name}
 											//todo:# b/c results can be different somehow if I didn't find versus I did find???
 											// artistSongkick.id = artistSongkick.artistSongkick_id
 											// delete artistSongkick.artistSongkick_id
@@ -877,7 +906,7 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 											//but it's possible we've already stored the artist w/ genres
 
 											// debugger
-											aas_promises.push(db_api.commit_artistSongkick_with_match(artist,artistSongkick,artist_artistSongkick));
+											aas_promises.push(db_api.commit_artistSongkick_with_match(artist, artistSongkick, artist_artistSongkick));
 
 											//todo: bc we mutated it? or does this just not mater anyways right? we don't NEED to return anything here
 											commit_artistSongkick_with_match_results.push(artistSongkick)
@@ -965,8 +994,8 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 									})//results.each
 
 									//testing:
-									console.info("no artist-artistSongkick Matches",spotifySearch_artists_noMatches.length);
-									console.info("committing new artist-artistSongkick matches",aas_promises.length);
+									console.info("no artist-artistSongkick Matches", spotifySearch_artists_noMatches.length);
+									console.info("committing new artist-artistSongkick matches", aas_promises.length);
 									// console.info(rejectedMatches);
 									// console.info(newMatches);
 
@@ -977,14 +1006,21 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 										// db_mongo_api.insert(events).then(r => {
 										//console.info("4====================");
 										//console.info(r);
-										console.info("fetchMetroEvents finished execution:",Math.abs(new Date() - startDateCache) / 600);
+										console.info("fetchMetroEvents finished execution:", Math.abs(new Date() - startDateCache) / 600);
 										console.info("all events, artists and genres committed!");
 
-										res.send({artist_artistSongkick_committed:commit_artistSongkick_with_match_results,spotifySearch_artists_noMatches:spotifySearch_artists_noMatches})
+										res.send({
+											artist_artistSongkick_committed: commit_artistSongkick_with_match_results,
+											spotifySearch_artists_noMatches: spotifySearch_artists_noMatches
+										})
 
-									}, error =>{ console.info("mongo events insert error",error);})
+									}, error => {
+										console.info("mongo events insert error", error);
+									})
 
-								},error =>{ console.info("$searches error",error);})
+								}, error => {
+									console.info("$searches error", error);
+								})
 
 								//puppets
 
@@ -1002,14 +1038,15 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 								//console.info("metrOb",app.jstr(metrOb));
 
 
-
 								// Promise.all(puppets).then(results2 => {
 								// 	console.info("$results2",app.jstr(results2));
 								// },error =>{ console.info("$puppets",error);})
 
 								// },error =>{ console.info("$LevenMatch",error);})
 							},
-							error =>{ console.info("$AASMatch",error);})
+							error => {
+								console.info("$AASMatch", error);
+							})
 
 						//expecting a playob so we'll wrap this here
 						// db_api.checkDBForArtistGenres({artists:artists}).then(r =>{
@@ -1020,21 +1057,22 @@ module.exports.fetchMetroEvents =  function(req, res,next){
 						//testing:
 						//res.send(results);
 						//}
-					}).catch(e =>{
-					console.error(e)})
+					}).catch(e => {
+					console.error(e)
+				})
 			}
 		})
 
 };
 
-module.exports.get_metro_events_local=  function(req){
-	return new Promise(function(done, fail) {
+module.exports.get_metro_events_local = function (req) {
+	return new Promise(function (done, fail) {
 
-		var callback = function(res){
-			done({data:res})
+		var callback = function (res) {
+			done({data: res})
 		};
 
-		module.exports.get_metro_events(req,{},callback)
+		module.exports.get_metro_events(req, {}, callback)
 
 	})
 };
@@ -1047,10 +1085,10 @@ module.exports.get_metro_events_local=  function(req){
  *		"id":9480}
  *}
  **/
-module.exports.resolveEvents=  function(req,res,next){
+module.exports.resolveEvents = function (req, res, next) {
 
 	//todo: ajax weirdness
-	console.info("resolveEvents",{metros:req.body.metros,dateFilter:req.body.dateFilter});
+	console.info("resolveEvents", {metros: req.body.metros, dateFilter: req.body.dateFilter});
 	// if(req.body){//postman
 	// }else{ req.body = JSON.parse(req.body.data);}
 
@@ -1060,46 +1098,47 @@ module.exports.resolveEvents=  function(req,res,next){
 	// db_mongo_api.fetch(req.body.metros)
 
 	db_mongo_api.fetch('all')
-		.then(events =>{
+		.then(events => {
 			//console.info(app.jstr(events));
-			console.info("fetched events:",events.length);
+			console.info("fetched events:", events.length);
 
 			var promises = [];
 			var perfMap = {}
-			events.forEach(e =>{
-				e.performance.forEach(p =>{
+			events.forEach(e => {
+				e.performance.forEach(p => {
 					perfMap[p.id] = p;
 
 					//trying a little trick to send ancillary data with request
-					async function check(artist,perf) {
-						var match  = await db_api.checkDBFor_artist_artistSongkick_match(artist);
+					async function check(artist, perf) {
+						var match = await db_api.checkDBFor_artist_artistSongkick_match(artist);
 
-						return {match:match,perf:perf}
+						return {match: match, perf: perf}
 					}
-					promises.push(check(p.artist,p));
+
+					promises.push(check(p.artist, p));
 				});
 			});
-			Promise.all(promises).then(results =>{
-				console.info("checkDB prom finish: ",results.length);
+			Promise.all(promises).then(results => {
+				console.info("checkDB prom finish: ", results.length);
 
 				//todo: speed up unwinding
 
 				//setting perfMap earlier + sending perf along helps unwind results
-				results.forEach(r =>{
+				results.forEach(r => {
 					perfMap[r.perf.id].artist = r.match;
 				});
 
 
 				//but binding them back is still n^n (although, mostly not too many performances)
-				events.forEach(e =>{
-					e.performance.forEach(p =>{
+				events.forEach(e => {
+					e.performance.forEach(p => {
 						p = perfMap[p.id]
 					})
 				});
 				res.send(events);
-			},e =>{
+			}, e => {
 				debugger;
-				console.error("resolveEvents failure",e)
+				console.error("resolveEvents failure", e)
 			})
 
 		})
@@ -1108,21 +1147,23 @@ module.exports.resolveEvents=  function(req,res,next){
 
 
 //testing: recall songkick api doesn't do 'users' so I can pull any user's calender
-module.exports.fetchUserEvents =  function(req, res,next){
-	return new Promise(function(done, fail) {
+module.exports.fetchUserEvents = function (req, res, next) {
+	return new Promise(function (done, fail) {
 
 		var testUser = 'complacent.citizen'
 		var page_count = 1;
-		var get = function(){
+		var get = function () {
 			var params = {};
 			params.page = page_count
 			params.per_page = 50;
-			console.info("getting getUserUpcomingEvents:",testUser)
-			songkickApi.getUserUpcomingEvents(testUser, { attendance: 'all', page: page_count, per_page: 50 })
-				.then(r =>{
+			console.info("getting getUserUpcomingEvents:", testUser)
+			songkickApi.getUserUpcomingEvents(testUser, {attendance: 'all', page: page_count, per_page: 50})
+				.then(r => {
 					console.log(r);
 					debugger
-				}).catch(e =>{console.error(e);})
+				}).catch(e => {
+				console.error(e);
+			})
 
 			//testing:
 			// if(events.length < 50 || (result.events.length === 0 && all_results.length !== 0)){
@@ -1142,9 +1183,9 @@ module.exports.fetchUserEvents =  function(req, res,next){
 };
 
 
-module.exports.searchArtistSongkick = async function(artistOb,artistSongkick_id){
+module.exports.searchArtistSongkick = async function (artistOb, artistSongkick_id) {
 	try {
-		var sres = await songkickApi.searchArtists({ query: artistOb.name });
+		var sres = await songkickApi.searchArtists({query: artistOb.name});
 		return sres?.[0] || null
 
 		//note: had planned on checking if I had incoming artistIdSongkick
@@ -1165,7 +1206,6 @@ module.exports.searchArtistSongkick = async function(artistOb,artistSongkick_id)
 
 //testing:
 //module.exports.fuzzy_compare = fuzzy_compare;
-
 
 
 // var raw = "raw_" + metro_select.displayName +"_" + dateFilter.start + "-" + dateFilter.end + ".json"
@@ -1199,8 +1239,6 @@ module.exports.searchArtistSongkick = async function(artistOb,artistSongkick_id)
 // 	});
 
 
-
-
 // get_metro_events(metro_select,dateFilter,raw,areaDatesArtists)
 // 	.then(fuzzy_compare(my_performances,my_artists))
 // 	.then(function(){
@@ -1232,8 +1270,6 @@ module.exports.searchArtistSongkick = async function(artistOb,artistSongkick_id)
 // 		console.info("ERROR",err)
 // 	})
 //
-
-
 
 
 // var tasks = [];
