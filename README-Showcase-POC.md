@@ -4,6 +4,8 @@ Showcase-POC
 
 ## apis
 
+TODO: trying to break out clean, documented code from `apis/spotify_api.js` into separate files in `spotify_api` directory
+
 `spotify_api.js` | current store for all spotify api related endpoints
 `spotify_api/base.js` | beginning of reorging spotify features
 `spotify_api/playlist_api.js` | spotify playlist related

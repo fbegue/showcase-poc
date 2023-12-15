@@ -46,8 +46,14 @@ var config_remote = {
 	}
 };
 
-var config = null
-if(os.hostname() === "DESKTOP-TMB4Q31"){
+var config;
+ var config_override = false;
+//var config_override = config_rds;
+if(config_override){
+	console.log("override: connecting to remote rds sql instance")
+	config=config_rds
+}
+else if(os.hostname() === "DESKTOP-TMB4Q31"){
 	config=config_local
 	console.log("connecting to sql server:" + config_local.server);
 }else{

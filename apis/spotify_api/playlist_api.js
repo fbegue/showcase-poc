@@ -26,22 +26,7 @@ var util = require('../../util')
 
 var spotify_api = require('../spotify_api')
 
-
 var me = module.exports;
-
-
-me.unfollowPlaylist = async function(req){
-	try{
-		//todo: was getting some kind of bad-gateway when I would try n number of these?
-		//id = "2pLwtgs1CEYAMcUyP2enWt"
-		var r = await req.body.spotifyApi.unfollowPlaylist(req.body.playlistId)
-		return r
-	} catch(e){
-		debugger
-		console.error(e)
-	}
-}
-
 
 //todo: duplicated from spotify_api.js
 //tweaked as async
@@ -72,8 +57,6 @@ me.getUserPlaylists =  function(req){
 	})
 }
 
-
-
 //todo: updated unfollowPlaylist
 me.unfollowMany = async function(req){
 	try{
@@ -100,3 +83,17 @@ me.unfollowMany = async function(req){
 		console.error(e)
 	}
 }
+
+me.unfollowPlaylist = async function(req){
+	try{
+		//todo: was getting some kind of bad-gateway when I would try n number of these?
+		//id = "2pLwtgs1CEYAMcUyP2enWt"
+		var r = await req.body.spotifyApi.unfollowPlaylist(req.body.playlistId)
+		return r
+	} catch(e){
+		debugger
+		console.error(e)
+	}
+}
+
+

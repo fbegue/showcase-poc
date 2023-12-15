@@ -10,8 +10,9 @@ var items = require('../scripts/experience-columbus-scraper/experienceColumbusPa
 //todo: don't know why the fuck old lodash imports don't work here
 //works fine in spotify_api @ test (getMySavedTracks)
 var difference = require('lodash').difference
+var uniqBy = require('lodash').uniqBy
 var _ = require('lodash')
-
+var db_mongo_api = require('./db_mongo_api')
 var artistGroupsMap = require("../scripts/gpt.artists-group-map")
 let notOnSpotify = require("../scripts/not-on-spotify")
 
@@ -41,69 +42,7 @@ var me = module.exports;
 //todo: some weird webstorm bug treating this as non-async sometimes?
 //when debugging, payloads are always out of order?
 
-
-let makeAndPopulatePlaylist = async function (req, playlistTitle, songs) {
-
-	try {
-
-		var desc = {'description': 'My description', 'public': true};
-		var _createPlaylist = async function (id, playlistTitle, desc) {
-			try {
-				var res = await req.body.spotifyApi.createPlaylist(id, playlistTitle, desc);
-				return res
-			} catch (e) {
-				throw e
-			}
-		}
-
-		var r = await network_utility.limiter.schedule(_createPlaylist, req.body.user.id, playlistTitle, desc);
-		console.log("new playlist id:", r.body.id)
-
-		var _addTracksToPlaylist = async function (id, payload) {
-			try {
-				payload = payload.map(s => "spotify:track:" + s.id);
-				var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
-				return res
-			} catch (e) {
-				throw e
-			}
-		}
-		var fitTry = async function (req, id, payload) {
-			try {
-				//payload = payload.slice(0,5)
-				var res = await network_utility.limiter.schedule(_addTracksToPlaylist, id, payload)
-				//debugger
-				return res
-			} catch (e) {
-				//debugger
-				throw e
-			}
-		}
-		var task = async function (payload) {
-			try {
-				var response = await fitTry(req, r.body.id, payload)
-				//debugger
-				return response;
-			} catch (e) {
-				//debugger
-				throw e
-			}
-		}
-
-		var payloads = giveMePayloads(songs, 100)
-		var proms = payloads.map(task);
-
-		//var proms = payloads.map(network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50}));
-		return await Promise.all(proms)
-		//return r.body.id
-
-
-	} catch (e) {
-		console.error(e)
-		throw(e)
-	}
-}
-
+/**helpers*/
 
 var matchArtistOfGroup = function (strArtist, strArtistMatch) {
 
@@ -143,6 +82,15 @@ var processFuzzy = function (str, matchStr) {
 	}
 }
 
+var _getArtistTopTracks = async function (req, artistId) {
+	try {
+		var res = await req.body.spotifyApi.getArtistTopTracks(artistId, 'ES')
+		return res.body.tracks
+	} catch (e) {
+
+		throw e
+	}
+}
 
 var getArtistTopTracks = function (req,artistOb,sampleSize) {
 	return new Promise(function (done, fail) {
@@ -157,7 +105,7 @@ var getArtistTopTracks = function (req,artistOb,sampleSize) {
 				done(ids)
 				//note: on failure, still resolve w/ notice as such
 			}, e => {
-				debugger
+
 				console.error(e);
 				done({failure: e})
 			})
@@ -165,6 +113,545 @@ var getArtistTopTracks = function (req,artistOb,sampleSize) {
 	})
 }
 
+me.resolveArtists = async function (req, res) {
+
+	console.log("resolveArtists", items.length)
+
+	//note: no idea what this was about lol
+	let removeStringsWithDays = function(){
+		var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+		var withDays = items.filter(i => {
+			var found = false;
+			for (var x = 0; x < days.length; x++) {
+				found = i.Title.indexOf(days[x]) !== -1
+				if (found) {
+					break
+				}
+			}
+			return found;
+		})
+		//todo: what the fuck is going on with lodash
+		console.log("withDays", withDays.length)
+
+		items = difference(items, withDays);
+		debugger
+		items.forEach(i => {
+			i.name = i.Title;
+			i.type = "artist"
+		})
+	}
+	//removeStringsWithDays()
+
+	//testing:
+	//albums = albums.slice(0,150)
+	//items = items.slice(0,1)
+
+	//debugger
+	//albums = albums.filter(a =>{return a.name === "1999"})
+
+	try {
+		var task = async function (item) {
+			try {
+
+
+				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req,item)
+				//todo: change depending on context
+				var resultItems = response?.result?.artists?.items
+
+				if (resultItems.length > 0) {
+
+					var processFuzzy = function (item, artist) {
+
+						var a = FuzzySet();
+
+						a.add(item.artist);
+						var missing = a.get(artist.name) === null;
+						var get = false;
+						//for some reason fuzzy is missing stuff like "Prince" "Prince and the Revolution"???
+						var contains = artist.name.indexOf(item.artist) !== -1 || item.artist.indexOf(artist.name) !== -1
+
+						// !missing ? get =  a.get(artist.name)[0][0]:{}
+						!missing ? get = a.get(artist.name) : {}
+						if (!contains && (missing || get < .5)) {
+							//rejectedMatches.push([item.name, artist.name])
+							//debugger
+							return false;
+						} else {
+							return true;
+						}
+					}
+
+
+					var matchResult = false;
+					//todo:
+					matchResult = true;
+					// for(var x = 0; x <resultItems.length; x++){
+					// 	var item = resultItems[x]
+					// 	if(processFuzzy(item,{name:album.artists[0].name})){
+					// 		matchResult ={item:item,result:album.artists[0].name}
+					// 	}
+					// }
+
+					if (notOnSpotify.indexOf(item.artist) !== -1) {
+						matchResult = {item: item, result: resultItems, flag: "not on Spotify"}
+						return matchResult
+					} else if (!matchResult) {
+						resultItems.forEach(item => {
+							item.available_markets = null;
+						});
+						matchResult = {item: item, result: resultItems, flag: "failed"}
+						// console.log("bad album artist match: " +  response.result.albums.items[0].artists[0].name + " | " +item.artist);
+						console.log("bad album artist match: ", JSON.stringify(matchResult, null, 4));
+
+						return matchResult
+					} else {
+						//todo: need to fetch an album first
+
+						var trackOb = [[null]]
+						//var trackOb = await network_utility.limiter.schedule(spotify_api.resolveAlbumTracks,req,resultItems[0].id)
+
+						// console.log("id",response.result.albums.items[0].artists[0].id);
+						var _getArtist = async function (artistId) {
+							try {
+								return await req.body.spotifyApi.getArtist(artistId);
+							} catch (e) {
+								debugger;
+								throw e
+							}
+						}
+
+						var artistOb = await network_utility.limiter.schedule(_getArtist, resultItems[0].id)
+						//console.log("artistOb",artistOb);
+
+						//note: how many tracks
+						return {
+							query: item,
+							tracks: trackOb[0].slice(0, 2),
+							artist: artistOb.body,
+							album: resultItems[0]
+						}
+					}
+
+				} else {
+					return response;
+				}
+
+			} catch (e) {
+				debugger
+			}
+		}
+
+		//testing:
+		//albums = albums.slice(0,10)
+		//albums = albums.slice(0,1)
+
+
+		var ps = items.map(task);
+
+		//var ps = []
+		// ps.push(network_utility.limiter.schedule(spotify_api.searchSpotify,req,albums[0]))
+		//ps.push(spotify_api.searchSpotify(req,albums[0]))
+
+		//testing:
+
+		var results = await Promise.all(ps)
+
+		//todo:move up
+		const IM = require('../utility/inMemory')
+
+		var _ = require('lodash')
+
+		function familyFreq(a) {
+
+			var ret = null;
+
+			//a = JSON.parse(JSON.stringify(a));
+			//console.log(JSON.parse(JSON.stringify(a)));
+			// console.log("familyFreq",a.genres);
+			// console.log("familyFreq",a.genres.length >0);
+
+			if (a.genres && a.genres.length > 0) {
+				var fmap = {};
+				for (var z = 0; z < a.genres.length; z++) {
+					if (a.genres[z].family_name) {
+						if (!(fmap[a.genres[z].family_name])) {
+							fmap[a.genres[z].family_name] = 1
+						} else {
+							fmap[a.genres[z].family_name]++;
+						}
+					}
+				}
+
+				//console.log("$fmap",fmap);
+
+				//check the family map defined and see who has the highest score
+				if (!(_.isEmpty(fmap))) {
+					//convert map to array (uses entries and ES6 'computed property names')
+					//and find the max
+					var arr = [];
+					Object.entries(fmap).forEach(tup => {
+						var r = {[tup[0]]: tup[1]};
+						arr.push(r);
+					});
+					//todo: could offer this
+					var m = _.maxBy(arr, function (r) {
+						return Object.values(r)[0]
+					});
+					var f = Object.keys(m)[0];
+					//console.log("%", f);
+					ret = f;
+				}
+			} else {
+				//if
+				console.warn("no genres!", a.name);
+			}
+			ret ? a.familyAgg = ret : {};
+			return ret;
+		}
+
+		var results_pre = results.length + ""
+		var failed = results.filter(r => {
+			return r.flag
+		})
+		results = results.filter(r => {
+			return !r.flag
+		})
+		//todo:
+		var unknown = results.filter(r => {
+			return r.failure
+		})
+		results = results.filter(r => {
+			return !r.failure
+		})
+
+		console.log("bad requests", failed)
+		console.log("bad requests ratio", failed.length + "/" + results_pre);
+		console.log("unknown requests", unknown)
+		debugger
+
+		results.forEach(r => {
+			if (!r.artist.genres) {
+				debugger
+			}
+			r.artist.genres = r.artist.genres.map(gString => {
+				return IM.genresQualifiedMap[gString]
+			})
+			r.artist.genres = r.artist.genres.filter(g => {
+				return g !== undefined
+			})
+			r.artist.familyAgg = familyFreq(r.artist)
+
+		})
+
+		function capitalizeFirstLetter(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		}
+
+		const sortedResultsFamily = results.reduce((groups, album) => {
+			//const splitString = email.split('@');
+			//const account = splitString[0];
+			const domain = album.artist.familyAgg
+
+
+			if (!groups[domain]) groups[domain] = [];
+
+			groups[domain].push(album);
+			return groups;
+		}, {});
+
+		var myRegexpYear = /(.*)-(.*)-(.*)/g;
+		var myRegexpMonth = /(.*)-(.*)/g;
+
+		const getDecade = (album) => {
+			var m = null;
+			if (album.release_date_precision === 'year') {
+				m = album.release_date
+			} else if (album.release_date_precision === 'month') {
+				m = new RegExp(myRegexpMonth).exec(album.release_date)[1]
+			} else {
+				m = new RegExp(myRegexpYear).exec(album.release_date)[1]
+
+			}
+			// if(m === null){
+			// 	debugger
+			// }
+
+			m = parseInt(m)
+			switch (true) {
+				case m < 1970:
+					return 60
+				case m >= 1970 && m < 1980:
+					return 70
+				case m >= 1980 && m < 1990:
+					return 80
+				case m >= 1990 && m < 2000:
+					return 90
+				case m >= 2000 && m < 2030:
+					return 2030
+				default:
+					console.error('no date!', m)
+					debugger
+				// code block
+			}
+		}
+
+		const sortedResultsDecade = results.reduce((groups, ob) => {
+			//const splitString = email.split('@');
+			//const account = splitString[0];
+			const domain = getDecade(ob.album)
+
+
+			if (!groups[domain]) groups[domain] = [];
+
+			groups[domain].push(ob);
+			return groups;
+		}, {});
+
+		var newPlaylistIds = [];
+		const makePopPlaylist = async function (domain, songs) {
+			domain = capitalizeFirstLetter(domain)
+			try {
+				var pname = 'RollingStonesTop500' + (domain ? '-' + domain : "")
+				var desc = {'description': 'My description', 'public': true};
+
+				var _createPlaylist = async function (id, pname, desc) {
+					try {
+						var res = await req.body.spotifyApi.createPlaylist(id, pname, desc);
+						return res
+					} catch (e) {
+						throw e
+					}
+				}
+
+				var r = await network_utility.limiter.schedule(_createPlaylist, req.body.user.id, pname, desc);
+				console.log("new playlist", r.body.id)
+
+				newPlaylistIds = newPlaylistIds.concat(r.body.id)
+				var _addTracksToPlaylist = async function (id, payload) {
+					try {
+						var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
+						return res
+					} catch (e) {
+						throw e
+					}
+				}
+				var fitTry = async function (req, id, payload) {
+					try {
+						//payload = payload.slice(0,5)
+						var res = await network_utility.limiter.schedule(_addTracksToPlaylist, id, payload)
+						//debugger
+						return res
+					} catch (e) {
+						//debugger
+						throw e
+					}
+				}
+				var task = async function (payload) {
+					try {
+						var response = await fitTry(req, r.body.id, payload)
+						//debugger
+						return response;
+					} catch (e) {
+						//debugger
+						throw e
+					}
+				}
+
+				var payloads = giveMePayloads(songs, 100)
+				var proms = payloads.map(task);
+
+				//var proms = payloads.map(network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50}));
+				return await Promise.all(proms)
+				//return r.body.id
+
+
+			} catch (e) {
+				console.error(e)
+				throw(e)
+			}
+		}
+
+		//note: use sorted or not
+		//var sorted = false
+		//var sorted = sortedResultsDecade
+		var sorted = sortedResultsFamily
+
+		if (sorted) {
+
+			Object.keys(sorted).forEach(domain => {
+				var songs = [];
+				sorted[domain].forEach(r => {
+					songs = songs.concat(r.tracks)
+				})
+				console.log("domain:" + domain, songs.length);
+
+				var fucked = songs.filter(s => {
+					return s === undefined
+				})
+				console.log("fucked", fucked.length);
+				//debugger
+				songs = songs.filter(s => {
+					return s !== undefined
+				})
+				songs = songs.map(s => "spotify:track:" + s.id);
+
+				network_utility.limiter.schedule(makePopPlaylist, domain, songs)
+					.then(r => {
+						//todo: check add results
+						console.log("new playlist ids", newPlaylistIds)
+						console.log("finished!");
+					}, e => {
+						console.error(e);
+						debugger
+					})
+
+			})
+
+		} else {
+			//note: use unsorted (single domain = blank)
+			var songs = [];
+			results.forEach(r => {
+				songs = songs.concat(r.tracks)
+			})
+			console.log("songs", songs.length);
+
+			var fucked = songs.filter(s => {
+				return s === undefined
+			})
+			console.log("fucked", fucked.length);
+
+			songs = songs.filter(s => {
+				return s !== undefined
+			})
+			songs = songs.map(s => "spotify:track:" + s.id);
+
+			var r = await makePopPlaylist("", songs)
+			//todo: check add results
+			console.log("new playlist ids", newPlaylistIds)
+			console.log("finished!");
+
+		}
+
+		//var atres = await network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50})
+		// req.body.spotifyApi.addTracksToPlaylist(r.body.id, payload)
+		// 	.then(function (data) {
+		// 		console.log('Added tracks to playlist!');
+		// 	}, function (err) {
+		// 		console.log('Something went wrong!', err);
+		// 	});
+
+
+	} catch (e) {
+		debugger
+	}
+
+}
+
+
+// var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed');
+var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json');
+var artistSongkickArr = require('../scripts/songkick-scraper/LA_fetchMetroEvents_result').artist_artistSongkick_committed;
+
+me.compare_fetchMetroEvents_artists_to_input_json_events = async function (req, res) {
+	var matched = [];
+	var no_matched = [];
+
+	artistSongkickArr.forEach(a => {
+		var breakIt = false;
+		for (var x = 0; x < parsed.length; x++) {
+			var thisOne = parsed[x];
+			if (JSON.stringify(thisOne).includes(a.displayName)) {
+
+				matched.push(thisOne)
+				breakIt = true;
+				break;
+			}
+		}
+		if (!breakIt) {
+			debugger
+			no_matched.push(a)
+		}
+
+	})
+	console.log(matched.length)
+	console.log(no_matched.length)
+	debugger
+}
+
+/**playlists*/
+
+let makeAndPopulatePlaylist = async function (req, playlistTitle, songs) {
+
+	try {
+
+		var desc = {'description': 'My description', 'public': true};
+		var _createPlaylist = async function (id, playlistTitle, desc) {
+			try {
+				var res = await req.body.spotifyApi.createPlaylist(id, playlistTitle, desc);
+				return res
+			} catch (e) {
+				throw e
+			}
+		}
+
+		var r = await network_utility.limiter.schedule(_createPlaylist, req.body.user.id, playlistTitle, desc);
+		console.log("new playlist id:", r.body.id)
+
+		var _addTracksToPlaylist = async function (id, payload) {
+			try {
+				payload = payload.map(s => "spotify:track:" + s.id);
+				var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
+				return res
+			} catch (e) {
+				throw e
+			}
+		}
+
+		var fitTry = async function (req, id, payload) {
+			try {
+				//payload = payload.slice(0,5)
+				var res = await network_utility.limiter.schedule(_addTracksToPlaylist, id, payload)
+				//debugger
+				return res
+			} catch (e) {
+				//debugger
+				throw e
+			}
+		}
+		var task = async function (payload) {
+			try {
+				var response = await fitTry(req, r.body.id, payload)
+				//debugger
+				return response;
+			} catch (e) {
+				//debugger
+				throw e
+			}
+		}
+
+		var payloads = giveMePayloads(songs, 100)
+		var proms = payloads.map(task);
+
+		//var proms = payloads.map(network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50}));
+		return await Promise.all(proms)
+		//return r.body.id
+
+
+	} catch (e) {
+		console.error(e)
+		throw(e)
+	}
+}
+
+
+/**
+ *
+ * @param req.body.items array of artist strings
+ * @param req.body.trackLimit number representing how many tracks from each artist
+ * @param req.body.newPlaylistName output playlist name
+ * @param res
+ * @returns {Promise<void>}
+ */
 me.resolveArtistsToSamplePlaylist = async function (req, res) {
 	let artistObs = [];
 
@@ -205,16 +692,16 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 
 						//for each track/album item
 						for (var x = 0; x < queryResultItems.length && !matchArtistResult; x++) {
-								var qItem = queryResultItems[x];
-								let matchResult = processFuzzy(item.name, qItem.name);
-								if (matchResult) {
-									// non-falsy matchResult breaks out of both loops
-									matchArtistResult = {
-										item: item,
-										result: qItem,
-										matchReason: matchResult.matchReason
-									}
+							var qItem = queryResultItems[x];
+							let matchResult = processFuzzy(item.name, qItem.name);
+							if (matchResult) {
+								// non-falsy matchResult breaks out of both loops
+								matchArtistResult = {
+									item: item,
+									result: qItem,
+									matchReason: matchResult.matchReason
 								}
+							}
 
 						}//outer-for
 
@@ -260,6 +747,8 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 
 	console.log(`successes: ${successes.length} | failures: ${failures.length}`)
 
+
+
 	let str = ""
 	failures.forEach(f => {
 		str = str + f.item.artist.name + ","
@@ -287,13 +776,18 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 	let tracks = []
 	var pstracks = fullyQualifiedArtists.map(getArtistTopTracksTask);
 	var trackResultSets = await Promise.all(pstracks)
+
+	//unwind array of arrays, and cut down number of songs from each artist to req.body.tracksLimit
 	let fullyQualifiedTracks = [];
 	trackResultSets.forEach(set =>{
+		set = set.slice(0,req.body.tracksLimit)
 		fullyQualifiedTracks = fullyQualifiedTracks.concat(set)
 	})
 
-	await makeAndPopulatePlaylist(req, "Wonderbus-2023-Sunday", fullyQualifiedTracks)
-	debugger
+
+
+	await makeAndPopulatePlaylist(req, req.body.newPlaylistName, fullyQualifiedTracks)
+
 }
 //resolveArtistsToSamplePlaylist
 
@@ -867,474 +1361,280 @@ me.removeThesePlaylists = async function (req, res) {
 	})
 }
 
+// var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents")
+//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20231116.v4.output.resolved"
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.resolved.json"
 
+//testing: reduce input size
+// jsonInputFile = jsonInputFile.slice(0,2)
 
-me.resolveArtists = async function (req, res) {
+//todo: rename LA specific stuff to generalized names
 
-	console.log("resolveArtists", items.length)
+let playlistName = "songkick-santa-fe.20231206"
+me.createPlaylistFromJson = async function (req, res) {
+	var jsonInputFile = require(jsonInputFilePath)
 
-	//note: no idea what this was about lol
-	let removeStringsWithDays = function(){
-		var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-		var withDays = items.filter(i => {
-			var found = false;
-			for (var x = 0; x < days.length; x++) {
-				found = i.Title.indexOf(days[x]) !== -1
-				if (found) {
-					break
-				}
-			}
-			return found;
-		})
-		//todo: what the fuck is going on with lodash
-		console.log("withDays", withDays.length)
-
-		items = difference(items, withDays);
-		debugger
-		items.forEach(i => {
-			i.name = i.Title;
-			i.type = "artist"
-		})
-	}
-	//removeStringsWithDays()
+	console.log("createPlaylistFromJson:",jsonInputFilePath);
+	req.body.tracksLimit = 2
+	req.body.artists = [];
 
 	//testing:
-	//albums = albums.slice(0,150)
-	//items = items.slice(0,1)
-
-	//debugger
-	//albums = albums.filter(a =>{return a.name === "1999"})
-
-	try {
-		var task = async function (item) {
-			try {
-
-
-				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req,item)
-				//todo: change depending on context
-				var resultItems = response?.result?.artists?.items
-
-				if (resultItems.length > 0) {
-
-					var processFuzzy = function (item, artist) {
-
-						var a = FuzzySet();
-
-						a.add(item.artist);
-						var missing = a.get(artist.name) === null;
-						var get = false;
-						//for some reason fuzzy is missing stuff like "Prince" "Prince and the Revolution"???
-						var contains = artist.name.indexOf(item.artist) !== -1 || item.artist.indexOf(artist.name) !== -1
-
-						// !missing ? get =  a.get(artist.name)[0][0]:{}
-						!missing ? get = a.get(artist.name) : {}
-						if (!contains && (missing || get < .5)) {
-							//rejectedMatches.push([item.name, artist.name])
-							//debugger
-							return false;
-						} else {
-							return true;
-						}
-					}
-
-
-					var matchResult = false;
-					//todo:
-					matchResult = true;
-					// for(var x = 0; x <resultItems.length; x++){
-					// 	var item = resultItems[x]
-					// 	if(processFuzzy(item,{name:album.artists[0].name})){
-					// 		matchResult ={item:item,result:album.artists[0].name}
-					// 	}
-					// }
-
-					if (notOnSpotify.indexOf(item.artist) !== -1) {
-						matchResult = {item: item, result: resultItems, flag: "not on Spotify"}
-						return matchResult
-					} else if (!matchResult) {
-						resultItems.forEach(item => {
-							item.available_markets = null;
-						});
-						matchResult = {item: item, result: resultItems, flag: "failed"}
-						// console.log("bad album artist match: " +  response.result.albums.items[0].artists[0].name + " | " +item.artist);
-						console.log("bad album artist match: ", JSON.stringify(matchResult, null, 4));
-
-						return matchResult
-					} else {
-						//todo: need to fetch an album first
-
-						var trackOb = [[null]]
-						//var trackOb = await network_utility.limiter.schedule(spotify_api.resolveAlbumTracks,req,resultItems[0].id)
-
-						// console.log("id",response.result.albums.items[0].artists[0].id);
-						var _getArtist = async function (artistId) {
-							try {
-								return await req.body.spotifyApi.getArtist(artistId);
-							} catch (e) {
-								debugger;
-								throw e
-							}
-						}
-
-						var artistOb = await network_utility.limiter.schedule(_getArtist, resultItems[0].id)
-						//console.log("artistOb",artistOb);
-
-						//note: how many tracks
-						return {
-							query: item,
-							tracks: trackOb[0].slice(0, 2),
-							artist: artistOb.body,
-							album: resultItems[0]
-						}
-					}
-
-				} else {
-					return response;
-				}
-
-			} catch (e) {
-				debugger
-			}
-		}
-
-		//testing:
-		//albums = albums.slice(0,10)
-		//albums = albums.slice(0,1)
-
-
-		var ps = items.map(task);
-
-		//var ps = []
-		// ps.push(network_utility.limiter.schedule(spotify_api.searchSpotify,req,albums[0]))
-		//ps.push(spotify_api.searchSpotify(req,albums[0]))
-
-		//testing:
-
-		var results = await Promise.all(ps)
-
-		//todo:move up
-		const IM = require('../utility/inMemory')
-
-		var _ = require('lodash')
-
-		function familyFreq(a) {
-
-			var ret = null;
-
-			//a = JSON.parse(JSON.stringify(a));
-			//console.log(JSON.parse(JSON.stringify(a)));
-			// console.log("familyFreq",a.genres);
-			// console.log("familyFreq",a.genres.length >0);
-
-			if (a.genres && a.genres.length > 0) {
-				var fmap = {};
-				for (var z = 0; z < a.genres.length; z++) {
-					if (a.genres[z].family_name) {
-						if (!(fmap[a.genres[z].family_name])) {
-							fmap[a.genres[z].family_name] = 1
-						} else {
-							fmap[a.genres[z].family_name]++;
-						}
-					}
-				}
-
-				//console.log("$fmap",fmap);
-
-				//check the family map defined and see who has the highest score
-				if (!(_.isEmpty(fmap))) {
-					//convert map to array (uses entries and ES6 'computed property names')
-					//and find the max
-					var arr = [];
-					Object.entries(fmap).forEach(tup => {
-						var r = {[tup[0]]: tup[1]};
-						arr.push(r);
-					});
-					//todo: could offer this
-					var m = _.maxBy(arr, function (r) {
-						return Object.values(r)[0]
-					});
-					var f = Object.keys(m)[0];
-					//console.log("%", f);
-					ret = f;
-				}
-			} else {
-				//if
-				console.warn("no genres!", a.name);
-			}
-			ret ? a.familyAgg = ret : {};
-			return ret;
-		}
-
-		var results_pre = results.length + ""
-		var failed = results.filter(r => {
-			return r.flag
-		})
-		results = results.filter(r => {
-			return !r.flag
-		})
-		//todo:
-		var unknown = results.filter(r => {
-			return r.failure
-		})
-		results = results.filter(r => {
-			return !r.failure
-		})
-
-		console.log("bad requests", failed)
-		console.log("bad requests ratio", failed.length + "/" + results_pre);
-		console.log("unknown requests", unknown)
-		debugger
-
-		results.forEach(r => {
-			if (!r.artist.genres) {
-				debugger
-			}
-			r.artist.genres = r.artist.genres.map(gString => {
-				return IM.genresQualifiedMap[gString]
-			})
-			r.artist.genres = r.artist.genres.filter(g => {
-				return g !== undefined
-			})
-			r.artist.familyAgg = familyFreq(r.artist)
-
-		})
-
-		function capitalizeFirstLetter(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-
-		const sortedResultsFamily = results.reduce((groups, album) => {
-			//const splitString = email.split('@');
-			//const account = splitString[0];
-			const domain = album.artist.familyAgg
-
-
-			if (!groups[domain]) groups[domain] = [];
-
-			groups[domain].push(album);
-			return groups;
-		}, {});
-
-		var myRegexpYear = /(.*)-(.*)-(.*)/g;
-		var myRegexpMonth = /(.*)-(.*)/g;
-
-		const getDecade = (album) => {
-			var m = null;
-			if (album.release_date_precision === 'year') {
-				m = album.release_date
-			} else if (album.release_date_precision === 'month') {
-				m = new RegExp(myRegexpMonth).exec(album.release_date)[1]
-			} else {
-				m = new RegExp(myRegexpYear).exec(album.release_date)[1]
-
-			}
-			// if(m === null){
-			// 	debugger
-			// }
-
-			m = parseInt(m)
-			switch (true) {
-				case m < 1970:
-					return 60
-				case m >= 1970 && m < 1980:
-					return 70
-				case m >= 1980 && m < 1990:
-					return 80
-				case m >= 1990 && m < 2000:
-					return 90
-				case m >= 2000 && m < 2030:
-					return 2030
-				default:
-					console.error('no date!', m)
-					debugger
-				// code block
-			}
-		}
-
-		const sortedResultsDecade = results.reduce((groups, ob) => {
-			//const splitString = email.split('@');
-			//const account = splitString[0];
-			const domain = getDecade(ob.album)
-
-
-			if (!groups[domain]) groups[domain] = [];
-
-			groups[domain].push(ob);
-			return groups;
-		}, {});
-
-		var newPlaylistIds = [];
-		const makePopPlaylist = async function (domain, songs) {
-			domain = capitalizeFirstLetter(domain)
-			try {
-				var pname = 'RollingStonesTop500' + (domain ? '-' + domain : "")
-				var desc = {'description': 'My description', 'public': true};
-
-				var _createPlaylist = async function (id, pname, desc) {
-					try {
-						var res = await req.body.spotifyApi.createPlaylist(id, pname, desc);
-						return res
-					} catch (e) {
-						throw e
-					}
-				}
-
-				var r = await network_utility.limiter.schedule(_createPlaylist, req.body.user.id, pname, desc);
-				console.log("new playlist", r.body.id)
-
-				newPlaylistIds = newPlaylistIds.concat(r.body.id)
-				var _addTracksToPlaylist = async function (id, payload) {
-					try {
-						var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
-						return res
-					} catch (e) {
-						throw e
-					}
-				}
-				var fitTry = async function (req, id, payload) {
-					try {
-						//payload = payload.slice(0,5)
-						var res = await network_utility.limiter.schedule(_addTracksToPlaylist, id, payload)
-						//debugger
-						return res
-					} catch (e) {
-						//debugger
-						throw e
-					}
-				}
-				var task = async function (payload) {
-					try {
-						var response = await fitTry(req, r.body.id, payload)
-						//debugger
-						return response;
-					} catch (e) {
-						//debugger
-						throw e
-					}
-				}
-
-				var payloads = giveMePayloads(songs, 100)
-				var proms = payloads.map(task);
-
-				//var proms = payloads.map(network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50}));
-				return await Promise.all(proms)
-				//return r.body.id
-
-
-			} catch (e) {
-				console.error(e)
-				throw(e)
-			}
-		}
-
-		//note: use sorted or not
-		//var sorted = false
-		//var sorted = sortedResultsDecade
-		var sorted = sortedResultsFamily
-
-		if (sorted) {
-
-			Object.keys(sorted).forEach(domain => {
-				var songs = [];
-				sorted[domain].forEach(r => {
-					songs = songs.concat(r.tracks)
-				})
-				console.log("domain:" + domain, songs.length);
-
-				var fucked = songs.filter(s => {
-					return s === undefined
-				})
-				console.log("fucked", fucked.length);
-				//debugger
-				songs = songs.filter(s => {
-					return s !== undefined
-				})
-				songs = songs.map(s => "spotify:track:" + s.id);
-
-				network_utility.limiter.schedule(makePopPlaylist, domain, songs)
-					.then(r => {
-						//todo: check add results
-						console.log("new playlist ids", newPlaylistIds)
-						console.log("finished!");
-					}, e => {
-						console.error(e);
-						debugger
-					})
-
-			})
-
-		} else {
-			//note: use unsorted (single domain = blank)
-			var songs = [];
-			results.forEach(r => {
-				songs = songs.concat(r.tracks)
-			})
-			console.log("songs", songs.length);
-
-			var fucked = songs.filter(s => {
-				return s === undefined
-			})
-			console.log("fucked", fucked.length);
-
-			songs = songs.filter(s => {
-				return s !== undefined
-			})
-			songs = songs.map(s => "spotify:track:" + s.id);
-
-			var r = await makePopPlaylist("", songs)
-			//todo: check add results
-			console.log("new playlist ids", newPlaylistIds)
-			console.log("finished!");
-
-		}
-
-		//var atres = await network_utility.limiter.schedule(fitTry,req,r.body.id,{ limit : 50})
-		// req.body.spotifyApi.addTracksToPlaylist(r.body.id, payload)
-		// 	.then(function (data) {
-		// 		console.log('Added tracks to playlist!');
-		// 	}, function (err) {
-		// 		console.log('Something went wrong!', err);
-		// 	});
-
-
-	} catch (e) {
-		debugger
-	}
-
-}
-
-
-// var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed');
-var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json');
-var artistSongkickArr = require('../scripts/songkick-scraper/LA_fetchMetroEvents_result').artist_artistSongkick_committed;
-
-me.compare_fetchMetroEvents_artists_to_input_json_events = async function (req, res) {
-	var matched = [];
-	var no_matched = [];
-
-	artistSongkickArr.forEach(a => {
-		var breakIt = false;
-		for (var x = 0; x < parsed.length; x++) {
-			var thisOne = parsed[x];
-			if (JSON.stringify(thisOne).includes(a.displayName)) {
-
-				matched.push(thisOne)
-				breakIt = true;
-				break;
-			}
-		}
-		if (!breakIt) {
-			debugger
-			no_matched.push(a)
-		}
+	//LA_resolveEvents = LA_resolveEvents.slice(0,20);
+
+	// //testing: sort by date
+	// //todo: (should be done when we pull these)
+	// jsonInputFile.sort((a, b) => {
+	// 	const dateA = new Date(a.start.date);
+	// 	const dateB = new Date(b.start.date);
+	//
+	// 	return dateA - dateB;
+	// });
+
+	//testing: filter for only events before date
+	//todo: (should be done when we pull these)
+
+	let filterStartDate = new Date("12-15-2023")
+
+	//note: ignoring event start time, since I don't accept the time of day as a filter parameter
+	//so I guess it's okay that I don't create the compare dateA with it (e.start.time)
+	//instead, since my filterDates are 0:00:00, I'll set the EVENT time to 1 second after that
+
+	jsonInputFile = jsonInputFile.filter(e =>{
+		//if the show date comes after (is greater than) the stopDate
+		const dateA = new Date(e.start.date);
+		dateA.setHours(0, 0, 1, 0);
+		let cr = dateA > filterStartDate;
+		return cr;
 
 	})
-	console.log(matched.length)
-	console.log(no_matched.length)
-	debugger
-}
 
-//smarter playlists
+	//note: similarly, I set the the FILTER time to 1 second after the date
+	let filterStopDate = new Date("12-22-2023")
+	filterStopDate.setHours(0, 0, 1, 0);
+
+	jsonInputFile = jsonInputFile.filter(e =>{
+		//if the show date comes before (is less than) the stopDate
+		const dateA = new Date(e.start.date);
+		let cr = dateA < filterStopDate;
+		return cr;
+	})
+
+	console.log("pre-filtered from inputjson",jsonInputFile.length)
+	debugger
+
+
+	//testing: pulled these out manually, not sure about accuracy
+	//todo: (should be done when we pull these)
+
+	// let columbus_metro_names =
+	// 	[
+	// 		"Columbus",
+	// 		"Newark",
+	// 		"Loudonville",
+	// 		"Westerville",
+	// 		"Circleville",
+	// 		"Chillicothe",
+	// 		"Athens",
+	// 		"Mt. Vernon"
+	// 	]
+	// let all_metros = [];
+	// jsonInputFile = jsonInputFile.filter(e =>{
+	//
+	// 	let name = e.venue.metroArea.displayName;
+	//
+	// 	//note: sourced manual list
+	// 	//if(all_metros.indexOf(name) == -1){all_metros.push(name)}
+	//
+	// 	if(columbus_metro_names.indexOf(name) != -1){
+	// 		return e.venue.metroArea.displayName == "Columbus"
+	// 	}
+	// 	else{
+	// 		return false
+	// 	}
+	// })
+
+
+	//console.log({jsonInputFile})
+
+
+	//todo: in cases where I couldn't resolve the artist, it looks like resolveEvents is returning
+	//performance.artist w/ the songkick numeric id (and no spotify id/genres)
+
+	//note: filter out erraonoes ongkick numeric id
+	//note: make a map of each artist to their date so I can add them to playlists in chrono order later
+
+
+	let LA_artist_date_map = {}
+
+	//todo: not doing shit with either of these besides not including it in LA_artist_date_map
+	let dups = [];
+	let unresolvedEventArtists = [];
+
+	jsonInputFile.forEach(e => {
+		e.performance.forEach(p => {
+
+			//no latin please (LA)
+			var isLatin = p.artist.familyAgg === "latin";
+			if (typeof p.artist.id === "string" && !isLatin) {
+				req.body.artists.push(p.artist.id)
+				if (!LA_artist_date_map[p.artist.id]){
+					LA_artist_date_map[p.artist.id] = e.start.date
+				} else {
+					dups.push(p.artist)
+				}
+			}
+			else{
+				unresolvedEventArtists.push(p.artist)
+			}
+		})
+	});
+
+	console.log("unresolvedEventArtists",JSON.stringify(uniqBy(unresolvedEventArtists.map(a =>{return a.displayName}),"id")))
+
+	//testing:
+	//req.body.artists = req.body.artists.slice(0,10)
+
+	try {
+		var task = async function (id) {
+			//note: id stays the same like this??
+			// delete req.body.artist
+			// req.body.artist= {id:id}
+			//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+			try {
+
+				//testing:
+				//example artist id: 43ZHCT0cAZBISjO8DG9PnE
+				//id = "43ZHCT0cAZBISjO8DG9PnE";
+				//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+
+				//note: straight-spotifyApi
+				var response = await network_utility.limiter.schedule(_getArtistTopTracks, req, id)
+				return response;
+			}
+			catch (e) {
+				debugger
+			}
+		}
+
+
+		var proms = req.body.artists.map(task);
+		var songSets = await Promise.all(proms)
+
+		var songs = [];
+
+		songSets.forEach(s => {
+			songs = songs.concat(s.slice(0, req.body.tracksLimit))
+		})
+
+		//testing: create playlist for each day
+
+		//note: create map of dates to arrays to hold artist ids
+
+		var daySongPays = {};
+		Object.values(LA_artist_date_map).forEach(d => {
+			daySongPays[d] = [];
+		})
+
+		songs.forEach(s => {
+			//what was the date for this artist of this song?
+			//note: take care of possible extra artists besides event one in song
+			s.artists = s.artists.filter(a => {
+				return LA_artist_date_map[a.id]
+			})
+			let date = LA_artist_date_map[s.artists[0].id];
+			//push the song into an array based on that date
+			// if(dayPays[date].indexOf(s.artists[0].id) === -1){
+			// 	dayPays[date].push(s.artists[0].id)
+			// }
+
+			//todo: need to compare by id not object
+			//var r = _.find(daySongPays[date],function(r){return r.id===s.id});
+
+			if (daySongPays[date].indexOf(s) === -1) {
+				daySongPays[date].push(s)
+			}
+		})
+
+		//todo: untested
+		let eachDay = false;
+
+		function createPlaylistForEachDay(){
+			var promises = []
+			Object.keys(daySongPays).forEach(d => {
+				promises.push(limiter.schedule(spotify_api.createPlaylist, req, req.body.user, {name: playlistName}, daySongPays[d]))
+			})
+			return promises
+		}
+
+		var _addTracksToPlaylist = async function (id, payload) {
+			try {
+				payload = payload.map(s => "spotify:track:" + s.id);
+				var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
+				return res
+			} catch (e) {
+				throw e
+			}
+		}
+
+		function addToPlaylistForEachDay(id,daySongPays){
+
+			//var promises = []
+			let payloads = []
+
+			for(var x = 1; x < Object.keys(daySongPays).length;x++){
+				let payload_date = Object.keys(daySongPays)[x];
+
+				//todo: result of testin
+				if(daySongPays[payload_date].length > 0){
+					//promises.push(limiter.schedule(_addTracksToPlaylist, id,daySongPays[payload_date]));
+					payloads.push(daySongPays[payload_date])
+				}
+			}
+			return payloads
+		}
+
+		//todo: forgot how to pass things other than pay, so recorded this below before execution
+		let r_create_playlist_id = null;
+		var task = async function (pay) {
+
+			try {
+				var response = await network_utility.limiter.schedule(_addTracksToPlaylist,r_create_playlist_id, pay)
+				return response;
+			} catch (e) {
+				debugger
+			}
+		}
+
+		if(eachDay){
+			var r = await Promise.all(createPlaylistForEachDay());
+		}
+		else{
+			//create playist with 1 payload
+
+			let payload_0_date = Object.keys(daySongPays)[0]
+			let payload_0 = daySongPays[payload_0_date]
+			var r_create =  await network_utility.limiter.schedule(spotify_api.createPlaylist,req,req.body.user,{name:playlistName},payload_0)
+
+			console.log("new playlist id:", r_create.playlist.id)
+			//var r_add =  await limiter.schedule(addToPlaylistForEachDay,r_create.playlist.id,daySongPays)
+			let payloads = addToPlaylistForEachDay(r_create.playlist.id,daySongPays)
+			r_create_playlist_id = r_create.playlist.id;
+			var add_proms = payloads.map(task);
+			var mresults = await Promise.all(add_proms)
+		}
+		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+		var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r_create.playlist)
+
+		res.send(tracksR)
+	} catch (e) {
+		debugger
+		console.error(e)
+		res.status(500).send(e)
+	}
+};
+
+/**smarter playlists*/
 
 me.archiveLikedSongs = async function (req, res) {
 
@@ -1454,7 +1754,7 @@ me.archiveLikedSongs = async function (req, res) {
 		// const result = findAndRemoveDuplicatesByProperty(arr1,arr2,
 
 		const result = findAndRemoveDuplicatesByProperty(playlists[targetPlaylistKey].tracks,playlists[targetPlaylistKey].savedTracks,
-			 'track.name');
+			'track.name');
 
 		// console.log(result.uniqueItems);
 		// console.log(result.duplicates);

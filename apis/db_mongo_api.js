@@ -347,9 +347,14 @@ me.fetch =  function(param){
 					done(events)
 				})
 		}else{
+			SFDB.collection(param).find().toArray()
+				.then(result_events =>{
+					events = events.concat(result_events)
+					done(events)
+				},e=>{
+					console.error(e)
+				})
 
-			events = events.concat(SFDB.collection(param).find().toArray())
-			done(events)
 		}
 
 

@@ -1,4 +1,6 @@
-var jsonInputPath  = "./octoparse-results/songkick-columbus.20231116.v4.json"
+//var jsonInputPath  = "./octoparse-results/songkick-columbus.20231116.v4.json"
+var jsonInputPath  = "./octoparse-results/songkick-santa-fe.20231206.json"
+
 var jsonInput = require(jsonInputPath)
 const fs = require('fs');
 const { DateTime } = require("luxon");
@@ -75,14 +77,24 @@ const run = async function(jsonInput){
 				//need to map performers_array_parsed to soundfound-acceptable objects
 				//note: context_array is always a single member array
 				var performance = r.context_array_parsed[0].performer.map((p,i2) =>{
+					const pattern = /(?:artists\/)(\d+)-[a-zA-Z0-9-]+/;
+					const match = p.sameAs.match(pattern);
+					let artistId;
+					if (match) {
+						artistId = parseInt(match[1])
+					}
+					else{
+						console.error("songkick artistid parse failure")
+						debugger
+					}
 
 					return {
-						"id": getPid(10000,20000),
+						"id":artistId,
 						"displayName": p.name,
 						"billing": "unknown",
 						"billingIndex": 1,
 						"artist": {
-							"id":  getPid(20001,30000),
+							"id":  artistId,
 							"displayName": p.name,
 							"uri": p.sameAs,
 						}
