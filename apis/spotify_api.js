@@ -47,8 +47,14 @@ var scopes = all_scopes,
 	//todo:
 	state = 'some-state-of-my-choice';
 
+//testing: app name: showcase
 var client_id = '0e7ef13646c9410293a0119e652b35f7'; // Your client id
 var client_secret = 'a00084c5c193478e9fc5d9a0c0e70058'; // Your secret
+
+//testing: app name: showcase-2
+// var client_id = '4afbf552a0aa45c798ff3ebc7743b729'; // Your client id
+// var client_secret = 'b379617154884bfa8d6963a3fa5e0057'; // Your secret
+
 
 var spotifyApi = {};
 
@@ -159,7 +165,6 @@ var getTokens = function (code, clientOrigin) {
 		};
 		console.log(authOptions);
 
-
 		rp(authOptions).then(function (res) {
 			//	console.log("$res",res)
 			done(res);
@@ -233,6 +238,7 @@ var refresh = function () {
 
 module.exports.getCheatyToken = function (redirectFromClient) {
 	return new Promise(function (done, fail) {
+
 		var credentials = {
 			clientId: client_id,
 			clientSecret: client_secret,
@@ -322,21 +328,9 @@ me.getToken = function (req, res) {
 //user methods =================================================
 //==============================================================
 
-//todo: hardcoded user name
-
-me.getUserPlaylists = function (req, res) {
-
-	//dacandyman01
-	req.body.spotifyApi.getUserPlaylists('dacandyman01', {limit: 50})
-		.then(pageIt.bind(null, req, null))
-		.then(function (r) {
 
 
-			res.send(r);
-		}, function (err) {
-			console.error('getUserPlaylists failed', err);
-		});
-}
+
 
 
 var getUserProfile = function (req, u) {
@@ -718,7 +712,12 @@ var getFollowedArtists = function (req) {
 me.getFollowedArtists = function (req, res) {
 	getFollowedArtists(req)
 		.then(r => {
-			res.send(r)
+			let array = [];
+			r.artists.forEach(a =>{
+				array.push(a.name)
+			})
+			debugger
+			res.send({name_array:array,result:r})
 		})
 		.catch(e => {
 			res.status(500).send(e)
@@ -2181,8 +2180,6 @@ me.createArtistsPlaylist = async function (req, res) {
 };
 
 
-
-
 me.testSave = async function (req, res) {
 	var rTrack = await db_mongo_api.trackUserPlaylist(req.body.user, "3evs360A5LkM7qv0NXuTgP")
 	debugger
@@ -2550,13 +2547,149 @@ var getArtistPopularity = function (req, artist_id) {
 
 
 //other methods----------------------------------------------------------
+//
+// app.post('/createPlaylist', (req, res) => {
+// 	console.log("createPlaylist");
+// 	res.send({ application: 'soundfound'});
+// })
+
+me.createPlaylistEnd = function (req, res) {
+	req.body.spotifyApi.createPlaylist(req.body.user.id, req.body.playlist.name, {
+		'description': 'My description',
+		'public': true
+	})
+		.then(createPlaylistResponse => {
+			res.send({endpoint: 'createPlaylistEnd'});
+		})
+		.catch(e => {
+			res.status(500).send(e)
+		})
+}
+
+me.createPlaylistSpotifyEnd = async function (req, res) {
+
+	let uri = `https://api.spotify.com/v1/users/${req.body.user.id}/playlists`
+
+	let options = {
+		//method: "GET",
+		uri: uri,
+		headers: {
+			'User-Agent': 'Request-Promise',
+			"Authorization": 'Bearer ' + req.body.spotifyApi.getAccessToken()
+		},
+		// body: {
+		// 	"name": req.body.playlist.name,
+		// 	"description": "New playlist description",
+		// 	"public": false
+		// },
+		json: true
+	};
+
+	return rp(options)
+		.then(function (r) {
+			//console.log(options.uri);
+			if (r.failure) {
+				return {artist: r.options.artist, failure: r.failure}
+			}
+			debugger
+			return {artist: req.body.artist, result: r}
+		}, function (err) {
+			console.error(err.response.statusMessage);
+			debugger
+			throw(err);
+		});
+}
+
+me.createPlaylistSpotifyEndFetchTry = async function (req, res) {
+
+	let uri = `https://api.spotify.com/v1/users/${req.body.user.id}/playlists`
+
+	let options = {
+		method: "GET",
+		uri: uri,
+		headers: {
+			'User-Agent': 'Request-Promise',
+			"Authorization": 'Bearer ' + req.body.spotifyApi.getAccessToken()
+		},
+		// body: {
+		// 	"name": req.body.playlist.name,
+		// 	"description": "New playlist description",
+		// 	"public": false
+		// },
+		json: true
+	};
+
+	return network_utility.fetchTry(uri, options, 3, 300)
+		.then(function (r) {
+			//console.log(options.uri);
+			if (r.failure) {
+				return {artist: r.options.artist, failure: r.failure}
+			}
+			debugger
+			return {artist: req.body.artist, result: r}
+		}, function (err) {
+			console.error(err);
+			debugger
+			throw(err);
+		});
+}
+
+me.searchArtistEnd = async function (req,res) {
+
+	req.body.artist = {
+			"id": 10241420,
+			"name": "Ra (US)",
+			"genres": [],
+			"notFound": true,
+			"familyAgg": null
+		}
+
+	let nameClean = req.body.artist.name.replace(/\(US\)/g, "");
+	nameClean = nameClean.replace(/[^a-zA-Z\s]/g, "");
+	nameClean = encodeURIComponent(nameClean)
+
+	if (nameClean === "") {
+		return {artist: req.body.artist, failure: {reason: "bad name parse", parseValue: nameClean}}
+	} else {
+
+		let uri = "https://api.spotify.com/v1/search?query=" + nameClean + "&type=artist&offset=0&limit=20"
+		let options = {
+			uri: uri,
+			headers: {
+				'User-Agent': 'Request-Promise',
+				"Authorization": 'Bearer ' + req.body.spotifyApi.getAccessToken()
+			},
+			//artist: {name: req.body.artist},
+			json: true
+		};
+		// return network_utility.fetchTry(options.uri,options,3,300)
+		return rp(options)
+			// req.body.spotifyApi.searchArtists(req.body.artist.name)
+			.then(function (r) {
+				//console.log(options.uri);
+				if (r.failure) {
+					return {artist: r.options.artist, failure: r.failure}
+				}
+
+				//return {artist: req.body.artist, result: r}
+				res.send({artist: req.body.artist, result: r})
+
+			}, function (err) {
+				console.error(err);
+				debugger
+				throw(err);
+			});
+
+	}
+}
 
 me.createPlaylist = function (req, user, playlist, songs) {
 	return new Promise(function (done, fail) {
 		console.log("createPlaylist", songs.length);
-
+		debugger
 		req.body.spotifyApi.createPlaylist(user.id, playlist.name, {'description': 'My description', 'public': true})
 			.then(createPlaylistResponse => {
+				debugger
 				//var payload = [];
 				//songs.forEach(songOb =>{
 				//payload.push("spotify:track:" + songOb.id)
@@ -2721,6 +2854,7 @@ me.searchSpotify = async function (req, item) {
 	nameClean = nameClean.replace(/[^a-zA-Z\s\d\\.]/g, "");
 	nameClean = encodeURIComponent(nameClean)
 
+	debugger
 	if (nameClean === "") {
 		debugger
 		return {item: item, failure: {reason: "empty name parse"}}
@@ -2758,7 +2892,6 @@ me.searchSpotify = async function (req, item) {
 
 	}
 }
-
 
 
 //exposing an endpoint that uses it to the UI
@@ -2840,8 +2973,8 @@ me.getPlaying = function (req, res) {
 	rp(options)
 		.then(track => {
 			//console.log("r",r);
-            //todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
-			if(track){
+			//todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
+			if (track) {
 				req.body.spotifyApi.getArtist(track.item.artists[0].id)
 					.then(artist => {
 						var pay = {track: track, artist: artist.body};
@@ -2850,10 +2983,10 @@ me.getPlaying = function (req, res) {
 						res.send(pay)
 					}, e => {
 					})
-			}else{
+			} else {
 				let msg = "getPlaying finished - nothing is playing right now"
 				console.warn(msg);
-				res.send({msg:msg,track:null,artist:null})
+				res.send({msg: msg, track: null, artist: null})
 			}
 
 		}, err => {
@@ -3095,11 +3228,11 @@ me.resolvePlaylists = async function (req, res) {
 	//!(shallowTracks) ? shallowTracks = 'skip':{};
 
 	let playlistResult = await
-	req.body.spotifyApi.getUserPlaylists(req.body.user.id, {limit: 50})
-		.then(network_utility.pageIt.bind(null, req, null, null))
-		.then(r => {
-			return r
-		})
+		req.body.spotifyApi.getUserPlaylists(req.body.user.id, {limit: 50})
+			.then(network_utility.pageIt.bind(null, req, null, null))
+			.then(r => {
+				return r
+			})
 	console.log("total playlists length", playlistResult.items.length);
 	req.body.playlists = playlistResult.items;
 
@@ -3190,162 +3323,162 @@ me.resolvePlaylists = async function (req, res) {
 	// 	promises.push(db_api.checkDBForArtistGenres(playob, 'artists'))
 	// })
 
-		//note: playob profile: {playlist:{},tracks:[],artists:[],payload:[],db:[],lastLook:[]}
-		//entries found in the the db will be returned in db, and those that were't go on payload
-		//therefore, payload.length + db.length = artists.length
+	//note: playob profile: {playlist:{},tracks:[],artists:[],payload:[],db:[],lastLook:[]}
+	//entries found in the the db will be returned in db, and those that were't go on payload
+	//therefore, payload.length + db.length = artists.length
 
-		//feature: depending on length of payload might it be advantangous to return some of that data immediately?
-		//right now if the playlist has ANY payload.lengh, we send it on thru
+	//feature: depending on length of payload might it be advantangous to return some of that data immediately?
+	//right now if the playlist has ANY payload.lengh, we send it on thru
 
 
-		//console.log("db fulfilled & payloads created ==================================");
-		//console.log(playobs.length);
+	//console.log("db fulfilled & payloads created ==================================");
+	//console.log(playobs.length);
 
-		var resolverPromises = [];
-		//set this in memory before we start trying to qualify genres
-		//resolverPromises.push(db_api.setFG())
+	var resolverPromises = [];
+	//set this in memory before we start trying to qualify genres
+	//resolverPromises.push(db_api.setFG())
 
-		//var fullyResolvedPlayobs = [];
-	    resolvedPlaylists.forEach(playob => {
+	//var fullyResolvedPlayobs = [];
+	resolvedPlaylists.forEach(playob => {
 
-			resolverPromises.push(resolver.resolveTracks(req, playob))
+		resolverPromises.push(resolver.resolveTracks(req, playob))
+	})
+
+	//console.log("resolverPromises", resolverPromises.length);
+	//console.log("fullyResolvedPlayobs", fullyResolvedPlayobs.length);
+
+
+	Promise.all(resolverPromises).then(resolvedPlaylistsPlaceholder => {
+		//console.log(resolvedPlaylists)
+		//testing: only use a couple playlists
+		//done(resolvedPlayobs);
+
+		//console.log("db population",playobs[0].db.length);
+		//returns with a full artist object
+		//console.log(playobs[0].db[0]);
+		//console.log("spotifyArtists",playobs[1].spotifyArtists.length);
+		//console.log(playobs[1].spotifyArtists[1]);
+
+		var pullPromises = [];
+
+		//console.log(app.jstr(playObsWithSpotifyArtists));
+		console.log("resolvePlaylists finished execution:", Math.abs(new Date() - startDate) / 600);
+		console.log("resolvedPlaylists", resolvedPlaylists.length);
+		//feature: sort of abusing this 'playob' idea with this special 'spotifyArtistsResolved' BS
+		//if checkDBForArtistGenres could find any genre information for the spotifyArtists we fed it
+		//they'll be stored on these playob.db fields - otherwise it'll be in the 'payload' which is just
+		//being abused here as normally this 'payload' would get fed elsewhere but here its just a signal
+		//that yes indeed we couldn't find anything for them
+
+		var stats = {created: 0, followed: 0, recent: null, oldest: null};
+
+		resolvedPlaylists.forEach(p => {
+			//console.log(p.playlist.owner.id);
+			p.resolved = [];
+			//p.resolved = p.db.concat(p.spotifyArtists)
+			p.resolved = p.resolved.concat(p.db);
+			p.resolved = p.resolved.concat(p.payload);
+
+			//go thru every track and record the artist into artistFreq w/ a # representing the freq
+			//todo: why not just sort the tracks lol? (see getMySavedTracks)
+			p.artistFreq = {};
+			p.tracks.forEach(t => {
+				//most recently modified should only check user created playlists
+				if (p.playlist.owner.id === req.body.user.id) {
+					//set baselone recent
+					stats.recent === null ? stats.recent = {
+						playlist_id: p.playlist.id,
+						playlist_name: p.playlist.name,
+						added_at: new Date(t.added_at)
+					} : {};
+					stats.oldest === null ? stats.oldest = {
+						playlist_id: p.playlist.id,
+						playlist_name: p.playlist.name,
+						added_at: new Date(t.added_at)
+					} : {};
+					var d1 = new Date(t.added_at);
+					if (stats.recent.added_at < d1) {
+						stats.recent = {
+							playlist: p.playlist.id,
+							playlist_name: p.playlist.name,
+							added_at: new Date(t.added_at)
+						}
+					}
+					if (stats.oldest.added_at > d1) {
+						stats.oldest = {
+							playlist: p.playlist.id,
+							playlist_name: p.playlist.name,
+							added_at: new Date(t.added_at)
+						}
+					}
+				}
+				//todo: only checking the first artist of each track (also, see getMySavedTracks)
+				!(p.artistFreq[t.track.artists[0].id]) ? p.artistFreq[t.track.artists[0].id] = 1 : p.artistFreq[t.track.artists[0].id]++;
+			});
+
+			//count created
+			if (p.playlist.owner.id === req.body.user.id) {
+				stats.created = stats.created + 1;
+			}
+
+			//go thru every artist and thru all their genres and find each genre's family
+			//appends the family name as "familyAgg" which represents it's genres' top distribution over family names
+
+
+			p.resolved.forEach(a => {
+				util.familyFreq(a);
+			})
+			//p.resolved.forEach(a =>{a.familyAgg?{}:console.log("$",a)})
+
+			// p.payloadResolved.forEach(playob=>{
+			// 	p.resolved = p.resolved.concat(playob.db);
+			// 	p.resolved = p.resolved.concat(playob.payload);
+			// 	//todo: when lastlook is functional
+			// 	//p.resolved = p.resolved.concat(playob.lastlook)
+			// })
+			//p.resolved = p.db.concat(p.payload)
 		})
 
-		//console.log("resolverPromises", resolverPromises.length);
-		//console.log("fullyResolvedPlayobs", fullyResolvedPlayobs.length);
+		//followed is just the difference
+		stats.followed = resolvedPlaylists.length - stats.created
+		console.log(stats);
 
-
-		Promise.all(resolverPromises).then(resolvedPlaylistsPlaceholder => {
-			//console.log(resolvedPlaylists)
-				//testing: only use a couple playlists
-				//done(resolvedPlayobs);
-
-				//console.log("db population",playobs[0].db.length);
-				//returns with a full artist object
-				//console.log(playobs[0].db[0]);
-				//console.log("spotifyArtists",playobs[1].spotifyArtists.length);
-				//console.log(playobs[1].spotifyArtists[1]);
-
-			var pullPromises = [];
-
-				//console.log(app.jstr(playObsWithSpotifyArtists));
-				console.log("resolvePlaylists finished execution:", Math.abs(new Date() - startDate) / 600);
-				console.log("resolvedPlaylists", resolvedPlaylists.length);
-				//feature: sort of abusing this 'playob' idea with this special 'spotifyArtistsResolved' BS
-				//if checkDBForArtistGenres could find any genre information for the spotifyArtists we fed it
-				//they'll be stored on these playob.db fields - otherwise it'll be in the 'payload' which is just
-				//being abused here as normally this 'payload' would get fed elsewhere but here its just a signal
-				//that yes indeed we couldn't find anything for them
-
-				var stats = {created: 0, followed: 0, recent: null, oldest: null};
-
-			resolvedPlaylists.forEach(p => {
-					//console.log(p.playlist.owner.id);
-					p.resolved = [];
-					//p.resolved = p.db.concat(p.spotifyArtists)
-					p.resolved = p.resolved.concat(p.db);
-					p.resolved = p.resolved.concat(p.payload);
-
-					//go thru every track and record the artist into artistFreq w/ a # representing the freq
-					//todo: why not just sort the tracks lol? (see getMySavedTracks)
-					p.artistFreq = {};
-					p.tracks.forEach(t => {
-						//most recently modified should only check user created playlists
-						if (p.playlist.owner.id === req.body.user.id) {
-							//set baselone recent
-							stats.recent === null ? stats.recent = {
-								playlist_id: p.playlist.id,
-								playlist_name: p.playlist.name,
-								added_at: new Date(t.added_at)
-							} : {};
-							stats.oldest === null ? stats.oldest = {
-								playlist_id: p.playlist.id,
-								playlist_name: p.playlist.name,
-								added_at: new Date(t.added_at)
-							} : {};
-							var d1 = new Date(t.added_at);
-							if (stats.recent.added_at < d1) {
-								stats.recent = {
-									playlist: p.playlist.id,
-									playlist_name: p.playlist.name,
-									added_at: new Date(t.added_at)
-								}
-							}
-							if (stats.oldest.added_at > d1) {
-								stats.oldest = {
-									playlist: p.playlist.id,
-									playlist_name: p.playlist.name,
-									added_at: new Date(t.added_at)
-								}
-							}
-						}
-						//todo: only checking the first artist of each track (also, see getMySavedTracks)
-						!(p.artistFreq[t.track.artists[0].id]) ? p.artistFreq[t.track.artists[0].id] = 1 : p.artistFreq[t.track.artists[0].id]++;
-					});
-
-					//count created
-					if (p.playlist.owner.id === req.body.user.id) {
-						stats.created = stats.created + 1;
-					}
-
-					//go thru every artist and thru all their genres and find each genre's family
-					//appends the family name as "familyAgg" which represents it's genres' top distribution over family names
-
-
-					p.resolved.forEach(a => {
-						util.familyFreq(a);
-					})
-					//p.resolved.forEach(a =>{a.familyAgg?{}:console.log("$",a)})
-
-					// p.payloadResolved.forEach(playob=>{
-					// 	p.resolved = p.resolved.concat(playob.db);
-					// 	p.resolved = p.resolved.concat(playob.payload);
-					// 	//todo: when lastlook is functional
-					// 	//p.resolved = p.resolved.concat(playob.lastlook)
-					// })
-					//p.resolved = p.db.concat(p.payload)
+		//testing: trying to use this to pull favorite artist playlists
+		//console.log("adding extra processing step");
+		resolvedPlaylists.forEach(p => {
+			var apMap = {};
+			p.tracks.forEach(t => {
+				t.track.artists.forEach(a => {
+					!(apMap[a.name]) ? apMap[a.name] = 1 : apMap[a.name] = apMap[a.name] + 1
 				})
+			});
 
-				//followed is just the difference
-				stats.followed = resolvedPlaylists.length - stats.created
-				console.log(stats);
+			for (var key in apMap) {
+				if (apMap[key] > 2) {
+					//console.log("found a " + key + " focused playlist");
+					//console.log(p.playlist.id);
+				}
+			}
 
-				//testing: trying to use this to pull favorite artist playlists
-				//console.log("adding extra processing step");
-				resolvedPlaylists.forEach(p => {
-					var apMap = {};
-					p.tracks.forEach(t => {
-						t.track.artists.forEach(a => {
-							!(apMap[a.name]) ? apMap[a.name] = 1 : apMap[a.name] = apMap[a.name] + 1
-						})
-					});
+			var arr = [];
+			Object.entries(apMap).forEach(tup => {
+				var r = {[tup[0]]: tup[1]};
+				arr.push(r);
+			});
 
-					for (var key in apMap) {
-						if (apMap[key] > 2) {
-							//console.log("found a " + key + " focused playlist");
-							//console.log(p.playlist.id);
-						}
-					}
+			var sorted = _.orderBy(arr, function (r) {
+				return Object.values(r)[0]
+			}, 'desc');
+			//console.log("$sorted",sorted);
 
-					var arr = [];
-					Object.entries(apMap).forEach(tup => {
-						var r = {[tup[0]]: tup[1]};
-						arr.push(r);
-					});
-
-					var sorted = _.orderBy(arr, function (r) {
-						return Object.values(r)[0]
-					}, 'desc');
-					//console.log("$sorted",sorted);
-
-					//todo: going to need to do some math here
-					//1) just getting the top value won't do if there are several that are about equal
-					//2) if there are several I need to somehow define like a 'relative max' or something?
-				});
+			//todo: going to need to do some math here
+			//1) just getting the top value won't do if there are several that are about equal
+			//2) if there are several I need to somehow define like a 'relative max' or something?
+		});
 
 
-				res.send({playlists: resolvedPlaylists, stats: stats})
-				//res.send(resolvedPlaylists)
-		})
+		res.send({playlists: resolvedPlaylists, stats: stats})
+		//res.send(resolvedPlaylists)
+	})
 	//testing: getUserPlaylists
 }

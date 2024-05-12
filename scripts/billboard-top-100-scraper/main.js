@@ -65,6 +65,7 @@ async function main() {
 
 		charts = await _listCharts();
 		charts = charts.map(c =>{return {...c,index:getIndex(c)}})
+		debugger;
 
 		//testing:
 
@@ -160,7 +161,7 @@ main()
 // 	// array of all charts
 // 	console.log(charts);
 // });
-//
+
 // var strDate = '1970-08-27'
 // //var chartName = 'hot-100',
 // var chartName = 'rock-streaming-songs'

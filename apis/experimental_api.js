@@ -1,4 +1,4 @@
-
+var playlist_api = require('../apis/spotify_api/playlist_api')
 var spotify_api = require('../apis/spotify_api')
 let resolver = require("../resolver")
 var giveMePayloads = require('../utility/utility').giveMePayloads
@@ -11,7 +11,9 @@ var items = require('../scripts/experience-columbus-scraper/experienceColumbusPa
 //works fine in spotify_api @ test (getMySavedTracks)
 var difference = require('lodash').difference
 var uniqBy = require('lodash').uniqBy
+var uniq = require('lodash').uniq
 var _ = require('lodash')
+var fs = require("fs")
 var db_mongo_api = require('./db_mongo_api')
 var artistGroupsMap = require("../scripts/gpt.artists-group-map")
 let notOnSpotify = require("../scripts/not-on-spotify")
@@ -87,19 +89,18 @@ var _getArtistTopTracks = async function (req, artistId) {
 		var res = await req.body.spotifyApi.getArtistTopTracks(artistId, 'ES')
 		return res.body.tracks
 	} catch (e) {
-
 		throw e
 	}
 }
 
-var getArtistTopTracks = function (req,artistOb,sampleSize) {
+var getArtistTopTracks = function (req, artistOb, sampleSize) {
 	return new Promise(function (done, fail) {
 		//console.log("getArtistTopTracks");
 		//console.log("$getArtistTopTracks",req.body.id);
 
 		req.body.spotifyApi.getArtistTopTracks(artistOb.id, 'ES')
 			.then(r => {
-				var ids = r.body.tracks.slice(0,sampleSize ).map(r => {
+				var ids = r.body.tracks.slice(0, sampleSize).map(r => {
 					return {id: r.id, name: r.name}
 				})
 				done(ids)
@@ -118,7 +119,7 @@ me.resolveArtists = async function (req, res) {
 	console.log("resolveArtists", items.length)
 
 	//note: no idea what this was about lol
-	let removeStringsWithDays = function(){
+	let removeStringsWithDays = function () {
 		var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 		var withDays = items.filter(i => {
 			var found = false;
@@ -154,7 +155,7 @@ me.resolveArtists = async function (req, res) {
 			try {
 
 
-				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req,item)
+				var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req, item)
 				//todo: change depending on context
 				var resultItems = response?.result?.artists?.items
 
@@ -656,7 +657,7 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 	let artistObs = [];
 
 	req.body.items.forEach(artistString => {
-		const aob = {type:"artist",name:artistString}
+		const aob = {type: "artist", name: artistString}
 		artistObs.push(aob)
 	})
 
@@ -748,7 +749,6 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 	console.log(`successes: ${successes.length} | failures: ${failures.length}`)
 
 
-
 	let str = ""
 	failures.forEach(f => {
 		str = str + f.item.artist.name + ","
@@ -756,7 +756,7 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 
 	//note: just taking the top result
 	let fullyQualifiedArtists = []
-	successes.forEach(taskResult =>{
+	successes.forEach(taskResult => {
 		fullyQualifiedArtists.push(taskResult.result.matchArtistResult.result)
 	})
 
@@ -764,7 +764,7 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 		try {
 			//ask spotify to search "type" results
 			//we pass the entire item so we can track it item w/ result
-			return network_utility.limiter.schedule(getArtistTopTracks, req, item,5)
+			return network_utility.limiter.schedule(getArtistTopTracks, req, item, 5)
 		} catch (e) {
 			console.error(e);
 			debugger
@@ -779,11 +779,10 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 
 	//unwind array of arrays, and cut down number of songs from each artist to req.body.tracksLimit
 	let fullyQualifiedTracks = [];
-	trackResultSets.forEach(set =>{
-		set = set.slice(0,req.body.tracksLimit)
+	trackResultSets.forEach(set => {
+		set = set.slice(0, req.body.tracksLimit)
 		fullyQualifiedTracks = fullyQualifiedTracks.concat(set)
 	})
-
 
 
 	await makeAndPopulatePlaylist(req, req.body.newPlaylistName, fullyQualifiedTracks)
@@ -1361,25 +1360,45 @@ me.removeThesePlaylists = async function (req, res) {
 	})
 }
 
-// var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents")
-//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20231116.v4.output.resolved"
-let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.resolved.json"
 
-//testing: reduce input size
-// jsonInputFile = jsonInputFile.slice(0,2)
+const filterEvents = function (req, jsonInputFile) {
 
-//todo: rename LA specific stuff to generalized names
+	//testing: filter for only events before date
+	//todo: (should be done when we pull these)
 
-let playlistName = "songkick-santa-fe.20231206"
-me.createPlaylistFromJson = async function (req, res) {
-	var jsonInputFile = require(jsonInputFilePath)
+	if (req.body.dateFilter.start) {
 
-	console.log("createPlaylistFromJson:",jsonInputFilePath);
-	req.body.tracksLimit = 2
-	req.body.artists = [];
+		let filterStartDate = new Date(req.body.dateFilter.start)
+		console.log("filterStartDate", req.body.dateFilter.start)
+		//note: ignoring event start time, since I don't accept the time of day as a filter parameter
+		//so I guess it's okay that I don't create the compare dateA with it (e.start.time)
+		//instead, since my filterDates are 0:00:00, I'll set the EVENT time to 1 second after that
 
-	//testing:
-	//LA_resolveEvents = LA_resolveEvents.slice(0,20);
+		jsonInputFile = jsonInputFile.filter(e => {
+			//if the show date comes after (is greater than) the stopDate
+			const dateA = new Date(e.start.date);
+			dateA.setHours(0, 0, 1, 0);
+			let cr = dateA > filterStartDate;
+			return cr;
+
+		})
+	}
+
+	if (req.body.dateFilter.stop) {
+		// note: similarly, I set the the FILTER time to 1 second after the date
+		let filterStopDate = new Date(req.body.dateFilter.stop)
+		console.log("filterStopDate", req.body.dateFilter.stop)
+
+		filterStopDate.setHours(0, 0, 1, 0);
+
+		jsonInputFile = jsonInputFile.filter(e => {
+			//if the show date comes before (is less than) the stopDate
+			const dateA = new Date(e.start.date);
+			let cr = dateA < filterStopDate;
+			return cr;
+		})
+	}
+
 
 	// //testing: sort by date
 	// //todo: (should be done when we pull these)
@@ -1390,42 +1409,8 @@ me.createPlaylistFromJson = async function (req, res) {
 	// 	return dateA - dateB;
 	// });
 
-	//testing: filter for only events before date
-	//todo: (should be done when we pull these)
-
-	let filterStartDate = new Date("12-15-2023")
-
-	//note: ignoring event start time, since I don't accept the time of day as a filter parameter
-	//so I guess it's okay that I don't create the compare dateA with it (e.start.time)
-	//instead, since my filterDates are 0:00:00, I'll set the EVENT time to 1 second after that
-
-	jsonInputFile = jsonInputFile.filter(e =>{
-		//if the show date comes after (is greater than) the stopDate
-		const dateA = new Date(e.start.date);
-		dateA.setHours(0, 0, 1, 0);
-		let cr = dateA > filterStartDate;
-		return cr;
-
-	})
-
-	//note: similarly, I set the the FILTER time to 1 second after the date
-	let filterStopDate = new Date("12-22-2023")
-	filterStopDate.setHours(0, 0, 1, 0);
-
-	jsonInputFile = jsonInputFile.filter(e =>{
-		//if the show date comes before (is less than) the stopDate
-		const dateA = new Date(e.start.date);
-		let cr = dateA < filterStopDate;
-		return cr;
-	})
-
-	console.log("pre-filtered from inputjson",jsonInputFile.length)
-	debugger
-
-
-	//testing: pulled these out manually, not sure about accuracy
-	//todo: (should be done when we pull these)
-
+	//testing: filter for certain metros
+	// //todo: (should be done when we pull these)
 	// let columbus_metro_names =
 	// 	[
 	// 		"Columbus",
@@ -1438,6 +1423,7 @@ me.createPlaylistFromJson = async function (req, res) {
 	// 		"Mt. Vernon"
 	// 	]
 	// let all_metros = [];
+	//
 	// jsonInputFile = jsonInputFile.filter(e =>{
 	//
 	// 	let name = e.venue.metroArea.displayName;
@@ -1445,15 +1431,21 @@ me.createPlaylistFromJson = async function (req, res) {
 	// 	//note: sourced manual list
 	// 	//if(all_metros.indexOf(name) == -1){all_metros.push(name)}
 	//
-	// 	if(columbus_metro_names.indexOf(name) != -1){
-	// 		return e.venue.metroArea.displayName == "Columbus"
+	// 	if(columbus_metro_names.indexOf(name) !== -1){
+	// 		return e.venue.metroArea.displayName === "Columbus"
 	// 	}
 	// 	else{
 	// 		return false
 	// 	}
 	// })
 
+	return jsonInputFile
+};
 
+
+//note: also populates req.body.artists in-place
+
+const getArtistDateMap = function(req,jsonInputFile){
 	//console.log({jsonInputFile})
 
 
@@ -1477,25 +1469,109 @@ me.createPlaylistFromJson = async function (req, res) {
 			var isLatin = p.artist.familyAgg === "latin";
 			if (typeof p.artist.id === "string" && !isLatin) {
 				req.body.artists.push(p.artist.id)
-				if (!LA_artist_date_map[p.artist.id]){
+				if (!LA_artist_date_map[p.artist.id]) {
 					LA_artist_date_map[p.artist.id] = e.start.date
 				} else {
 					dups.push(p.artist)
 				}
-			}
-			else{
+			} else {
 				unresolvedEventArtists.push(p.artist)
 			}
 		})
 	});
 
-	console.log("unresolvedEventArtists",JSON.stringify(uniqBy(unresolvedEventArtists.map(a =>{return a.displayName}),"id")))
+	console.log("unresolvedEventArtists", JSON.stringify(uniqBy(unresolvedEventArtists.map(a => {
+		return a.displayName
+	}), "id")))
+
+	return LA_artist_date_map
+
+}
+
+// var LA_resolveEvents = require("../scripts/songkick-scraper/LA_resolveEvents")
+
+// let playlistName = "songkick-santa-fe.20231206"
+//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.resolved.json"
+
+let playlistName = "songkick-columbus.20240310"
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240310.output.resolved.json"
+
+/**
+ * @desc given an input json file w/ fully qualified songkick events:
+ * 	- (optional) apply date filtering if defined in req body
+ * 	- ask spotify for ${tracksLimit} # of tracks from each artist
+ * 	- (optional) choose alternative output playlist format
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+me.createPlaylistFromJson = async function (req, res) {
+	var jsonInputFile = require(jsonInputFilePath)
+
+	//testing: reduce input size
+	//jsonInputFile = jsonInputFile.slice(0,2)
+
+
+	console.log("createPlaylistFromJson:", jsonInputFilePath);
+	let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
+	req.body.tracksLimit = 2;
+	req.body.artists = [];
+	//req.body.dateFilter.start = "03-12-2024"
+	//req.body.dateFilter.stop =  "04-16-2024"
+
+	//omitting eachFamily and eachDay just creates 1 playlist
+	req.body.eachFamily = false;
+	//todo: untested
+	req.body.eachDay = false;
+
+	jsonInputFile = filterEvents(req, jsonInputFile)
+	console.log("pre-filtered from inputjson", jsonInputFile.length + " / " + jsonInputFileStartLength)
+
+	debugger
+
+	//todo: in cases where I couldn't resolve the artist, it looks like resolveEvents is returning
+	//performance.artist w/ the songkick numeric id (and no spotify id/genres)
+
+	//note: filter out erraonoes ongkick numeric id
+	//note: make a map of each artist to their date so I can add them to playlists in chrono order later
+
+	let LA_artist_date_map = {}
+
+	//todo: not doing shit with either of these besides not including it in LA_artist_date_map
+	let dups = [];
+	let unresolvedEventArtists = [];
+
+	jsonInputFile.forEach(e => {
+		e.performance.forEach(p => {
+
+			//no latin please (LA)
+			var isLatin = p.artist.familyAgg === "latin";
+			if (typeof p.artist.id === "string" && !isLatin) {
+				req.body.artists.push(p.artist.id)
+				if (!LA_artist_date_map[p.artist.id]) {
+					LA_artist_date_map[p.artist.id] = e.start.date
+				} else {
+					dups.push(p.artist)
+				}
+			} else {
+				unresolvedEventArtists.push(p.artist)
+			}
+		})
+	});
+
+	//avoid duplicate calls to get tracks for this artist later on
+	req.body.artists = uniq(req.body.artists);
+
+	console.log("unresolvedEventArtists", JSON.stringify(uniqBy(unresolvedEventArtists.map(a => {
+		return a.displayName
+	}), "id")))
+
 
 	//testing:
-	//req.body.artists = req.body.artists.slice(0,10)
+	//req.body.artists = req.body.artists.slice(0,51)
 
 	try {
-		var task = async function (id) {
+		var task_getArtistTopTracks = async function (id) {
 			//note: id stays the same like this??
 			// delete req.body.artist
 			// req.body.artist= {id:id}
@@ -1509,17 +1585,17 @@ me.createPlaylistFromJson = async function (req, res) {
 				//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
 
 				//note: straight-spotifyApi
+				// var response = await network_utility.limiter.schedule({id:`_getArtistTopTracks: ${id}`}
 				var response = await network_utility.limiter.schedule(_getArtistTopTracks, req, id)
 				return response;
-			}
-			catch (e) {
+			} catch (e) {
 				debugger
 			}
 		}
 
-
-		var proms = req.body.artists.map(task);
+		var proms = req.body.artists.map(task_getArtistTopTracks);
 		var songSets = await Promise.all(proms)
+
 
 		var songs = [];
 
@@ -1527,7 +1603,6 @@ me.createPlaylistFromJson = async function (req, res) {
 			songs = songs.concat(s.slice(0, req.body.tracksLimit))
 		})
 
-		//testing: create playlist for each day
 
 		//note: create map of dates to arrays to hold artist ids
 
@@ -1556,10 +1631,7 @@ me.createPlaylistFromJson = async function (req, res) {
 			}
 		})
 
-		//todo: untested
-		let eachDay = false;
-
-		function createPlaylistForEachDay(){
+		function createPlaylistForEachDay() {
 			var promises = []
 			Object.keys(daySongPays).forEach(d => {
 				promises.push(limiter.schedule(spotify_api.createPlaylist, req, req.body.user, {name: playlistName}, daySongPays[d]))
@@ -1577,16 +1649,16 @@ me.createPlaylistFromJson = async function (req, res) {
 			}
 		}
 
-		function addToPlaylistForEachDay(id,daySongPays){
+		function addToPlaylistForEachDay(id, daySongPays) {
 
 			//var promises = []
 			let payloads = []
 
-			for(var x = 1; x < Object.keys(daySongPays).length;x++){
+			for (var x = 1; x < Object.keys(daySongPays).length; x++) {
 				let payload_date = Object.keys(daySongPays)[x];
 
 				//todo: result of testin
-				if(daySongPays[payload_date].length > 0){
+				if (daySongPays[payload_date].length > 0) {
 					//promises.push(limiter.schedule(_addTracksToPlaylist, id,daySongPays[payload_date]));
 					payloads.push(daySongPays[payload_date])
 				}
@@ -1594,33 +1666,49 @@ me.createPlaylistFromJson = async function (req, res) {
 			return payloads
 		}
 
-		//todo: forgot how to pass things other than pay, so recorded this below before execution
-		let r_create_playlist_id = null;
-		var task = async function (pay) {
+		var task_addTracksToPlaylist = async function (pay) {
 
 			try {
-				var response = await network_utility.limiter.schedule(_addTracksToPlaylist,r_create_playlist_id, pay)
+				var response = await network_utility.limiter.schedule(_addTracksToPlaylist, r_create_playlist_id, pay)
 				return response;
 			} catch (e) {
 				debugger
 			}
 		}
 
-		if(eachDay){
+		//todo: forgot how to pass things other than pay, so recorded this below before execution
+		let r_create_playlist_id = null;
+
+		if (req.body.eachDay) {
 			var r = await Promise.all(createPlaylistForEachDay());
-		}
-		else{
+			//todo:
+		} else if (req.body.eachFamily) {
+
+			let trackFamilyMap = await me.sortTracksToFamilies(req, songs)
+
+			let promises = []
+			Object.keys(trackFamilyMap).forEach(family => {
+				promises.push(network_utility.limiter.schedule(makeAndPopulatePlaylist, req, playlistName + "_" + family, trackFamilyMap[family]))
+			})
+
+			await Promise.all(promises)
+			debugger
+		} else {
 			//create playist with 1 payload
 
-			let payload_0_date = Object.keys(daySongPays)[0]
-			let payload_0 = daySongPays[payload_0_date]
-			var r_create =  await network_utility.limiter.schedule(spotify_api.createPlaylist,req,req.body.user,{name:playlistName},payload_0)
+			let payload_0_date = Object.keys(daySongPays)[0];
+			let payload_0 = daySongPays[payload_0_date];
+
+			//testing: wtf is this bullshit
+			//var r_create = {playlist:{id:"6JGQhQSYtM2FN5DHs3kYzE"}}
+			var r_create = await network_utility.limiter.schedule(spotify_api.createPlaylist, req, req.body.user, {name: playlistName}, payload_0)
 
 			console.log("new playlist id:", r_create.playlist.id)
 			//var r_add =  await limiter.schedule(addToPlaylistForEachDay,r_create.playlist.id,daySongPays)
-			let payloads = addToPlaylistForEachDay(r_create.playlist.id,daySongPays)
+			let payloads = addToPlaylistForEachDay(r_create.playlist.id, daySongPays)
 			r_create_playlist_id = r_create.playlist.id;
-			var add_proms = payloads.map(task);
+			debugger
+			var add_proms = payloads.map(task_addTracksToPlaylist);
 			var mresults = await Promise.all(add_proms)
 		}
 		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
@@ -1634,6 +1722,307 @@ me.createPlaylistFromJson = async function (req, res) {
 	}
 };
 
+me.prunePlaylistFromJson = async function (req, res) {
+
+	try {
+		var jsonInputFile = require(jsonInputFilePath)
+
+		//testing:
+		let playlistId = "62cAeGlbK8vt6IzWqF4BYP";
+
+		console.log("createPlaylistFromJson:", jsonInputFilePath);
+		req.body.tracksLimit = 2
+		req.body.artists = [];
+
+		let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
+		var eventsToRemove = filterEvents(req, jsonInputFile)
+
+		let removalReport = {
+			num_events_removed:eventsToRemove.length,
+			first_event:eventsToRemove[0].displayName,
+			first_event_artists:eventsToRemove[0].performance.map(p =>{return p.displayName}),
+			last_event:eventsToRemove[eventsToRemove.length -1].displayName,
+			last_event_artists:eventsToRemove[eventsToRemove.length -1].performance.map(p =>{return p.displayName}),
+
+		}
+		console.log("pre-filtered to remove from inputjson", removalReport.num_events_removed + " / " + jsonInputFileStartLength)
+		console.log("first event:",removalReport.first_event)
+		console.log("first event artists:",removalReport.first_event_artists)
+		console.log("last event:",removalReport.last_event)
+		console.log("last event artists:",removalReport.last_event_artists)
+
+
+		let artistDateMap = getArtistDateMap(req,eventsToRemove)
+
+		//testing:
+		//req.body.artists = req.body.artists.slice(0,10)
+
+		//for every performance who's date is passed, we need to identify which songs we need to remove by that artist
+		//fetch tracks from playlist in order
+		//n*n for every performance find the first track(s) by that artist
+		//remove tracks from array
+		//clear playlist
+		//add new filtered back in order
+
+		//testing:
+		//console.log(JSON.stringify(jsonInputFile[0],null,4))
+
+		//fetch this so we can use snapshot_id later
+		let playlist = await playlist_api.getPlaylist(req, playlistId)
+
+		let currentTracks = await playlist_api.getPlaylistTracks(req, playlistId)
+		let track_removal_index_map = {};
+		currentTracks.forEach((tob, i) => {
+
+			//todo: is there some unintended consequences from just removing every song by one of the (example 3)
+			//artists on a single track? what if I successfully put tracks on for 3 artists, but one of the tracks
+			//I put on ALSO includes another one of the 3 artists? I guess it just removes earlier than would have been detected?
+
+			//todo: feel like this needs to be sensitive to position
+			//if we see removal of indexes that aren't contiguoluous, that's a clue we're removing artist from somewhere we shouldn't?
+
+			//for every artist on the track, if they're on our map, remove that song
+			tob.track.artists.forEach(a => {
+				//if we have it in our map, we need to remove the first entry
+				if (artistDateMap[a.id]) {
+					track_removal_index_map[i] = a
+				}
+			})
+		})
+
+		let indexes = Object.keys(track_removal_index_map).map(str => parseInt(str))
+
+		removalReport.num_tracks_removed = indexes.length;
+		removalReport.num_tracks_before = currentTracks.length;
+		removalReport.num_tracks_after = currentTracks.length - indexes.length
+		removalReport.first_track_index = indexes[0];
+		removalReport.last_track_index = indexes[indexes.length -1];
+
+		console.log("num_tracks_removed",removalReport.num_tracks_removed)
+
+		debugger
+		if(indexes.length > 0){
+			let r_removal = await req.body.spotifyApi.removeTracksFromPlaylistByPosition(playlist.id,
+				indexes, playlist.snapshot_id)
+		}
+
+		res.send(removalReport)
+
+	} catch (e) {
+		console.error(e)
+		debugger
+		res.status(500).send(e)
+	}
+
+	// try {
+	// 	var task = async function (index) {
+	// 		try {
+	// 			//note: straight-spotifyApi
+	// 			var response = await network_utility.limiter.schedule(_getArtistTopTracks, req, id)
+	// 			return response;
+	// 		}
+	// 		catch (e) {
+	// 			debugger
+	// 		}
+	// 	}
+	//
+	//
+	// 	var proms = req.body.artists.map(task);
+	// 	var songSets = await Promise.all(proms)
+	//
+	// 	var songs = [];
+	//
+	// 	songSets.forEach(s => {
+	// 		songs = songs.concat(s.slice(0, req.body.tracksLimit))
+	// 	})
+	//
+	// 	//testing: create playlist for each day
+	//
+	// 	//note: create map of dates to arrays to hold artist ids
+	//
+	// 	var daySongPays = {};
+	// 	Object.values(LA_artist_date_map).forEach(d => {
+	// 		daySongPays[d] = [];
+	// 	})
+	//
+	// 	songs.forEach(s => {
+	// 		//what was the date for this artist of this song?
+	// 		//note: take care of possible extra artists besides event one in song
+	// 		s.artists = s.artists.filter(a => {
+	// 			return LA_artist_date_map[a.id]
+	// 		})
+	// 		let date = LA_artist_date_map[s.artists[0].id];
+	// 		//push the song into an array based on that date
+	// 		// if(dayPays[date].indexOf(s.artists[0].id) === -1){
+	// 		// 	dayPays[date].push(s.artists[0].id)
+	// 		// }
+	//
+	// 		//todo: need to compare by id not object
+	// 		//var r = _.find(daySongPays[date],function(r){return r.id===s.id});
+	//
+	// 		if (daySongPays[date].indexOf(s) === -1) {
+	// 			daySongPays[date].push(s)
+	// 		}
+	// 	})
+	//
+	// 	//todo: untested
+	// 	let eachDay = false;
+	//
+	// 	function createPlaylistForEachDay(){
+	// 		var promises = []
+	// 		Object.keys(daySongPays).forEach(d => {
+	// 			promises.push(limiter.schedule(spotify_api.createPlaylist, req, req.body.user, {name: playlistName}, daySongPays[d]))
+	// 		})
+	// 		return promises
+	// 	}
+	//
+	// 	var _addTracksToPlaylist = async function (id, payload) {
+	// 		try {
+	// 			payload = payload.map(s => "spotify:track:" + s.id);
+	// 			var res = await req.body.spotifyApi.addTracksToPlaylist(id, payload);
+	// 			return res
+	// 		} catch (e) {
+	// 			throw e
+	// 		}
+	// 	}
+	//
+	// 	function addToPlaylistForEachDay(id,daySongPays){
+	//
+	// 		//var promises = []
+	// 		let payloads = []
+	//
+	// 		for(var x = 1; x < Object.keys(daySongPays).length;x++){
+	// 			let payload_date = Object.keys(daySongPays)[x];
+	//
+	// 			//todo: result of testin
+	// 			if(daySongPays[payload_date].length > 0){
+	// 				//promises.push(limiter.schedule(_addTracksToPlaylist, id,daySongPays[payload_date]));
+	// 				payloads.push(daySongPays[payload_date])
+	// 			}
+	// 		}
+	// 		return payloads
+	// 	}
+	//
+	// 	//todo: forgot how to pass things other than pay, so recorded this below before execution
+	// 	let r_create_playlist_id = null;
+	// 	var task = async function (pay) {
+	//
+	// 		try {
+	// 			var response = await network_utility.limiter.schedule(_addTracksToPlaylist,r_create_playlist_id, pay)
+	// 			return response;
+	// 		} catch (e) {
+	// 			debugger
+	// 		}
+	// 	}
+	//
+	// 	if(eachDay){
+	// 		var r = await Promise.all(createPlaylistForEachDay());
+	// 	}
+	// 	else{
+	// 		//create playist with 1 payload
+	//
+	// 		let payload_0_date = Object.keys(daySongPays)[0]
+	// 		let payload_0 = daySongPays[payload_0_date]
+	// 		var r_create =  await network_utility.limiter.schedule(spotify_api.createPlaylist,req,req.body.user,{name:playlistName},payload_0)
+	//
+	// 		console.log("new playlist id:", r_create.playlist.id)
+	// 		//var r_add =  await limiter.schedule(addToPlaylistForEachDay,r_create.playlist.id,daySongPays)
+	// 		let payloads = addToPlaylistForEachDay(r_create.playlist.id,daySongPays)
+	// 		r_create_playlist_id = r_create.playlist.id;
+	// 		var add_proms = payloads.map(task);
+	// 		var mresults = await Promise.all(add_proms)
+	// 	}
+	// 	//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+	// 	var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r_create.playlist)
+	//
+	// 	res.send(tracksR)
+	// } catch (e) {
+	// 	debugger
+	// 	console.error(e)
+	// 	res.status(500).send(e)
+	// }
+};
+
+me.sortTracksToFamilies = async function (req, tracks) {
+
+	await resolver.resolveTracksArray(req, tracks)
+
+	function familyFreq(a) {
+
+		var ret = null;
+
+		//a = JSON.parse(JSON.stringify(a));
+		//console.log(JSON.parse(JSON.stringify(a)));
+		// console.log("familyFreq",a.genres);
+		// console.log("familyFreq",a.genres.length >0);
+
+		if (a.genres && a.genres.length > 0) {
+			var fmap = {};
+			for (var z = 0; z < a.genres.length; z++) {
+				if (a.genres[z].family_name) {
+					if (!(fmap[a.genres[z].family_name])) {
+						fmap[a.genres[z].family_name] = 1
+					} else {
+						fmap[a.genres[z].family_name]++;
+					}
+				}
+			}
+
+			//console.log("$fmap",fmap);
+
+			//check the family map defined and see who has the highest score
+			if (!(_.isEmpty(fmap))) {
+				//convert map to array (uses entries and ES6 'computed property names')
+				//and find the max
+				var arr = [];
+				Object.entries(fmap).forEach(tup => {
+					var r = {[tup[0]]: tup[1]};
+					arr.push(r);
+				});
+				//todo: could offer this
+				var m = _.maxBy(arr, function (r) {
+					return Object.values(r)[0]
+				});
+				var f = Object.keys(m)[0];
+				//console.log("%", f);
+				ret = f;
+			}
+		} else {
+			//if
+			console.warn("no genres!", a.name);
+		}
+		ret ? a.familyAgg = ret : {};
+		return ret;
+	}
+
+	tracks.forEach(track => {
+		track.artists.forEach(artist => {
+			if (!artist.genres) {
+				debugger
+			}
+			artist.familyAgg = familyFreq(artist)
+		})
+	})
+
+	return tracks.reduce((groups, track) => {
+		//todo: just taking first artist
+		const familyAgg = track.artists[0].familyAgg
+		if (!groups[familyAgg]) groups[familyAgg] = [];
+		groups[familyAgg].push(track);
+		return groups;
+	}, {});
+
+	// unwind into tracks
+
+	// Object.keys(sortedResultsFamily).forEach(familyAgg => {
+	// 	var songs = [];
+	// 	songs = songs.concat(sortedResultsFamily[familyAgg])
+	// 	console.log("familyAgg:" + familyAgg, songs.length);
+	// 	songs = songs.map(s => "spotify:track:" + s.id);
+	//
+	// })
+
+}
 /**smarter playlists*/
 
 me.archiveLikedSongs = async function (req, res) {
@@ -1644,18 +2033,20 @@ me.archiveLikedSongs = async function (req, res) {
 		let playlists = {
 			electro_house: {
 				tracks: [],
-				savedTracks:[],
+				savedTracks: [],
 				playlistId: "6KJf8W3QVFMqaHFSwNu8XU"
 			},
 			rock: {
 				tracks: [],
-				savedTracks:[],
+				savedTracks: [],
 				playlistId: "6m9n4ThTjHyO5KBM4SCsBk"
 			}
 		};
 
 		//todo: make parameterized
 		let targetPlaylistKey = "rock"
+
+		//todo: change to use same getPlaylistTracks in playlist_api
 
 		let getPlaylistTracksTargetPlaylistResult = await req.body.spotifyApi.getPlaylistTracks(playlists[targetPlaylistKey].playlistId)
 			.then(network_utility.pageIt.bind(null, req, null, null))
@@ -1674,7 +2065,7 @@ me.archiveLikedSongs = async function (req, res) {
 				return pagedRes.items;
 			})
 
-		await resolver.resolveTracks(req, {tracks:getMySavedTracksPagedResult})
+		await resolver.resolveTracks(req, {tracks: getMySavedTracksPagedResult})
 
 		let savedTracksFiltered = [];
 
@@ -1717,7 +2108,8 @@ me.archiveLikedSongs = async function (req, res) {
 
 				// Check if the property value exists in the second array
 				const existsInArr2 = arr2.some(arr2Item => {
-					return  _.get(arr2Item, property) === value}
+						return _.get(arr2Item, property) === value
+					}
 				);
 
 				if (!existsInArr2) {
@@ -1730,8 +2122,8 @@ me.archiveLikedSongs = async function (req, res) {
 			// Filter the second array to include only unique items
 			const uniqueArr2 = arr2.filter(arr2Item => {
 				const value = _.get(arr2Item, property)
-				const existsInDuplicates = duplicates.some(duplicate =>{
-					return  _.get(duplicate, property) === value;
+				const existsInDuplicates = duplicates.some(duplicate => {
+					return _.get(duplicate, property) === value;
 				})
 				return !existsInDuplicates;
 			});
@@ -1753,16 +2145,16 @@ me.archiveLikedSongs = async function (req, res) {
 		// let arr2 = playlists[targetPlaylistKey].savedTracks.slice(0,5)
 		// const result = findAndRemoveDuplicatesByProperty(arr1,arr2,
 
-		const result = findAndRemoveDuplicatesByProperty(playlists[targetPlaylistKey].tracks,playlists[targetPlaylistKey].savedTracks,
+		const result = findAndRemoveDuplicatesByProperty(playlists[targetPlaylistKey].tracks, playlists[targetPlaylistKey].savedTracks,
 			'track.name');
 
 		// console.log(result.uniqueItems);
 		// console.log(result.duplicates);
 
 		let newSavedTracksMatchingTargetPlaylist = result.uniqueArr2;
-		console.log("newSavedTracksMatchingTargetPlaylist",newSavedTracksMatchingTargetPlaylist.length);
+		console.log("newSavedTracksMatchingTargetPlaylist", newSavedTracksMatchingTargetPlaylist.length);
 
-		if(newSavedTracksMatchingTargetPlaylist.length > 0){
+		if (newSavedTracksMatchingTargetPlaylist.length > 0) {
 			let payloads = [];
 			let payload = [];
 
@@ -1817,10 +2209,13 @@ me.archiveLikedSongs = async function (req, res) {
 			Promise.all(proms)
 				// spotifyApi.addTracksToPlaylist(r.body.id,payload)
 				.then(function (data) {
-					let newTracksSum = {newTracksLength:newSavedTracksMatchingTargetPlaylist.length,newTracks:newSavedTracksMatchingTargetPlaylist}
-					let playlistSum = {targetPlaylistKey:targetPlaylistKey,id:playlists[targetPlaylistKey].id}
-					let result = Object.assign({result:"success"},newTracksSum,playlistSum)
-					console.log('Added tracks to playlist!',result);
+					let newTracksSum = {
+						newTracksLength: newSavedTracksMatchingTargetPlaylist.length,
+						newTracks: newSavedTracksMatchingTargetPlaylist
+					}
+					let playlistSum = {targetPlaylistKey: targetPlaylistKey, id: playlists[targetPlaylistKey].id}
+					let result = Object.assign({result: "success"}, newTracksSum, playlistSum)
+					console.log('Added tracks to playlist!', result);
 					res.send(result);
 
 				}, function (err) {
@@ -1828,9 +2223,11 @@ me.archiveLikedSongs = async function (req, res) {
 					debugger;
 					//fail({error:err})
 				});
-		}else{
-			let warning = {msg: "archiveLikedSongs didn't have any new songs to archive",
-				playlist:{targetPlaylistKey:targetPlaylistKey,id:playlists[targetPlaylistKey].id}}
+		} else {
+			let warning = {
+				msg: "archiveLikedSongs didn't have any new songs to archive",
+				playlist: {targetPlaylistKey: targetPlaylistKey, id: playlists[targetPlaylistKey].id}
+			}
 			console.warn(warning)
 			res.send(res)
 		}
@@ -1840,3 +2237,43 @@ me.archiveLikedSongs = async function (req, res) {
 		debugger;
 	}
 }
+
+me.archiveBillboardHot100Playlists = async function(req, res) {
+
+	let playlists_res = await playlist_api._getUserPlaylists(req)
+	let singles = playlists_res.items.filter(p =>{
+		return p.name.indexOf("Top US Singles") !==-1
+	})
+	console.log("singles.length",singles.length)
+	//testing: batches (1155)
+	//req.body.playlists = singles.slice(0,2);
+	req.body.playlists = singles.slice(0,50);
+	//req.body.playlists = singles.slice(500,1155);
+	let resolved_singles_playlists = await resolver.resolvePlaylists(req)
+	resolved_singles_playlists.forEach(p =>{
+		let path = 'C:\\Users\\Candy.DESKTOP-TMB4Q31\\WebstormProjects\\Showcase-POC\\utility\\static-utility-records\\top_us_singles_playlists\\';
+		let sanitized_name = p.name.replaceAll(" ","_");
+		sanitized_name =  sanitized_name.replaceAll(":","_");
+		let fname = path + sanitized_name +'.json';
+		console.log(fname)
+		fs.writeFileSync( fname,
+			//,function(){console.log("saved" + p.name)}
+			JSON.stringify(p,null,4), 'utf8')
+	})
+	console.log("done!")
+	// playlists.sort((a,b) =>{
+	// 	const a = "Top US Singles: 2009-2013";
+	// 	const b = "Top US Singles: 2007-2013";
+	// 	const regex = /(\d{4})-(\d{4})/;
+	// 	const match = a.match(regex);
+	// 	const startYear_a = parseInt(match[1]);
+	// 	const endYear_a = parseInt(match[2]);
+	// 	const a_intlen = endYear_a - startYear_a
+	// 	const match_b = b.match(regex);
+	// 	const startYear_b = parseInt(match_b[1])
+	// 	const endYear_b = parseInt(match_b[2]);
+	// 	const b_intlen = endYear_b - startYear_b
+	// })
+}
+
+

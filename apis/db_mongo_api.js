@@ -4,6 +4,8 @@
 var db = require('../db')
 var genreFam_map = require('./db_api').genreFam_map
 var app = require('../app')
+var _ = require("lodash")
+let songkick_metros_mapping = require("../utility/static-utility-records/songkick_metros_mapping")
 //----------------------------------
 
 const { MongoClient } = require('mongodb');
@@ -118,6 +120,7 @@ const uriLocalDB = "mongodb://localhost:27017"
 
 let uri = null;
 
+
 if(process.env.AWS_SESSION_TOKEN === undefined){
 	console.log("connecting to local mongo atlas instance");
 	//uri = uriRemote2
@@ -220,15 +223,43 @@ me.testAtlasAsync2 = async function() {
 me.insert =  function(events){
 	return new Promise(function(done, fail) {
 
+		//testing: collect all metroArea ids/names from set of events
 
-		//infer correct collection from one sample event
-		// dbo.collection(events[0].venue.metroArea.id).insert(events).then(r =>{
-		// 	done(r)
+		//let metro_ids = []
+		// events.forEach(e =>{
+		// 	metro_ids.push(e.venue.metroArea.id)
 		// })
-		console.log("committing to mongo collection:",events[0].venue.metroArea.id);
-		var c = events[0].venue.metroArea.id.toString()
+		// metro_ids = _.uniq(metro_ids)
+
+		// let metro_names = []
+		// events.forEach(e =>{
+		// 	metro_names.push(e.venue.metroArea)
+		// })
+		// metro_names = _.uniq(metro_names)
+
+		// testing: assign collection name based on metro ids (zipcodes) within 1 metro name
+		// let map = songkick_metros_mapping.url_city_name_metroArea_id_map
+		// events.forEach(e =>{
+		// 	Object.keys(map).forEach(city =>{
+		// 		if(e.venue.metroArea.id === null){
+		// 			debugger
+		// 		}
+		// 		if(map[city].indexOf(e.venue.metroArea.id) !== -1){
+		// 			e.url_city_name = city;
+		// 		}
+		// 	})
+		// })
+
+		//testing: assign collection name based on metroArea.displayName
+		var c = events[0].venue.metroArea.displayName.toString()
+
+		console.log(`db_mongo_api.insert targeting collection name "${c}"`)
+
+		debugger
 		SFDB.collection(c).deleteMany({}).then(r =>{
+			console.log(`db_mongo_api.insert emptied collection name "${c}"`)
 			SFDB.collection(c).insertMany(events).then(r2 =>{
+				console.log(`db_mongo_api.insert ${events.length} events into collection name "${c}"`)
 				done(r2)
 			})
 		})

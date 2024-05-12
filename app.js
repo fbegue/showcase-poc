@@ -97,6 +97,7 @@ app.use(awsServerlessExpressMiddleware.eventContext())
 
 app.use(function (req, res, next) {
 
+
 	//so this guy should create it's own instance of my spotify api object using the client creds
 	//and then any request should just look at its req to find their specific api creded object
 
@@ -156,8 +157,6 @@ app.use(function (req, res, next) {
 
 })
 
-
-
 var port = 8888;
 
 console.log('Listening on ' + port);
@@ -169,43 +168,45 @@ app.listen(port);
 //register routes
 
 for(var key in spotify_api) {
-	if(spotify_api[key] instanceof Function) {
-		console.log(key);
+	if(spotify_api[key] instanceof Function && key.charAt(0) !== '_') {
+		console.log("spotify_api/" + key);
 		app.post("/" + key, spotify_api[key]);
 	}
 }
 
 for(var key in songkick_api) {
-	if(songkick_api[key] instanceof Function) {
-		console.log(key);
+	if(songkick_api[key] instanceof Function  && key.charAt(0) !== '_') {
+		console.log("songkick_api/" + key);
 		app.post("/" + key, songkick_api[key]);
 	}
 }
 
-for(var key in testSuite) {
-	if(testSuite[key] instanceof Function) {
-		//console.log(key);
-		app.post("/" + key, testSuite[key]);
-	}
-}
-
 for(var key in experimental_api) {
-	if(experimental_api[key] instanceof Function) {
-		//console.log(key);
+	if(experimental_api[key] instanceof Function  && key.charAt(0) !== '_') {
+		console.log("experimental_api/" + key);
 		app.post("/" + key, experimental_api[key]);
 	}
 }
 
 for(var key in playlist_api) {
 
-	if(playlist_api[key] instanceof Function) {
+	if(playlist_api[key] instanceof Function && key.charAt(0) !== '_') {
+		console.log("playlist_api/" + key);
 		app.post("/" + key, playlist_api[key]);
+	}
+}
+
+for(var key in testSuite) {
+	if(testSuite[key] instanceof Function  && key.charAt(0) !== '_') {
+		console.log("testSuite/" + key);
+		app.post("/" + key, testSuite[key]);
 	}
 }
 
 for(var key in wikipedia_api) {
 
-	if(wikipedia_api[key] instanceof Function) {
+	if(wikipedia_api[key] instanceof Function  && key.charAt(0) !== '_') {
+		console.log("wikipedia_api/" + key);
 		app.post("/" + key, wikipedia_api[key]);
 	}
 }
@@ -259,6 +260,9 @@ app.post('/api/insertStatic', (req, res) => {
 app.get('/api/info', (req, res) => {
 	res.send({ application: 'soundfound', version: '1' });
 });
+
+
+
 
 var package = require("./package.json")
 app.post('/api/postinfo', (req, res) => {

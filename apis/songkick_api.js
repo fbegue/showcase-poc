@@ -1,64 +1,21 @@
-//repo
-//https://github.com/schnogz/songkick-api-node
+let sql = require('mssql');
+
 //All requests to the library will be returned a promise and when resolved the response will be JSON.
 var Bottleneck = require("bottleneck");
-const limiter = require('../utility/network_utility').limiter
-// var spotifyApi = null;
-//
-// setTimeout(e =>{
-// 	console.info("setup shitty export: spotifyApi");
-// 	spotifyApi = require('./spotify_api').spotifyApi;
-// },3000)
+
+const fs = require('fs')
+const Songkick = require('songkick-api-node');
+//https://github.com/schnogz/songkick-api-node
 
 const apikey = "pdBY8kzaJtEjFrcw"
-
-const Songkick = require('songkick-api-node');
-const fs = require('fs')
-
-//https://github.com/Glench/fuzzyset.js
-//http://glench.github.io/fuzzyset.js/ui/
-const FuzzySet = require('fuzzyset')
-
-
 const songkickApi = new Songkick(apikey);
 
-
-//const aggregator = require('./aggregator');
 const db_api = require('./db_api');
-//const app = require('./app');
-//const puppet = require('./puppet').puppet;
-//const fetchRetry = require('./spotify_api').fetchRetry;
-
 var db_mongo_api = require('./db_mongo_api')
 var spotify_api = require('./spotify_api')
 
-
-let sql = require('mssql');
-
-let connect = function () {
-	console.info("connect...");
-	try {
-		conn.connect()
-			.then((res) => {
-				console.info("...success!");
-
-				let sreq = new sql.Request(conn)
-				sreq.query('select * from xtest').then((res) => {
-					console.info(res);
-				})
-			})
-			.catch(function (err) {
-				console.info(err);
-			});
-
-	} catch (err) {
-		console.info(err);
-	}
-};
-
-//todo: if trying to use localhost SQL server
-//connect();
-
+const limiter = require('../utility/network_utility').limiter
+const fuzzyMatch = require("../utility/fuzzyMatch")
 
 //just checking out raw artist search
 var searchArtists = function () {
@@ -75,25 +32,6 @@ var searchArtists = function () {
 		})
 }
 //searchArtists();
-
-
-//figure out metro ids (i think these are universal location ids for places)
-
-//not sure yet about returns for these - are they always city & metro object pairs:
-
-//[
-//    { //one pair which describes the query's possible metro and city result
-//        {
-//            city:{"..."}
-//        },
-//        {
-//            city:{"..."}
-//        }
-//    }
-//]
-
-//oakland = bay area
-//cleveland = Cleveland & Cleveland Heights
 
 var findWithAttr = function (array, attr, value) {
 	for (var i = 0; i < array.length; i += 1) {
@@ -497,24 +435,15 @@ var fetch_metro_events = function (metro, dateFilter) {
 
 }//getMetroEvents
 
-// var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed.json")
-//var Los_Angeles_Songkick_parsed = require("../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json")
-// var revivalists  = require("../example data objects/revivalist_show")
-// var _9480  = require("../example data objects/9480.497.bak.json")
-// var _9480  = require("../example data objects/9480.102222-bak.clean.json")
-// _9480 = _9480.filter(e =>{return e.performance.length === 2})
-
-//let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20231116.v4.output")
-
-let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
-
+let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240310.output.json")
+//let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
 
 /**
  * fetch_metro_events_file
  * @desc stub to return json instead of live
  * @returns inputJsonFile - output from
  */
-function fetch_metro_events_file() {
+function fetch_metro_events_from_file() {
 	return new Promise(function (done, fail) {
 		done(inputJsonFile)
 		//done(Los_Angeles_Songkick_parsed.slice(0,5))
@@ -525,11 +454,13 @@ function fetch_metro_events_file() {
 
 //todo:
 /**
- * get upcoming events for a metro and process the artists and genres, committing them to the db
- * also, commit the events to mongo
- * @param req.body{
- *	"metro":{"displayName":"Columbus",
- *		"id":9480},
+ * get upcoming events for a metro and process the artists and genres by either
+ * confirming that my SQL DB has an spotify to songkick artist relationship
+ * with genres or searching with spotify and committing new matches to SQL DB
+ * also, commit the fetched events to mongo
+ * @param req.body
+ * {
+ *	"metro":{"displayName":"Columbus","id":9480},
  *	"dateFilter":{"start":"2020-02-29T16:36:07.100Z","end":"2020-03-06T16:36:07.100Z"}
  *}
  **/
@@ -587,8 +518,17 @@ module.exports.fetchMetroEvents = async function (req, res) {
 		const startDateCache = new Date(req.body.dateFilter.start);
 
 		//testing: input result of octoparse.preparse
-		let events = await fetch_metro_events_file(req.body.metro, req.body.dateFilter)
+		let events = await fetch_metro_events_from_file(req.body.metro, req.body.dateFilter)
 		// let events =  await fetch_metro_events(req.body.metro, req.body.dateFilter)
+
+		debugger
+		//testing:
+
+		// events = events.splice(0, 10)
+		// 		// console.warn("clipping events results to 10!!!");
+
+		//events = events.filter(e =>{return e.displayName === "Boogie T.Rio and Manic Focus"})
+
 
 		//this object . we will record this in our logs so that we can tell:
 		//todo: is aas_match being filled with either spotify or songkick genre data an issue?
@@ -616,11 +556,31 @@ module.exports.fetchMetroEvents = async function (req, res) {
 			payload: [],
 		};
 
-		var aas_match_promises = [];
+		//todo: Spotify search is unable to handle artist subnames AT ALL
+		//you would think it would be SOMEWHERE in 20 results but alas it is not...
+		// ex: full_name: "Brian Sauer & The Amazing Waste"
+		// sub_name: "Brian Sauer"
 
-		//testing:
-		// events = events.splice(0,10)
-		// console.warn("clipping events results to 10!!!");
+		//was thinking about splitting songkick artist names at tokens "and" and "&"
+		//and therefore possibly submitting multiple strings per songkick artist, but this starts
+		//to get a little complicated later.
+		//so say I found a match I could possibly store multiple artist-artistsongkick
+		//records if I match on both full_name and sub_name ... then later need to choose
+		//one to use...
+
+		// for (var x = 0; x < r.result.artists.items.length; x++) {
+		// 		// 	let item = r.result.artists.items[x]
+		// 		// 	item.name_split = [];
+		// 		// 	item.name_split.push(item.name)
+		// 		// 	if (item.name.includes("and") || item.name.includes("&")) {
+		// 		// 		item.name_split = item.name.split(/ and | & /);
+		// 		// 	}
+		// 		// 	item.name_split.forEach(name_string =>{
+		// 		// 		//...
+		// 		// 	})
+		// 		// }
+
+		var ass_db_match_promises = [];
 
 		let performance_artist_dedup_map = {};
 		events.forEach(ob => {
@@ -629,7 +589,7 @@ module.exports.fetchMetroEvents = async function (req, res) {
 				if (!performance_artist_dedup_map[a.id]) {
 					performance_artist_dedup_map[a.id] = a;
 					metrOb.artists.push(a);
-					aas_match_promises.push(db_api.checkDBFor_artist_artistSongkick_match(a))
+					ass_db_match_promises.push(db_api.checkDBFor_artist_artistSongkick_match(a))
 				}
 			})
 		});
@@ -638,27 +598,31 @@ module.exports.fetchMetroEvents = async function (req, res) {
 		console.info("artists from events to process: ", metrOb.artists.length);
 
 		//note: check if we ALREADY KNOW OF a match between songkick and spotify
-		let aas_match_results = await Promise.all(aas_match_promises)
+		let aas_db_match_results = await Promise.all(ass_db_match_promises)
 
 		//testing: disabled LevenMatch SQL processing
 		//var LevenMatch = [];
 		//note: at some point I implemented some fuzzy logic that would attempt to partial match
 		//on unknown artists in the db. disabled for now b/c I have no idea what this was all about
-		//example:
-		//LevenMatch.push(db_api.checkDBForArtistLevenMatch({name:"earth gang",id:1234324}));
+		//example: LevenMatch.push(db_api.checkDBForArtistLevenMatch({name:"earth gang",id:1234324}));
 
 		//note: separate results into
-		// - matched (w/ genres) (used to create map to filter on later)
-		// - matched w/ no genres and no match (just used to report back) - the fact that these
-		// results weren't put in matched array means they will put onto searches list
+		// - matched (w/ genres) - great!
+		// - matched w/ no genres - I've tried and failed to resolve this songkick artist before
+		//   so I'm not going to try again and I can't use them
+		// - aas_match_no_match - I've never tried to resolve this songkick artist before
 
 		//todo: seems like at some point the meaning of 'matched' changed...
 		//w/ sql completely empty, we still return r.genres.length === 0 soooo
 		//what did I mean by "aas_match_no_genres"? seems like that should be "aas_match_no_match",
 		//which I just created as of writing this
 
-		aas_match_results.forEach(r => {
-			if (r.genres.length > 0) {
+
+
+		aas_db_match_results.forEach(r => {
+			if (r.notFound) {
+				metrOb.aas_match_no_match.push(r)
+			} else if (r.genres.length > 0) {
 				//matched w/ genres
 				metrOb.aas_match_genres.push(r)
 			} else if (r.genres.length === 0) {
@@ -670,8 +634,9 @@ module.exports.fetchMetroEvents = async function (req, res) {
 			}
 		});
 
-		console.info("metrOb.aas_match_no_genres", metrOb.aas_match_no_genres.length);
 		console.info("metrOb.aas_match_genres", metrOb.aas_match_genres.length);
+		console.info("metrOb.aas_match_no_genres", metrOb.aas_match_no_genres.length);
+		console.info("metrOb.aas_match_no_match", metrOb.aas_match_no_match.length);
 
 		var spotifySearchPromises = [];
 
@@ -679,15 +644,18 @@ module.exports.fetchMetroEvents = async function (req, res) {
 
 			//create temporary matchedMap of artist's who we don't need to search for b/c we found in SQL
 			var matchedMap = {}
-			metrOb.aas_match_genres.forEach(r => {
+			let aas_matched = metrOb.aas_match_no_genres.concat(metrOb.aas_match_genres)
+			aas_matched.forEach(r => {
 				matchedMap[r.id] = r;
 			})
 
-			//note: prepare searches - filtering out those in matchedMap created above
-			aas_match_results.forEach(r => {
+
+			aas_db_match_results.forEach(r => {
 
 				if (matchedMap[r.id]) {
-					//they had genres = qualified spotify-songkick w/ genres
+					//we don't need to search because we already know the artist:
+					// - they had genres = qualified spotify-songkick w/ genres
+					// - they didn't have genres = qualified spotify-songkick w/ no genres
 				} else {
 
 					//todo: okay so this is a little fucky
@@ -704,18 +672,17 @@ module.exports.fetchMetroEvents = async function (req, res) {
 
 					if (r.notFound) {
 
-
 						//note: basically just providing the spotifyApi for this searchArtist by imitating a req from the UI
-						spotifySearchPromises.push(limiter.schedule({id: "https://api.spotify.com/v1/search | " + r.id + " | " + r.name.replace(" ","-")}, spotify_api.searchArtist, {
+						spotifySearchPromises.push(limiter.schedule({id: "https://api.spotify.com/v1/search | " + r.id + " | " + r.name.replace(" ", "-")}, spotify_api.searchArtist, {
 							body: {
 								artist: r,
 								spotifyApi: req.body.spotifyApi
 							}
 						}, {}))
 					} else {
-						//found artist_artistSongkick, but with no genres
-						//nothing to do with these for now
-						debugger
+						//testing: shouldn't be able to get here
+						debugger;
+
 					}
 				}
 			});
@@ -763,10 +730,11 @@ module.exports.fetchMetroEvents = async function (req, res) {
 		//so if we couldn't find a search result, we quit
 		//but if we do, we know it's also a new artist_artistSongkick entry
 
+
 		//note: process search results
 		spotifySearchResults.forEach(r => {
 
-			//note: couldn't find the artist
+			//note: couldn't find any matches for the artist
 
 			//todo: dbl check necessary?
 			//todo: larger requests are sometimes timing out?
@@ -774,65 +742,97 @@ module.exports.fetchMetroEvents = async function (req, res) {
 				spotifySearch_artists_noMatches.push(r.artist)
 			}
 
-			//note: found artist, so submit artist, artist_songkick and match to db
+			//note: found matches for artist, so fuzzy check them and submit artist, artist_songkick and match to db
 			else {
 
-				var artist = JSON.parse(JSON.stringify(r.result.artists.items[0]));
-				var artistSongkick = JSON.parse(JSON.stringify(r.artist));
-
-				var artist_artistSongkick = {
-					artist_id: artist.id,
-					artistSongkick_id: artistSongkick.id
-				}
-
-				//testing: needs to be reduced
-				artistSongkick = {id: artistSongkick.id, displayName: artistSongkick.name}
-				//todo:# b/c results can be different somehow if I didn't find versus I did find???
-				// artistSongkick.id = artistSongkick.artistSongkick_id
-				// delete artistSongkick.artistSongkick_id
-
-				//todo: check when used later
-				songkickSpotifyMap[artist.id] = artistSongkick.id;
+				let fuzzyCheckAristResults = function () {
+					//for each artist - items pairing, see if we can find 1 item that passes.
+					// when we do, flip match_failure to false and break
 
 
-				//note: if we got here, we know there is at least no CORRELATION between an artist and artistSongkick
-				//but it's possible we've already stored the artist w/ genres
+					r.match_failure = true;
 
-				// debugger
-				aas_promises.push(db_api.commit_artistSongkick_with_match(artist, artistSongkick, artist_artistSongkick));
+					//note: sometimes spotify will prioritize a more POPULAR? artist then an exact
+					//MATCH on my search, so sanity check before trying anything else
+					//case: r.artist.name = "Shaker"
+					// - first item.name = "Shakey Graves"
+					// - later on you see item.name = "Shaker"
 
-				//todo: bc we mutated it? or does this just not mater anyways right? we don't NEED to return anything here
-				commit_artistSongkick_with_match_results.push(artistSongkick)
+					for (var x = 0; x < r.result.artists.items.length; x++) {
+						let item = r.result.artists.items[x]
 
-				if (artist.genres.length === 0) {
-					spotifySearch_artists_noGenres.push(artist)
-				}
+						if(item.name === r.artist.name){
 
-				//testing: disabled / old as shit
-				var processFuzzy = function (item) {
-					var a = FuzzySet();
-					a.add(item.name);
-					if (a.get(item.name) === null || a.get(item.name)[0][0] < .5) {
-						rejectedMatches.push([item.name, artist.name])
-						console.info("rejection", artist);
-						console.info(item.genres);
-						console.info(a.get(item.name));
-					} else {
-						//quality match, no genres means we push onto next payload
-						//and we also record this new match
-						if (item.genres.length === 0) {
-							newMatches.push([item.name, artist.name])
-							//todo: next payload
-
+							//todo: copying what fuzzyMatch returns,
+							//which is icky b/c I'm sure this will confuse me later while debugging
+							let match_summary = {
+								match_string: item.name,
+								match_against_string: r.artist.name,
+							}
+							r.match_failure = false;
+							r.match_result = {result: true, result_reason: "pre-fuzzy match",match_summary:match_summary}
+							r.match = item;
+							return 0;
 						}
-							//new quality match with genres, so skip next payload
-						//but we still need to record this
-						else {
-							newMatches_genres.push([item.name, artist.name])
+					}
+
+					for (var x = 0; x < r.result.artists.items.length; x++) {
+
+						let item = r.result.artists.items[x]
+						//let failed_match_results = []
+						let match_result = fuzzyMatch.processFuzzy(item.name, r.artist.name)
+						if (match_result.result === false) {
+							if(!r.match_failures){
+								r.match_failures = [];
+							}
+							r.match_failures.push(match_result)
+						} else {
+							r.match_failure = false;
+							r.match_result = match_result;
+							r.match = item;
+							break;
 						}
 					}
 				}
-			}
+
+				fuzzyCheckAristResults()
+
+				if(r.match_failure){
+					console.warn(JSON.stringify(r,null,4))
+					debugger
+				}
+
+				if(!r.match_failure){
+					var artist = JSON.parse(JSON.stringify(r.match));
+					var artistSongkick = JSON.parse(JSON.stringify(r.artist));
+
+					var artist_artistSongkick = {
+						artist_id: artist.id,
+						artistSongkick_id: artistSongkick.id
+					}
+
+					//testing: needs to be reduced
+					artistSongkick = {id: artistSongkick.id, displayName: artistSongkick.name}
+					//todo:# b/c results can be different somehow if I didn't find versus I did find???
+					// artistSongkick.id = artistSongkick.artistSongkick_id
+					// delete artistSongkick.artistSongkick_id
+
+					//todo: check when used later
+					songkickSpotifyMap[artist.id] = artistSongkick.id;
+
+					//note: if we got here, we know there is at least no CORRELATION between an artist and artistSongkick
+					//but it's possible we've already stored the artist w/ genres
+
+					aas_promises.push(db_api.commit_artistSongkick_with_match(artist, artistSongkick, artist_artistSongkick));
+
+					//todo: bc we mutated it? or does this just not mater anyways right? we don't NEED to return anything here
+					commit_artistSongkick_with_match_results.push(artistSongkick)
+
+					if (artist.genres.length === 0) {
+						spotifySearch_artists_noGenres.push(artist)
+					}
+				}
+			}//else matched
 		})//results.each
 
 		//testing:
@@ -926,11 +926,11 @@ module.exports.resolveEvents = function (req, res, next) {
 	console.info("resolveEvents", req.body);
 
 	let mongo_query;
-	if(!req.body.metro){
+	if (!req.body.metro) {
 		mongo_query = "all"
-	}
-	else{
-		mongo_query = req.body.metro.id.toString()
+	} else {
+		//testing: CHANGED THIS TO DISPLAYNAME INSTEAD OF ID
+		mongo_query = req.body.metro.displayName.toString()
 	}
 
 	db_mongo_api.fetch(mongo_query)

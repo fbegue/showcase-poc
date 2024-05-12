@@ -1,10 +1,19 @@
-Showcase-POC
+# Showcase-POC
 
+# TODOS
+- keep an eye out for outdated calls to pageIt (should come from network_utility)
+- trying to break out clean, documented code from `apis/spotify_api.js` into separate files in `spotify_api` directory
+- adding "stubs" where necessary to enable local calls (see: playlist_api.js @ getUserPlaylists)
+    - app.js no longer registers routes prefixed with "_"
+- test/create test runner for other endpoints to verify `utility/network_utility.js` function moves went smoothly
+- adjust startup script to just warn if can't connect to sql
+    - this is part of a larger push to just set this to the side for now
+
+ 
 # contents by directory
 
 ## apis
 
-TODO: trying to break out clean, documented code from `apis/spotify_api.js` into separate files in `spotify_api` directory
 
 `spotify_api.js` | current store for all spotify api related endpoints
 `spotify_api/base.js` | beginning of reorging spotify features
@@ -58,6 +67,8 @@ use postman to hit endpoints
 `npm run commit 'example message'`
 `git push`
 
+npm run commit 'createPlaylistFromJson'
+
 ## deploy steps (lambda)
 
 //deploy a (the) function
@@ -79,14 +90,7 @@ https://stackoverflow.com/questions/50866472/restarting-aws-lambda-function-to-c
         - as a result, refactored and tested the most complicated endpoints `resolvePlaylists()`
     - added dupe prevention and light parameterization to `experimental_api.archiveLikedSongs()` 
 
-
 ## bugs
 
 - if you get something like:  `EMFILE: too many open files` when deploying, your machine literally has too many files open. close some and it'll work again
-
-## todos
-
-- test/create test runner for other endpoints to verify `utility/network_utility.js` function moves went smoothly
-- adjust startup script to just warn if can't connect to sql
-    - this is part of a larger push to just set this to the side for now
 

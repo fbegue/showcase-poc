@@ -27,9 +27,11 @@ var Bottleneck = require("bottleneck");
 //https://github.com/SGrondin/bottleneck
 var limiter = new Bottleneck({
 	//maxConcurrent: 1,
-	//minTime: 100,
+	minTime: 100,
 	trackDoneStatus: true
 });
+
+
 
 
 // var target = 200;
@@ -42,6 +44,7 @@ var mod = 50;
 
 limiter.on("failed", async (res, jobInfo) => {
 
+	debugger
 	//todo: realized that res that I PASS here is different than theh one that comes BACK..or something
 	try{
 		console.log({message:res.message,uri:res?.options?.uri || "n/a"});
@@ -60,6 +63,10 @@ limiter.on("failed", async (res, jobInfo) => {
 
 		t = parseInt(t)
 
+
+		//todo: was playing around with assigning id in-flight
+		//but this should really be done when calling schedule
+
 		if(jobInfo.args[0].uri) {
 			uri = jobInfo.args[0].uri.replace("https://api.spotify.com/v1", "").slice(0, 20)
 		}else if(jobInfo.args[0].url){
@@ -70,11 +77,12 @@ limiter.on("failed", async (res, jobInfo) => {
 			uri = jobInfo.args[0].url
 		}
 
-		// const id = jobInfo.options.id || uri
+		//const id = jobInfo.options.id || uri;
 		const id =  uri
+
 		//console.warn(`Job ${id} failed: ${ob.error}`);
 		//var r = error.headers['retry-after']
-		console.log(`Retrying job ${id} in ` + t* mod);
+		console.log(`Retrying job "${id}" in ` + t* mod);
 		limiter.updateSettings({minTime:50});
 		return  t* mod;
 	}catch(e){
@@ -111,6 +119,11 @@ var fake =  function(r){
 
 var me = module.exports;
 me.limiter = limiter;
+me.limiter_get_all_pages = new Bottleneck({
+	maxConcurrent: 1,
+	//minTime: 100,
+	trackDoneStatus: true
+});
 
 
 //the node api i'm using, although very limited and unfinished it seems like its the best out there...
@@ -134,7 +147,6 @@ me.limiter = limiter;
 //params when called: this,req,key,skip,data
 var pageIt =  function(req,key,skip,data){
 	return new Promise(function(done, fail) {
-
 		if(skip){
 			done(data.body)
 		}else{
@@ -227,7 +239,7 @@ me.getPage = function(body,key,req){
 		var reRes =  re.exec(body.next);
 		var baseUrl = reRes[0]; //not an array
 		var reAfterRes =  reAfter.exec(body.next);
-		debugger
+
 		var after = reAfterRes[1];//not an array
 		var q1 = 'offset=';var q2 = '&limit=50';
 
@@ -248,6 +260,7 @@ me.getPage = function(body,key,req){
 
 me.getPages = function(req,body,key){
 	return new Promise(function(done, fail) {
+
 		var re = /.*\?/;var reRes =  re.exec(body.next);
 		var baseUrl = reRes[0]; //not an array
 
@@ -260,6 +273,7 @@ me.getPages = function(req,body,key){
 		let options = {uri:baseUrl,headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()}, json: true};
 		var num = Math.ceil(body.total / 50)
 		console.log("total",body.total);
+
 		//console.log("scheduled",num);
 		var promises = [];
 
@@ -280,7 +294,6 @@ me.getPages = function(req,body,key){
 		}
 
 		var task = function (options) {
-
 			return  limiter.schedule(me.fetchTry,options.uri,options)
 		}
 		promises = ops.map(task);
@@ -303,7 +316,7 @@ me.getPages = function(req,body,key){
 function fetchTry(url, options = {}, retries = 3, backoff = 300) {
 	const retryCodes = [408, 500, 502, 503, 504, 522, 524,429]
 	const failureCodes = [400,401]
-	//console.log(url);
+	console.log(url);
 
 	return fetch(url, options)
 		.then(res => {
@@ -462,5 +475,31 @@ me.fetchTryAPI =fetchTryAPI;
 // 		})
 // }
 // me.fetchRetry =fetchRetry;
+
+/**
+ * getAllPages
+ * @param request - A call to spotifyApi which returns body.next
+ * @param req
+ * @returns {Promise<*>}
+ */
+me.getAllPages = async function(request,req){
+	const paginatedResponse = await request;
+
+	let currentResponse = paginatedResponse;
+	while (currentResponse.body.next) {
+		let options = {
+			uri: currentResponse.body.next,
+			headers: {"Authorization":'Bearer ' + req.body.spotifyApi.getAccessToken()},
+			json: true
+		};
+		currentResponse = await limiter.schedule(me.fetchTry,options.uri,options)
+		// currentResponse = await me.fetchTry(options.uri,options)
+		//note: remapping so it looks like the first query
+		currentResponse = {body:currentResponse,headers:options.headers}
+		// currentResponse = await req.body.spotifyApi.getGeneric(currentResponse.body.next)
+		paginatedResponse.body.items = paginatedResponse.body.items.concat(currentResponse.body.items);
+	}
+	return paginatedResponse;
+};
 
 

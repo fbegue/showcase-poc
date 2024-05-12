@@ -364,6 +364,7 @@ module.exports.resolveArtists2 = function(req,artists){
 }
 
 
+
 me.resolveTracks = async function(req,playOb) {
 
 	var artists = [];
@@ -373,6 +374,7 @@ me.resolveTracks = async function(req,playOb) {
 
 	//prune duplicate artists from track aggregation
 	artists = _.uniqBy(artists, function (n) {
+		debugger
 		return n.id;
 	});
 
@@ -420,6 +422,63 @@ me.resolveTracks = async function(req,playOb) {
 			})
 		})
 }
+
+//note: just a copy of the above except
+// - no playOb object
+// - each object is a legit track, not an item with a track field (result of search)
+me.resolveTracksArray = async function(req,tracks) {
+
+	var artists = [];
+	tracks.forEach(item => {
+		artists = artists.concat(_.get(item, 'artists'));
+	})
+
+	//prune duplicate artists from track aggregation
+	artists = _.uniqBy(artists, function (n) {
+		return n.id;
+	});
+
+
+	//resolving all the artists for all the tracks
+
+	return me.resolveArtists2(req, artists)
+		.then(resolvedArtists => {
+
+			var pullArtists = [];
+			var artistMap = {};
+			resolvedArtists.forEach(a => {
+				artistMap[a.id] = a
+			})
+
+			tracks.forEach(track => {
+
+
+				//note: theres an artist listing on both: items[0].track.album.artists AND a items[0].track.artists
+				//the difference between the album's artist(s) and a track's artist(s)
+				//well remove the album one for now
+				track.album ? delete track.album.artists : {}
+
+				//I just don't like looking at these
+				track.available_markets = null;
+				track.album ? track.album.available_markets = null : {}
+
+				//console.log(item);
+				track.artists.forEach((a, i, arr) => {
+					//note: think maybe artistMap[a.id].genres get's destroyed somehow after being accessed first time?
+
+					//todo: super weird Santana issue?
+					if (!(artistMap[a.id])) {
+						console.log("artistMap missed", a.id);
+					}
+					if (artistMap[a.id]) {
+						arr[i] = JSON.parse(JSON.stringify(artistMap[a.id]));
+						me.resolveArtistsCachedGenres([arr[i]], 'saved')
+					}
+				})
+			})
+		})
+}
+
 //todo: I want to commit (cache) these in SQL for later retrieval,
 //but not if its going to take forever. the absolutely necessary thing is
 //qualifying the genres w/ their ids - maybe I should just be keeping that
@@ -457,7 +516,7 @@ module.exports.resolveArtistsCachedGenres = function(artists,source){
 //receives a batch of playlists and returns all tracks
 //returns an array of objects, one for each input playlist {tracks:[track],playist:{}}
 
-module.exports.resolvePlaylists = function(body){
+module.exports.resolvePlaylists_old = function(body){
 	return new Promise(function(done, fail) {
 
 		console.log("# of playlists to process:",body.playlists.length);
@@ -484,7 +543,6 @@ module.exports.resolvePlaylists = function(body){
 				else{
 					options.offset = options.offset + offset_base ;
 					options.uri =  options.url + "?fields=items.added_at,items.added_by,items.track(id,name,artists)&limit="+ options.limit + "&offset=" + options.offset;
-
 
 					//todo: ideally I think it would be better if I knew how many total requests I was going to have to make
 					//3x for this playlist, 24x for this, etc.
@@ -558,8 +616,9 @@ module.exports.resolvePlaylists = function(body){
 			options.uri = options.url + "?fields=items.added_at,items.added_by,items.track(id,name,artists)&limit=" + options.limit + "&offset=" + options.offset;
 			options.playlist = play;
 			options.store = [];
+			//testing: worked just fine, except under load
 			promises.push(limiterSpotifyTrack.schedule(getPages,options,{}))
-			//promises.push(promiseThrottle_playlists.add(getPages.bind(this,options)));
+			//promises.push(limiterSpotifyTrack.schedule(network_utility.getPages,options,{}))
 
 		})
 		Promise.all(promises).then(function(results){
@@ -586,3 +645,44 @@ module.exports.resolvePlaylists = function(body){
 	})//promise
 
 };
+
+module.exports.resolvePlaylists = async function(req){
+	var task = function (playlist) {
+
+		//todo: I keep getting "Too Many Requests" everytime I pump up the # of playlists
+
+		//testing: trying to install a limiter around calls to getAllPages, since I was thinking
+		// the error was coming b/c the first call of getAllPages was being executed all at once?
+
+		// return network_utility.limiter_get_all_pages.schedule(
+		// network_utility.getAllPages,
+		// 	req.body.spotifyApi.getPlaylistTracks(playlist.id, { limit: 50 }), req
+		// 	//note: didn't know how to fit this in the above
+		// // ).then(r =>{
+		// // 		return {...playlist,tracks:r.body.items}
+		// // 	})
+		// )
+
+		//testing: works fine unless big # of playlists (20 worked but the scheduler failed a LOT (expected I guess?)
+
+		return network_utility.getAllPages(
+			req.body.spotifyApi.getPlaylistTracks(playlist.id, { limit: 50 }), req)
+			.then(r =>{
+				return {...playlist,tracks:r.body.items}
+			})
+	}
+	let promises = req.body.playlists.map(task);
+    return await Promise.all(promises)
+
+	// const paginatedResponse = await network_utility.getAllPages(
+	// 	req.body.spotifyApi.getPlaylistTracks(req.body.playlists[0].id, { limit: 50 }), req);
+	// return {...req.body.playlists[0],tracks:paginatedResponse.body.tracks}
+}
+
+// me.testGetPages = async function(req,res){
+// 	const paginatedResponse = await network_utility.getAllPages(
+// 		req.body.spotifyApi.getPlaylistTracks("5PTle1rPTwJHvyuJiky9XQ", { limit: 50 }),
+// 		req,);
+// 	debugger
+//
+// }

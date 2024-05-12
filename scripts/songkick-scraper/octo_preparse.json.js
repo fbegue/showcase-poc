@@ -1,24 +1,18 @@
-//var jsonInputPath  = "./octoparse-results/songkick-columbus.20231116.v4.json"
-var jsonInputPath  = "./octoparse-results/songkick-santa-fe.20231206.json"
+var jsonInputPath  = "./octoparse-results/songkick-columbus.20240310.json"
+//var jsonInputPath  = "./octoparse-results/songkick-santa-fe.20231206.json"
 
 var jsonInput = require(jsonInputPath)
 const fs = require('fs');
 const { DateTime } = require("luxon");
 
-// Convert a csv file with csvtojson
-
-
-// Parse large csv with stream / pipe (low mem consumption)
-// csv()
-// 	.fromStream(readableStream)
-// 	.subscribe(function(jsonObj){ //single json object will be emitted for each csv line
-// 		// parse each json asynchronousely
-// 		return new Promise(function(resolve,reject){
-// 			asyncStoreToDb(json,function(){resolve()})
-// 		})
-// 	})
-
-const run = async function(jsonInput){
+/**
+ * @desc Given output from a specific octoparse script, remap entries into a legacy format that the rest
+ * of this backend understands
+ * @param jsonInput
+ * ex input:  songkick-columbus.20240310.json
+ * ex output: songkick-columbus.20240310.OUTPUT.json
+ */
+const mapOctoparseOutputToSongkickEvents = async function(jsonInput){
     try{
 		//Use async / await
 		let songkick_events = [];
@@ -156,4 +150,4 @@ const run = async function(jsonInput){
     }
 }
 
-module.exports.items = run(jsonInput)
+module.exports.items = mapOctoparseOutputToSongkickEvents(jsonInput)
