@@ -435,8 +435,9 @@ var fetch_metro_events = function (metro, dateFilter) {
 
 }//getMetroEvents
 
-let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240310.output.json")
+// let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240721.output.json")
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
+let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.json")
 
 /**
  * fetch_metro_events_file
@@ -518,7 +519,7 @@ module.exports.fetchMetroEvents = async function (req, res) {
 		const startDateCache = new Date(req.body.dateFilter.start);
 
 		//testing: input result of octoparse.preparse
-		let events = await fetch_metro_events_from_file(req.body.metro, req.body.dateFilter)
+		let events = await fetch_metro_events_from_file()
 		// let events =  await fetch_metro_events(req.body.metro, req.body.dateFilter)
 
 		debugger

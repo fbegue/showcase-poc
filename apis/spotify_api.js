@@ -198,18 +198,17 @@ var getTokens = function (code, clientOrigin) {
 // 	})
 // }
 
-//var global_refresh_franky = "AQDn9X-9Jq2e-gbcZgf-U4eEzJadw2R6cFlXu1zKY-kxo3CEY4FaLtwL8tw7YcO8QPd2h3OXcSTvOQwKG5kmpOz2Nm6MTrHfM0r4UGQ7A7Aa-z8tywMvbgVyWmgLcEXDlVw";
-var global_refresh_frankyy = "AQBGzTcLEq-PKIDeU98H-XNVK52-BG5YcmDlI8sI1Sbg6xP2XAlyms79t0gztNy6Ru19IlI8WJut_U61M2j9ka5Xg0EFl_LkmjxHGVZhurKS65xszInAA9X9-7J3CQclUcU"
 var global_refresh_franky = "AQBwJS5mnAtUzilNEQIrW6OdcyUODHY-BctGCO6n8bI4zqSZeX88uF68tDIz_MyauMo6HexVEfGkYLc2GZiBQosZ4oBuLltzGbFZ7D4PA8aUCseSnHUvrtKPyJxY0hSar5I"
 var global_refresh_citizen = "AQA0tI-OosOKDuZjM2Im0UG5Zmd1rQOmS5XIS1pE1-uSP6EL1n49WhY3zAc0Z1stianFR_flIAoQpVs7VQk4zHbHza0TF5Iq9-8KCP8liPpbkmCCwrqYYJjx_prLJe9qi18"
 
 var global_refresh_josh = "AQDCCKE5PpnL4R9xZ991j0d9MVijWGdhfX9qxvC2krMEcbuEWcf7aHRFHLVnAoPnPFneWCSISZCL3w7_NKrJcmHl3Y4zjfI3jknNezedI6IN5Nbv-Y1IqgdPwQ7k-dqZBd4"
 
 //todo: expired!
+// UPDATE: or not? accidently ran createPlaylistFromJson with his token and fetched from his library but maybe didn't create playlist for him
 var global_refresh_dan = "AQA8qMva_Ccbqk1bN8RdpiT4fKgsgG2X7j1I_sM1B6ChylMZGaJkXfNTpml4Bg9HyYXwiUbTO7A8g1XjI_hdqn6FDUKhg55XFDzXouWLvBJDmx9IayQBX_j4KeLl79jbqHs"
 
-var global_refresh = global_refresh_franky
 //var global_refresh = global_refresh_dan
+var global_refresh = global_refresh_franky
 
 // var global_access_token = "";
 var refresh = function () {
@@ -249,7 +248,7 @@ module.exports.getCheatyToken = function (redirectFromClient) {
 		redirectFromClient ? credentials.redirectUri = redirectFromClient : {};
 		var spotifyApi = new SpotifyWebApi(credentials);
 		refresh().then(token => {
-			console.log("setAccessToken:", token)
+			//console.log("setAccessToken:", token)
 			//	token = "BQAnbI90_FpDKU2naDkWf6yWrrj6xqP_jVOpVh3eBiKHvqpLZV8QgfONXJZaKV-N2osZGnVzzIEPZYca4TrOVIj5Tjs9Rn5T-eICkE1vCjLI3OpJLYE5ex71He-zUmyZYMU8dZ9TFI80isQrGzqBcO-hyPv6qXYaTSujO35d8YIXEyzPIctBOw"
 			spotifyApi.setAccessToken(token);
 			done(spotifyApi)
@@ -708,6 +707,7 @@ var getFollowedArtists = function (req) {
 			})
 	})
 }
+me._getFollowedArtists = getFollowedArtists;
 
 me.getFollowedArtists = function (req, res) {
 	getFollowedArtists(req)
@@ -845,6 +845,7 @@ var reducer_familyAgg_stats_producer = function (arr, key, source) {
 
 	stats.recent = sorted.slice(0, 5)
 	stats.artists_top = artObs.slice(0, 5)
+
 	return {[key + "s"]: records, stats: stats};
 }
 
@@ -969,12 +970,13 @@ var getMySavedTracks = function (req, shallowTracks) {
 		var trackOb = {};
 
 		//testing: skip paging
-		console.warn("getMySavedTracks is skipping network_utility.pageIt!");
-		!(shallowTracks) ? shallowTracks = 'skip' : {};
+		//console.warn("getMySavedTracks is skipping network_utility.pageIt!");
+		//!(shallowTracks) ? shallowTracks = 'skip' : {};
 
 		req.body.spotifyApi.getMySavedTracks({limit: 50})
 			.then(network_utility.pageIt.bind(null, req, null, shallowTracks))
 			.then(pagedRes => {
+
 
 				//note: if shallowTracks, ignore pagedRes (which will have hit USER's tracks library)
 				if (shallowTracks && shallowTracks !== 'skip') {
@@ -1024,6 +1026,7 @@ var getMySavedTracks = function (req, shallowTracks) {
 
 							//console.log(item);
 							item.track.artists.forEach((a, i, arr) => {
+
 								//note: think maybe artistMap[a.id].genres get's destroyed somehow after being accessed first time?
 
 								//todo: super weird Santana issue?
@@ -1041,7 +1044,6 @@ var getMySavedTracks = function (req, shallowTracks) {
 
 							})
 						})
-
 
 						//testing: disabled, replaced with static genres assignment
 						return reducer_familyAgg_stats_producer(trackOb.items, 'track', 'saved')
@@ -1065,6 +1067,38 @@ var getMySavedTracks = function (req, shallowTracks) {
 
 me._getMySavedTracks = getMySavedTracks
 
+me.getMySavedTracksArtists = function (req, res) {
+
+	getMySavedTracksArtists(req)
+		.then(r => {
+			res.send(r)
+		})
+		.catch(e => {
+			res.status(500).send(e)
+		})
+
+};
+
+var getMySavedTracksArtists = function (req, ) {
+	return new Promise(async function (done, fail) {
+		let r =  await me._getMySavedTracks(req)
+		let artists = [];
+		let artistsTotal = 0;
+		r.tracks.forEach(t =>{
+			t.artists.forEach(a =>{
+
+				artistsTotal++
+				let dupe = artists.find(aFind => a.id ===aFind.id)
+				if(dupe===undefined){
+					// artists.push({id:a.id,name:a.name,familyAgg:a.familyAgg,genres:a.genres})
+					artists.push(a)
+				}
+			})
+		})
+		done(artists)
+	})
+}
+me._getMySavedTracksArtists = getMySavedTracksArtists
 
 var getRecentlyPlayedTracks = function (req) {
 	return new Promise(function (done, fail) {
@@ -2686,7 +2720,7 @@ me.searchArtistEnd = async function (req,res) {
 me.createPlaylist = function (req, user, playlist, songs) {
 	return new Promise(function (done, fail) {
 		console.log("createPlaylist", songs.length);
-		debugger
+
 		req.body.spotifyApi.createPlaylist(user.id, playlist.name, {'description': 'My description', 'public': true})
 			.then(createPlaylistResponse => {
 				debugger

@@ -258,7 +258,9 @@ app.post('/api/insertStatic', (req, res) => {
 //db connections and tests
 
 app.get('/api/info', (req, res) => {
-	res.send({ application: 'soundfound', version: '1' });
+	const packageJSON = require(`./package.json`);
+
+	res.send({ application: packageJSON.name, version: packageJSON.version });
 });
 
 

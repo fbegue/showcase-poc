@@ -15,7 +15,8 @@
 ## apis
 
 
-`spotify_api.js` | current store for all spotify api related endpoints
+`spotify_api.js` | current store for all spotify api related 
+- also handles token management, including choosing static refresh-token to avoid having to auth every time 
 `spotify_api/base.js` | beginning of reorging spotify features
 `spotify_api/playlist_api.js` | spotify playlist related
 
@@ -67,8 +68,6 @@ use postman to hit endpoints
 `npm run commit 'example message'`
 `git push`
 
-npm run commit 'createPlaylistFromJson'
-
 ## deploy steps (lambda)
 
 //deploy a (the) function
@@ -83,14 +82,7 @@ npm run commit 'createPlaylistFromJson'
 https://console.aws.amazon.com/lambda/home?region=us-east-1#/functions/showcase-backend-app-dev-app?tab=configure
 https://stackoverflow.com/questions/50866472/restarting-aws-lambda-function-to-clear-cache
 
-## change notes
-
-- 05-21-23
-    - moved all network utility to `utility/network_utility.js`
-        - as a result, refactored and tested the most complicated endpoints `resolvePlaylists()`
-    - added dupe prevention and light parameterization to `experimental_api.archiveLikedSongs()` 
-
-## bugs
+# known bugs
 
 - if you get something like:  `EMFILE: too many open files` when deploying, your machine literally has too many files open. close some and it'll work again
 

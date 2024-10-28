@@ -1,4 +1,5 @@
-var jsonInputPath  = "./octoparse-results/songkick-columbus.20240310.json"
+// var jsonInputPath  = "./octoparse-results/songkick-columbus.20240721.json"
+var jsonInputPath  = "./octoparse-results/Songkick-SaltLakeCity.20241027.json"
 //var jsonInputPath  = "./octoparse-results/songkick-santa-fe.20231206.json"
 
 var jsonInput = require(jsonInputPath)
@@ -78,7 +79,7 @@ const mapOctoparseOutputToSongkickEvents = async function(jsonInput){
 						artistId = parseInt(match[1])
 					}
 					else{
-						console.error("songkick artistid parse failure")
+						console.error("songkick artistid parse failure",p)
 						debugger
 					}
 

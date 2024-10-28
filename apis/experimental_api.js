@@ -1493,8 +1493,9 @@ const getArtistDateMap = function(req,jsonInputFile){
 // let playlistName = "songkick-santa-fe.20231206"
 //let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.resolved.json"
 
-let playlistName = "songkick-columbus.20240310"
-let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240310.output.resolved.json"
+let playlistName = "Songkick-SaltLakeCity.20241027.20250101"
+//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240721.output.resolved.json"
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.resolved.json"
 
 /**
  * @desc given an input json file w/ fully qualified songkick events:
@@ -1511,8 +1512,7 @@ me.createPlaylistFromJson = async function (req, res) {
 	//testing: reduce input size
 	//jsonInputFile = jsonInputFile.slice(0,2)
 
-
-	console.log("createPlaylistFromJson:", jsonInputFilePath);
+	console.log("createPlaylistFromJson | path", jsonInputFilePath);
 	let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
 	req.body.tracksLimit = 2;
 	req.body.artists = [];
@@ -1524,10 +1524,11 @@ me.createPlaylistFromJson = async function (req, res) {
 	//todo: untested
 	req.body.eachDay = false;
 
+	req.body.userArtistsFilter = true;
+
 	jsonInputFile = filterEvents(req, jsonInputFile)
 	console.log("pre-filtered from inputjson", jsonInputFile.length + " / " + jsonInputFileStartLength)
 
-	debugger
 
 	//todo: in cases where I couldn't resolve the artist, it looks like resolveEvents is returning
 	//performance.artist w/ the songkick numeric id (and no spotify id/genres)
@@ -1562,10 +1563,34 @@ me.createPlaylistFromJson = async function (req, res) {
 	//avoid duplicate calls to get tracks for this artist later on
 	req.body.artists = uniq(req.body.artists);
 
+	console.log("req.body.artists",JSON.parse(JSON.stringify(req.body.artists.length)))
+
+	//testing:
+	let artistsFiltered =[];
+	if(req.body.userArtistsFilter){
+		//todo: mixing types here (full artist v. artist id)
+		let r = await spotify_api._getFollowedArtists(req);
+		let userSavedTracksArtists = await spotify_api._getMySavedTracksArtists(req);
+		//console.log("_getFollowedArtists",r.artists.length)
+		//console.log("userSavedTracksArtists",userSavedTracksArtists.length)
+		let artistsConcat = r.artists.concat(userSavedTracksArtists)
+		let artists = uniqBy(artistsConcat, "id")
+		console.log("_getFollowedArtists + _getMySavedTracksArtists length",artistsConcat.length)
+		req.body.artists.forEach(aId =>{
+			let found = artists.find(aFind => {
+				return aId ===aFind.id
+			})
+			if(found){
+				artistsFiltered.push(aId)
+			}
+		})
+	}
+	console.log("artistsFiltered",artistsFiltered.length)
+	req.body.artists = artistsFiltered;
+
 	console.log("unresolvedEventArtists", JSON.stringify(uniqBy(unresolvedEventArtists.map(a => {
 		return a.displayName
 	}), "id")))
-
 
 	//testing:
 	//req.body.artists = req.body.artists.slice(0,51)
@@ -1707,13 +1732,12 @@ me.createPlaylistFromJson = async function (req, res) {
 			//var r_add =  await limiter.schedule(addToPlaylistForEachDay,r_create.playlist.id,daySongPays)
 			let payloads = addToPlaylistForEachDay(r_create.playlist.id, daySongPays)
 			r_create_playlist_id = r_create.playlist.id;
-			debugger
+
 			var add_proms = payloads.map(task_addTracksToPlaylist);
 			var mresults = await Promise.all(add_proms)
 		}
 		//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
 		var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r_create.playlist)
-
 		res.send(tracksR)
 	} catch (e) {
 		debugger
@@ -1726,11 +1750,12 @@ me.prunePlaylistFromJson = async function (req, res) {
 
 	try {
 		var jsonInputFile = require(jsonInputFilePath)
+		console.log("prunePlaylistFromJson | path", jsonInputFilePath);
 
 		//testing:
 		let playlistId = "62cAeGlbK8vt6IzWqF4BYP";
+		console.log("prunePlaylistFromJson | playlistId", playlistId);
 
-		console.log("createPlaylistFromJson:", jsonInputFilePath);
 		req.body.tracksLimit = 2
 		req.body.artists = [];
 

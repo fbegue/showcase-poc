@@ -7,15 +7,15 @@ var os = require("os");
 
 var IM = require('./utility/inMemory')
 
-var config_local = {
-	"user": 'test',
-	"password": 'test',
-	"server": 'DESKTOP-TMB4Q31\\SQLEXPRESS',
-	"database": 'master',
-	"port": '61427',
-	"dialect": "mssql",
+const config_local = {
+	server: 'localhost\\SQLEXPRESS',     // Server name
+	database: 'master',      // Database name
+	user: 'sa',                // SQL Server username
+	password: 'sa',            // SQL Server password
+	driver: 'mssql',                      // Use the appropriate driver
 	options: {
-		trustServerCertificate: true // change to true for local dev / self-signed certs
+		encrypt: false,                   // Use this if not using encryption
+		trustServerCertificate: true      // Trust self-signed certificates
 	}
 };
 
@@ -49,11 +49,12 @@ var config_remote = {
 var config;
  var config_override = false;
 //var config_override = config_rds;
+console.log("os.hostname: ",os.hostname())
 if(config_override){
 	console.log("override: connecting to remote rds sql instance")
 	config=config_rds
 }
-else if(os.hostname() === "DESKTOP-TMB4Q31"){
+else if(os.hostname() === "DESKTOP-43TRT7N"){
 	config=config_local
 	console.log("connecting to sql server:" + config_local.server);
 }else{

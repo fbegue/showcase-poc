@@ -170,7 +170,7 @@ var pageIt =  function(req,key,skip,data){
 							}
 						})
 						data.body.pagedTotal = data.body.items.length;
-						console.log("pageIt finished");
+						console.log("pageIt finished",data.body.pagedTotal);
 						done(data.body)
 					})
 					.catch(e =>
