@@ -1,0 +1,193 @@
+{
+  "C:\\Users\\Candy\\WebstormProjects\\Showcase-POC": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.7",
+    "isWithinCompose": false,
+    "isCompose": false,
+    "composeOrgName": null,
+    "composeResolverProviders": {
+      "default-aws-credential-resolver": "<REDACTED>"
+    },
+    "composeServiceName": null,
+    "servicePath": "C:\\Users\\Candy\\WebstormProjects\\Showcase-POC",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "package": {
+        "patterns": [
+          "!amplify",
+          "!distrokid",
+          "!example data objects",
+          "!google",
+          "!scripts/songkick-scraper",
+          "!polly",
+          "!sql",
+          "!src",
+          "!utility/static-utility-records/top_us_singles_playlists/**"
+        ],
+        "artifactsS3KeyDirname": "serverless/showcase-backend-app/dev/code-artifacts"
+      },
+      "org": "soundfoundio",
+      "service": "showcase-backend-app",
+      "provider": {
+        "profile": "default",
+        "name": "aws",
+        "runtime": "nodejs14.x",
+        "stage": "dev",
+        "region": "us-east-1",
+        "memorySize": 3500,
+        "versionFunctions": true,
+        "remoteFunctionData": {
+          "Configuration": {
+            "FunctionName": "showcase-backend-app-dev-app",
+            "FunctionArn": "arn:aws:lambda:us-east-1:318321395970:function:showcase-backend-app-dev-app",
+            "Runtime": "nodejs14.x",
+            "Role": "arn:aws:iam::318321395970:role/showcase-backend-app-dev-us-east-1-lambdaRole",
+            "Handler": "app.handler",
+            "CodeSize": 48670782,
+            "Description": "",
+            "Timeout": 90,
+            "MemorySize": 3500,
+            "LastModified": "2024-10-28T02:30:59.000+0000",
+            "CodeSha256": "KpAw5cfk764cjxBjwHZyObEMlbCxt+RYCRhQn7mVPE0=",
+            "Version": "$LATEST",
+            "VpcConfig": {
+              "SubnetIds": [],
+              "SecurityGroupIds": [],
+              "VpcId": "",
+              "Ipv6AllowedForDualStack": false
+            },
+            "KMSKeyArn": null,
+            "TracingConfig": {
+              "Mode": "PassThrough"
+            },
+            "MasterArn": null,
+            "RevisionId": "17584d9e-3d5a-41c6-8ac1-a4e4106542d7",
+            "State": "Active",
+            "StateReason": null,
+            "StateReasonCode": null,
+            "LastUpdateStatus": "Successful",
+            "LastUpdateStatusReason": null,
+            "LastUpdateStatusReasonCode": null,
+            "PackageType": "Zip",
+            "SigningProfileVersionArn": null,
+            "SigningJobArn": null,
+            "Architectures": [
+              "x86_64"
+            ],
+            "EphemeralStorage": {
+              "Size": 512
+            },
+            "SnapStart": {
+              "ApplyOn": "None",
+              "OptimizationStatus": "Off"
+            },
+            "LoggingConfig": {
+              "LogFormat": "Text",
+              "ApplicationLogLevel": null,
+              "SystemLogLevel": null,
+              "LogGroup": "/aws/lambda/showcase-backend-app-dev-app"
+            },
+            "Layers": [],
+            "Environment": {
+              "Variables": {}
+            }
+          },
+          "Code": {
+            "RepositoryType": "S3",
+            "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-f7c08c88-143a-4305-9138-8e0d0bbba5b1?versionId=_wuWTE.WgKf_LFOdhmqjcXS_lLnYghH3&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEML%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCNJvLVyvliA1acR%2BxoDatl0OwFHfVUpcxsDCwseZ%2BjwQIhAM4RdoZGq%2FkqmubxjiKPt3Z%2F4gJnjDAnMoVFMZ71v%2FixKq8FCDoQABoMNzQ5Njc4OTAyODM5IgxBQHlKoxMOhyOJzCUqjAXj0fBvFcuvQp18r1046ZNk3ea5vJaKTN7v77BbYCCJI60Cgzahi%2Fo5fQI0Xp%2FeZshXihcux%2FSS0jt34xYoGoRj%2FHLC2%2BKJ00c3HMMqYimyBMCJh5J1ggZxfhI65pcECxDaoOp27qdO91%2FgqvFKJp6k6%2Fz3dK%2FcBNVeBjd4BaHzS4Qd687vm33qP5Tv6Z5AenxbXEdvnqHPax0%2B7weBtvchRHv5qzzqcsu6RoD%2FcOP7tRLmKnOJcXyb8qlgTyF9dIYU%2B55Umy82y5BHagjByj2qmo55aCYwgJK706kEpbQbG%2BqsHNJ%2B7FL%2B6kcUBrH0FAKHvbff8FsXseh7c1SzvH9R9nQKDkZm6W%2FqktPy6EoEv%2FPkBRyTbJGyATeVtUIUrDCc66Qrv%2FT2CJWNZVOdoTZf4C3ykBRqktDoGoXVFxHNYZzuETqe3ElwJeATAEzGLVUOxh5Pow73v%2FSOYq6Z8Nm%2BBmfQpn5RzZ8oGkmvmSMpM%2FrLgQX8gHa27VrNBLn3bWoUSZVF%2FqvUCnsqBi8Sy79gPpk6DLf3K33Z0razkVLwRjEe%2Fu8awwDXctyGBjq2jbHD3oxSqbb7HRR8jW0nTzBrzpsjtMnAUNC9L9SPVDrDAhzBF4pNDc33UE4hM8IT%2FeZGDxJ2UK4BNu%2BF7OE8v0oQS0aReTH0jKdgzA3cmAB%2FE4a%2BVi35ukkeCqmFTXZBoQsn%2B29fFNtQlF%2BmBv0pN25OzqUboUHInrji6aC7L3mq%2FoXQfb%2FfiBu1BXrMt%2Bbyggq6rrceSFJ6hesPrXLZp7%2BjT2%2FCVWTzJWaV7mvEukuVd3l63GF6po8CEh97l0eIRKQW9yrmihfYsS%2FtP0P%2FJ9iFEaORA2mZjKZKpKJxMKLM%2B7gGOrABDsUuMb5tF%2B8jx6%2BbRXvaphaEgo5dFZ%2FbZKeRGVOhzOdT2SWnRn%2FMMTgjGvgGcMyKdIu9OcAG%2BFM7vSVAk7sAtN0nR1dFetc65QUFbAAjwu7%2FgyL4pK1wa14PeValy68ZB3lfsOx64Ji14%2FPslbkIvRMeY0fUtnWwtikWV1rzSgkCeJfe8VSZG7TA0Pil8rmTWACy3h777uke5fTIJNoVUdzRdV3kg15oHO%2FaIH58%2BTw%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241028T023228Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY32HVHIKML%2F20241028%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=4065761caebee2ccdca83fc458712d5df8b490aa222eb133ca71bfc1b5447106",
+            "ImageUri": null,
+            "ResolvedImageUri": null
+          },
+          "Tags": {
+            "aws:cloudformation:stack-name": "showcase-backend-app-dev",
+            "aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:318321395970:stack/showcase-backend-app-dev/72925c90-0359-11ec-911d-0eadc6b18409",
+            "STAGE": "dev",
+            "aws:cloudformation:logical-id": "AppLambdaFunction"
+          }
+        }
+      },
+      "functions": {
+        "app": {
+          "handler": "app.handler",
+          "events": [
+            {
+              "http": {
+                "path": "/",
+                "method": "ANY",
+                "cors": true
+              }
+            },
+            {
+              "http": {
+                "path": "/{proxy+}",
+                "method": "ANY",
+                "cors": true
+              }
+            }
+          ],
+          "name": "showcase-backend-app-dev-app"
+        }
+      }
+    },
+    "serviceRawFile": "# \"org\" ensures this Service is used with the correct Serverless Framework Access Key.\r\n\r\npackage:\r\n  patterns:\r\n    - '!amplify'\r\n    - '!distrokid'\r\n    - '!example data objects'\r\n    - '!google'\r\n    - '!scripts/songkick-scraper'\r\n    - '!polly'\r\n    - '!sql'\r\n    - '!src'\r\n    - '!utility/static-utility-records/top_us_singles_playlists/**'\r\norg: soundfoundio\r\nservice: showcase-backend-app\r\nprovider:\r\n  profile: default\r\n  name: aws\r\n  runtime: nodejs14.x\r\n  stage: dev\r\n  region: us-east-1\r\n  memorySize: 3500\r\nfunctions:\r\n#  express -> serverless -> gateway api easiest route possible = just one function, handles everything\r\n  app:\r\n    handler: app.handler\r\n    events:\r\n      - http:\r\n          path: /\r\n          method: ANY\r\n          cors: true\r\n      - http:\r\n          path: /{proxy+}\r\n          method: ANY\r\n          cors: true\r\n",
+    "command": [
+      "deploy",
+      "function"
+    ],
+    "options": {
+      "function": "app"
+    },
+    "error": null,
+    "params": {},
+    "machineId": "eb248566a2db96da32cbd6db09a6546a",
+    "stage": "dev",
+    "accessKeyV2": "<REDACTED>",
+    "accessKeyV1": "<REDACTED>",
+    "orgId": "fed3ef9a-2047-4990-a788-ae81dbc8d9b1",
+    "orgName": "soundfoundio",
+    "userId": "zBRblmNDcN3w47C2qJ",
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "userName": "soundfoundio",
+    "subscription": null,
+    "userEmail": "eugene.f.begue@gmail.com",
+    "serviceProviderAwsRegion": "us-east-1",
+    "serviceProviderAwsCredentials": "<REDACTED>",
+    "serviceProviderAwsAccountId": "318321395970",
+    "projectType": "traditional",
+    "versionSf": "4.4.7",
+    "serviceProviderAwsCfStackName": "showcase-backend-app-dev",
+    "integrations": {},
+    "serviceUniqueId": "arn:aws:cloudformation:us-east-1:318321395970:stack/showcase-backend-app-dev/72925c90-0359-11ec-911d-0eadc6b18409",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:318321395970:stack/showcase-backend-app-dev/72925c90-0359-11ec-911d-0eadc6b18409",
+    "serviceProviderAwsCfStackCreated": "2021-08-22T14:58:45.133Z",
+    "serviceProviderAwsCfStackUpdated": "2021-09-12T19:04:26.720Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "AppLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:318321395970:function:showcase-backend-app-dev-app:72",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-showcase-backend-app-dev-AppLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "ServiceEndpoint",
+        "OutputValue": "https://1hz9ycpug5.execute-api.us-east-1.amazonaws.com/dev",
+        "Description": "URL of the service endpoint",
+        "ExportName": "sls-showcase-backend-app-dev-ServiceEndpoint"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "showcase-backend-app-dev-serverlessdeploymentbuck-1hgjzwhiw0wyr",
+        "ExportName": "sls-showcase-backend-app-dev-ServerlessDeploymentBucketName"
+      }
+    ]
+  }
+}

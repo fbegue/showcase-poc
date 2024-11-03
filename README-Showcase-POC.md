@@ -65,16 +65,22 @@ use postman to hit endpoints
 
 ## commit steps (lambda)
 
+Automatically bumps minor version 1.x.0
+
 `npm run commit 'example message'`
 `git push`
 
 ## deploy steps (lambda)
+
+Note: "Request must be smaller than 70167211 bytes for the UpdateFunctionCode operation" error will occur even when the produced `.serverless/app.zip` is smaller than 66.89MB because the AWS zip file size limit using this deploy method is 50MB
 
 //deploy a (the) function
 `npm run deploy`
 
 //invoke a function
 `serverless invoke local --function app --path testing/test.json`
+
+
 
 //restart lambda instance w/out redeploying (there is no actual method for this)
 - go to lambda > configuration > and tick allocated memory up/down 1 mb

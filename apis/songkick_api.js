@@ -437,7 +437,8 @@ var fetch_metro_events = function (metro, dateFilter) {
 
 // let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240721.output.json")
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
-let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.json")
+//let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.json")
+let inputJsonFile = null;
 
 /**
  * fetch_metro_events_file

@@ -5,7 +5,9 @@ var giveMePayloads = require('../utility/utility').giveMePayloads
 const FuzzySet = require('fuzzyset')
 var Bottleneck = require("bottleneck");
 var network_utility = require('../utility/network_utility')
-var items = require('../scripts/experience-columbus-scraper/experienceColumbusParsed')
+//todo:
+// var items = require('../scripts/experience-columbus-scraper/experienceColumbusParsed')
+var items = []
 //var _ = require('./spotify_api')._
 //todo: don't know why the fuck old lodash imports don't work here
 //works fine in spotify_api @ test (getMySavedTracks)
@@ -550,8 +552,11 @@ me.resolveArtists = async function (req, res) {
 
 
 // var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_2022-11-12_to_2022-11-19_parsed');
-var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json');
-var artistSongkickArr = require('../scripts/songkick-scraper/LA_fetchMetroEvents_result').artist_artistSongkick_committed;
+//todo:
+var parsed = []
+var artistSongkickArr = []
+// var parsed = require('../scripts/songkick-scraper/Los_Angeles_Songkick_parsed__update111222.json');
+// var artistSongkickArr = require('../scripts/songkick-scraper/LA_fetchMetroEvents_result').artist_artistSongkick_committed;
 
 me.compare_fetchMetroEvents_artists_to_input_json_events = async function (req, res) {
 	var matched = [];
@@ -792,7 +797,10 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 
 
 me.resolveArtistsTracksTuplesToPlaylist = async function (req, res) {
-	let tuples = require("../scripts/rolling-stones-top-100-guitarists-scraper/guitaristTrackTuples");
+	//todo:
+	let tuples = []
+	// let tuples = require("../scripts/rolling-stones-top-100-guitarists-scraper/guitaristTrackTuples");
+
 	//testing:
 	//tuples = tuples.slice(0, 1)
 	let trackArtistArr = [];
@@ -2276,7 +2284,9 @@ me.archiveBillboardHot100Playlists = async function(req, res) {
 	//req.body.playlists = singles.slice(500,1155);
 	let resolved_singles_playlists = await resolver.resolvePlaylists(req)
 	resolved_singles_playlists.forEach(p =>{
-		let path = 'C:\\Users\\Candy.DESKTOP-TMB4Q31\\WebstormProjects\\Showcase-POC\\utility\\static-utility-records\\top_us_singles_playlists\\';
+		//todo: removed when testing new lambda upload strategy
+		//let path = 'C:\\Users\\Candy.DESKTOP-TMB4Q31\\WebstormProjects\\Showcase-POC\\utility\\static-utility-records\\top_us_singles_playlists\\';
+		let path = null
 		let sanitized_name = p.name.replaceAll(" ","_");
 		sanitized_name =  sanitized_name.replaceAll(":","_");
 		let fname = path + sanitized_name +'.json';

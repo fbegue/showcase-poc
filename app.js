@@ -14,7 +14,7 @@
  *
  *
  */
-//const serverless = require('serverless-http');
+
 const awsServerlessExpress = require('aws-serverless-express');
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 
@@ -319,17 +319,17 @@ app.post('/api/testFetchUser', (req, res) => {
 		});
 });
 
-app.post('/api/testAtlasConnect', (req, res) => {
-
-	db.connectClientAtlas()
-		.then(r =>{
-			// console.log(r)
-			 res.send({ result: r});
-			//res.send({ result: "connected"});
-		},e =>{console.error(e)
-			res.status(500).send(e)
-		});
- });
+// app.post('/api/testAtlasConnect', (req, res) => {
+//
+// 	db.connectClientAtlas()
+// 		.then(r =>{
+// 			// console.log(r)
+// 			 res.send({ result: r});
+// 			//res.send({ result: "connected"});
+// 		},e =>{console.error(e)
+// 			res.status(500).send(e)
+// 		});
+//  });
 
 app.post('/api/testAtlas', (req, res) => {
 
@@ -389,7 +389,6 @@ app.post('/api/testAtlas3', (req, res) => {
 //========================================================
 
 
-let polish = require("./example data objects/artist")
 app.post('/api/artistSongkickMatch', (req, res) => {
 
 	var songkickArtist = {id:2290286}
@@ -522,9 +521,13 @@ app.post('/api/testRDS2', (req, res) => {
 ///module.exports.handler = serverless(app);
 const server = awsServerlessExpress.createServer(app);
 
+//todo: no idea what this was about
+//appears to be related to serverless / lambda deploy, maybe where this client is only actually used
+//when AWS calls this handler
 
 const { MongoClient } = require('mongodb');
-let client = new MongoClient("mongodb+srv://admin:hlUgpnRyiBzZHgkd@cluster0.th2x5.mongodb.net/",
+const uri = "mongodb+srv://admin2:fuckingstupidbullshit@cluster0.th2x5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+let client = new MongoClient(uri,
 	{ useNewUrlParser: true, useUnifiedTopology: true });
 const clientPromise = client.connect();
 
@@ -553,8 +556,6 @@ db_mongo_api.testAtlasAsync2()
 		res.status(500).send(e)
 	})
 });
-
-
 
 ///https://stackoverflow.com/questions/65724538/what-is-causing-mongodb-timeout-error-on-aws-lambda/67530789#67530789
 //todo: not going to run locally w/out invoking handler obvs

@@ -1,5 +1,20 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+
+package:
+  patterns:
+    - '!amplify'
+    - '!distrokid'
+    - '!example data objects'
+    - '!google'
+    - '!scripts/songkick-scraper'
+    - '!polly'
+    - '!sql'
+    - '!src'
+    - '!utility/static-utility-records/top_us_singles_playlists/**'
+org: soundfoundio
 service: showcase-backend-app
 provider:
+  profile: default
   name: aws
   runtime: nodejs14.x
   stage: dev
