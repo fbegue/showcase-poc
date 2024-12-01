@@ -16,7 +16,7 @@ service: showcase-backend-app
 provider:
   profile: default
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs20.x
   stage: dev
   region: us-east-1
   memorySize: 3500

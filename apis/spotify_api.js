@@ -3015,10 +3015,10 @@ me.getPlaying = async function (req, res) {
 			req.body.artistQuery = trackResult.item.artists[0].name;
 			let artistInfoResult = await wikipedia_api.getArtistInfoWiki(req)
 
-			var pay = {track: trackResult.item, artist: artistResult.body,artistInfo: artistInfoResult};
+			var pay = {track: trackResult.item, artist: artistResult.body,artistInfo: artistInfoResult.artistInfo};
 			// console.log("getPlaying",pay);
 			console.log("getPlaying finished", pay.track.name);
-			res.send(artistInfoResult)
+			res.send(pay)
 		} else {
 			let msg = "getPlaying finished - nothing is playing right now"
 			console.warn(msg);

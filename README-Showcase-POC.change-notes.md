@@ -12,3 +12,5 @@
 - 12-01-24
     - improved getPlaying - now returns getArtistInfoWiki info
       - lot of haphazard work went into parsing 'born' which you find for singular artist names
+    - had to update node version from 14 to 20 IN THE META.JSON SERVERLESS CONFIG because of (not sure how this was introduced?)
+      - "errorMessage": "SyntaxError: Unexpected token '??='",

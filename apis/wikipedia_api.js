@@ -82,6 +82,7 @@ me.findArtistArticle = async function(query){
 	})
 }
 
+
 me.parseArticle = async function(article){
 
 	let pageid = article.pageid

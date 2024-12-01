@@ -263,20 +263,6 @@ app.get('/api/info', (req, res) => {
 	res.send({ application: packageJSON.name, version: packageJSON.version });
 });
 
-
-
-
-var package = require("./package.json")
-app.post('/api/postinfo', (req, res) => {
-	console.log("postinfo...",req.body );
-	//testing: not going to do anything if I'm using cors middleware above
-	//  res.header("Access-Control-Allow-Origin", "https://master.d267e964bph18g.amplifyapp.com");
-	// res.header("Access-Control-Allow-Headers", "*");
-	// res.header("Access-Control-Allow-Methods", "OPTIONS,POST,GET");
-	res.send({ application: 'soundfound', version: package.version,body:req.body });
-});
-
-
 app.post('/api/testlimit', (req, res) => {
 	var start = Date.now()
 	ltest(req)
