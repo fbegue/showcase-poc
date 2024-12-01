@@ -9,3 +9,6 @@
     - created experimental_api.archiveBillboardHot100Playlists
     - refactored resolver.resolvePlaylists using new network_utility.getAllPages
 
+- 12-01-24
+    - improved getPlaying - now returns getArtistInfoWiki info
+      - lot of haphazard work went into parsing 'born' which you find for singular artist names

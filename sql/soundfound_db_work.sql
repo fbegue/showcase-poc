@@ -2,10 +2,13 @@
 --drop table [soundfound].[dbo].[artists]
 
 select * from [artistsSongkick]
+aas where aas.displayName = 'Shallow Pools' 
+
 truncate table [artistsSongkick]
 
 select * from [artist_artistSongkick]
 --aas where aas.artist_id = '5Ep9KoPuMcT2c2YZqoslPE' 
+
 truncate table  [artist_artistSongkick]
 
 select * from [artists]

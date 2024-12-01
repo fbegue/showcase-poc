@@ -43,12 +43,12 @@
             "Runtime": "nodejs14.x",
             "Role": "arn:aws:iam::318321395970:role/showcase-backend-app-dev-us-east-1-lambdaRole",
             "Handler": "app.handler",
-            "CodeSize": 48670782,
+            "CodeSize": 48670769,
             "Description": "",
             "Timeout": 90,
             "MemorySize": 3500,
-            "LastModified": "2024-10-28T02:30:59.000+0000",
-            "CodeSha256": "KpAw5cfk764cjxBjwHZyObEMlbCxt+RYCRhQn7mVPE0=",
+            "LastModified": "2024-10-28T02:32:49.000+0000",
+            "CodeSha256": "1zey4gTqzpQ5nsIwSq58KKBfBwIwT8D9yI0BBqXtPs0=",
             "Version": "$LATEST",
             "VpcConfig": {
               "SubnetIds": [],
@@ -61,7 +61,7 @@
               "Mode": "PassThrough"
             },
             "MasterArn": null,
-            "RevisionId": "17584d9e-3d5a-41c6-8ac1-a4e4106542d7",
+            "RevisionId": "7eeb66b2-9466-428b-899e-d686175378f5",
             "State": "Active",
             "StateReason": null,
             "StateReasonCode": null,
@@ -94,7 +94,7 @@
           },
           "Code": {
             "RepositoryType": "S3",
-            "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-f7c08c88-143a-4305-9138-8e0d0bbba5b1?versionId=_wuWTE.WgKf_LFOdhmqjcXS_lLnYghH3&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEML%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCNJvLVyvliA1acR%2BxoDatl0OwFHfVUpcxsDCwseZ%2BjwQIhAM4RdoZGq%2FkqmubxjiKPt3Z%2F4gJnjDAnMoVFMZ71v%2FixKq8FCDoQABoMNzQ5Njc4OTAyODM5IgxBQHlKoxMOhyOJzCUqjAXj0fBvFcuvQp18r1046ZNk3ea5vJaKTN7v77BbYCCJI60Cgzahi%2Fo5fQI0Xp%2FeZshXihcux%2FSS0jt34xYoGoRj%2FHLC2%2BKJ00c3HMMqYimyBMCJh5J1ggZxfhI65pcECxDaoOp27qdO91%2FgqvFKJp6k6%2Fz3dK%2FcBNVeBjd4BaHzS4Qd687vm33qP5Tv6Z5AenxbXEdvnqHPax0%2B7weBtvchRHv5qzzqcsu6RoD%2FcOP7tRLmKnOJcXyb8qlgTyF9dIYU%2B55Umy82y5BHagjByj2qmo55aCYwgJK706kEpbQbG%2BqsHNJ%2B7FL%2B6kcUBrH0FAKHvbff8FsXseh7c1SzvH9R9nQKDkZm6W%2FqktPy6EoEv%2FPkBRyTbJGyATeVtUIUrDCc66Qrv%2FT2CJWNZVOdoTZf4C3ykBRqktDoGoXVFxHNYZzuETqe3ElwJeATAEzGLVUOxh5Pow73v%2FSOYq6Z8Nm%2BBmfQpn5RzZ8oGkmvmSMpM%2FrLgQX8gHa27VrNBLn3bWoUSZVF%2FqvUCnsqBi8Sy79gPpk6DLf3K33Z0razkVLwRjEe%2Fu8awwDXctyGBjq2jbHD3oxSqbb7HRR8jW0nTzBrzpsjtMnAUNC9L9SPVDrDAhzBF4pNDc33UE4hM8IT%2FeZGDxJ2UK4BNu%2BF7OE8v0oQS0aReTH0jKdgzA3cmAB%2FE4a%2BVi35ukkeCqmFTXZBoQsn%2B29fFNtQlF%2BmBv0pN25OzqUboUHInrji6aC7L3mq%2FoXQfb%2FfiBu1BXrMt%2Bbyggq6rrceSFJ6hesPrXLZp7%2BjT2%2FCVWTzJWaV7mvEukuVd3l63GF6po8CEh97l0eIRKQW9yrmihfYsS%2FtP0P%2FJ9iFEaORA2mZjKZKpKJxMKLM%2B7gGOrABDsUuMb5tF%2B8jx6%2BbRXvaphaEgo5dFZ%2FbZKeRGVOhzOdT2SWnRn%2FMMTgjGvgGcMyKdIu9OcAG%2BFM7vSVAk7sAtN0nR1dFetc65QUFbAAjwu7%2FgyL4pK1wa14PeValy68ZB3lfsOx64Ji14%2FPslbkIvRMeY0fUtnWwtikWV1rzSgkCeJfe8VSZG7TA0Pil8rmTWACy3h777uke5fTIJNoVUdzRdV3kg15oHO%2FaIH58%2BTw%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241028T023228Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY32HVHIKML%2F20241028%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=4065761caebee2ccdca83fc458712d5df8b490aa222eb133ca71bfc1b5447106",
+            "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-027bafef-24a1-46c4-83b1-afb6ebe19ea2?versionId=soufLhUk6hsZO.KzgDtOOjseFd.6lhuP&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFcaCXVzLWVhc3QtMSJIMEYCIQCnieRLYW13cJ5Uwik8K4HUVRWTbtoeTdUUm%2B3E97%2F9dQIhAKpWb%2BBjmmRf5EsEOMrjS6aHsOi8SKa3o5QZ%2FrUef93VKpICCM%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNzQ5Njc4OTAyODM5IgzLWbVNO2irq35XMZwq5gHM2MqjV%2FbQVF2lv1Mim9sc4B%2FLjQtKQIWHAjIQo4hY6mffeTvUjykAGtaxpeCq40QHTHK0Jg7QMffFtLoaseM%2Bvq4xh997mvWReFn3ayhQCUbQ6%2F0Ifz2%2FWU5cw43qSLk05NIYnh31zAUWjO2TiNzMYH%2FoJ5TmplghBTYPR0S20bDcA7zscNNWkTsw1v6N%2BhXbhUUjlphAFteuJ%2BfvEKrWuVwoxoWTfU7OTJudu59I9I72x9t9xvsHwumjjJtTOfGUOc0Qv0hKuSOPfcLmdaNaNuUr866cigHRbrk1FeJASP2JsbXiYzCYqZy5BjqOAXeVPJW7nk0oZfmfSSgNmSmyyqh1m5UA5R095miwsqCb%2BIqMpYwIEaFBEPHQt4BLrGMihSqgLpJCKs4VseoU33DyELxd%2FrKIJp3YyWzXE7S0yRbj5JkXl%2BQM%2FCL4YNvYsSu3frODo5w06LrG080gZwocnYOgSn236rtjNMcNGKVwn3n028ccTUCgEb%2FiS14%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241103T165635Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY33OAI2JGK%2F20241103%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=bfafb9bc4539bb7e31269363ac9e16ddcbf07ade76db16e92ecb77f98233beae",
             "ImageUri": null,
             "ResolvedImageUri": null
           },

@@ -1,0 +1,33 @@
+fetch("https://www.google.com/alerts/create?x=AMJHsmUyXHUBLtYfjf_a_-PfXA81Dzo6Bg%3A1732981776129", {
+    "headers": {
+        "accept": "*/*",
+        "accept-language": "en-US,en;q=0.9",
+        "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "device-memory": "8",
+        "downlink": "10",
+        "ect": "4g",
+        "priority": "u=1, i",
+        "rtt": "50",
+        "sec-ch-prefers-color-scheme": "dark",
+        "sec-ch-ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "sec-ch-ua-arch": "\"x86\"",
+        "sec-ch-ua-bitness": "\"64\"",
+        "sec-ch-ua-form-factors": "\"Desktop\"",
+        "sec-ch-ua-full-version": "\"131.0.6778.86\"",
+        "sec-ch-ua-full-version-list": "\"Google Chrome\";v=\"131.0.6778.86\", \"Chromium\";v=\"131.0.6778.86\", \"Not_A Brand\";v=\"24.0.0.0\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-model": "\"\"",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "sec-ch-ua-platform-version": "\"15.0.0\"",
+        "sec-ch-ua-wow64": "?0",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin",
+        "x-client-data": "CJG2yQEIprbJAQipncoBCJeDywEIlqHLAQiCo8sBCP2YzQEIhaDNAQiyns4BCI3GzgEIqsnOAQj3yc4BCMfPzgEI9c/OAQiu0M4BCMjRzgEInNLOAQiM084BCLLTzgEIttTOAQ==",
+        "cookie": "HSID=AIyuRWjsYZHF3xRLv; APISID=yl6kU2pI5sPT_J5Q/AMuXG6VawQibSi729; SSID=A-pEOdL2DmWEFJ2cG; SAPISID=s0gq40A9llX-yT6o/AZuNsnVJkiIPtF1e2; __Secure-1PAPISID=s0gq40A9llX-yT6o/AZuNsnVJkiIPtF1e2; __Secure-3PAPISID=s0gq40A9llX-yT6o/AZuNsnVJkiIPtF1e2; OGPC=19041976-1:; SEARCH_SAMESITE=CgQIzJwB; S=billing-ui-v3=-OW1pQKnwWc3x7_q1sL_egzqx8WBAS-W:billing-ui-v3-efe=-OW1pQKnwWc3x7_q1sL_egzqx8WBAS-W; SID=g.a000qgiCbteQ3qpKkN9sdRzjAQi_Qlt5rjGI7X3zew2LvWDnflFXXHzXk1dx6rrt5EhKnM1CQwACgYKAa0SARMSFQHGX2Mi8TFcntw8GbMc86CPjqCdfBoVAUF8yKp8jUGeykqUhmdF98yM3T460076; __Secure-1PSID=g.a000qgiCbteQ3qpKkN9sdRzjAQi_Qlt5rjGI7X3zew2LvWDnflFXWno21kkgK7aaxqX7xSwzxgACgYKAbsSARMSFQHGX2MiHK5F-7UPO1aICoziHbAUvRoVAUF8yKr4jsDn5zh-PmGtUa8jyV080076; __Secure-3PSID=g.a000qgiCbteQ3qpKkN9sdRzjAQi_Qlt5rjGI7X3zew2LvWDnflFXz3RwDSTnMPVIkQVM0aA8SwACgYKAfYSARMSFQHGX2MivnTNqgc1_fRMAf3tz0JZLRoVAUF8yKru8BRsEp2nCyWZvPrhje7W0076; AEC=AZ6Zc-UDl4dyul0ZF1DcliW5TnSJsxT6p635pke-s94X09HdqBy87Kk5s48; NID=519=bOrlpqIbB61Du12oEGyi5pHxFgtxm29BF4LO5vP88BVjN29PdrIuVQ_AcQbVNvc4HDBqPQmjY_XQtBN-o5DerG7rhF0w-X4_9C_8aM0Kybgu3kZGqlWyk5ThmFp4jr2AGKttP17CdqzCFcc-Wc58Af8tuwscTLGhkXV8QG2jKqVLPL4HPhIXBErAg8wU89llAeL7-TWPRowlwR-FSPdfNaVuEFJ4iw9Ig36sNFgbdNoXGWCnwcoe4xh9n4Zvb0nnk9tnF7leQlWm-veWaSXEoStaLzJFHj0kISdnb-Hh9v4ry6neLY2QRnnzvZaeydnSbAK8ON1XdzAqTmyiccWMWCKT3jloPjUlwHVIABCSJbwbd5HnC3INwJ8YQRY_Ysn9JQ6JolMb73aVLs7FvB1Udlcgw6xACBi4FcbMI9wsiM0-r2iGBjX4Ca-8GKeW7SHqmcAs9V41pgq3KLLl2BHplay_sQgRekXlbjdp1zMGw_Pm2g5yToPja6dzp1GlrHxZqNnmwqt5EdCEP_kj0OBWs7z450K9J-Nemlzyuty5AU0hi7kxoLaNimW0I1PQfCPDxo1TzFx2-TvTQ89dd_agfUgS93jnb0v-GkGFpOr_Tf9PaNlYbnFaNGCLhArg2_n2ElOnyuhio2oXjWoMhZEimuSJBfz7csZPy1yrhLYK9-hkHHO-DLVRbU0IE01yAxaJIrm8_SiTKqKMXRfuSHi6yZhHSoxv__jih5qmeCdFq246GMKS61oWrx5NVVOiZiQqy-9ymr_VZP5ysiHfld0jXMDa47uk9UWBv-E43WDvB4hWoGNNunK20OPijD3r4Psy9BRXy3vHrqiN7rNdJUCfIFyicL19mqGx_l2qxjbxt6wX6yvhcvtzW6mUau36bNYrFMccfW8eOvypWrhBjLUGMmVvaSLeEWPzuSdaagONyYMbhjOYjzDSX71Q0PKDgRWppcf6CD1Miw4oEW3tzxTaFW1SjMZkOShtcaat8JfKcT6GSoRQrxE8Be6Bvjk8sJEF2cowfOFxHUmH7onLy0ZZ_Q_bvPWfO2qpL76SuzU6N_SDtnXqRYJvBiZwjp43YLjEoeZAgXdo6v8kf53oGKvVHh1rOtkpNt9fn7wFawMD0_V1el9VkeyOcev6JvyjXKb5ZM4TJK2Wxp7jgsqfDjS02g9HTzt0anfzJ5aTq-6RfuhibFVbLsWNU0WIw3QIYNb8D0nGAtaO2eYxVJPsIX-oWgMh3lptMCxLPWnb; UULE=a+cm9sZTogMQpwcm9kdWNlcjogMTIKdGltZXN0YW1wOiAxNzMyOTgxNzc3MTE3MDAwCmxhdGxuZyB7CiAgbGF0aXR1ZGVfZTc6IDM5OTkwMDY3MgogIGxvbmdpdHVkZV9lNzogLTgzMDQzOTQyNAp9CnJhZGl1czogNjI1NjE3LjA1NzQ5MjA2ODUKcHJvdmVuYW5jZTogNgo=; __Secure-1PSIDTS=sidts-CjIBQT4rX-lSjLEqF6igHiYQUUV20w5Ep6SXD7tap64c7cDMPtIOensh7BDKmKMx2tLqmxAA; __Secure-3PSIDTS=sidts-CjIBQT4rX-lSjLEqF6igHiYQUUV20w5Ep6SXD7tap64c7cDMPtIOensh7BDKmKMx2tLqmxAA; googlealertsv=g4_rLM_CiHcR0OTzFlFtl6fZVOHcNxk; SIDCC=AKEyXzVfXi_Ll8Q6DL-n9TzDyy-8TeD-2Lq_Ln_t3TXczY9fk6BSDuOHw-NIxoAuWwFWHNbxm3E; __Secure-1PSIDCC=AKEyXzXY2Ly3_WIGSc3UPBWHHtKQAI9LOlOP3c8tzLUG4noEd0V8iDa_AGVSAmCf3dV6s3FovyI; __Secure-3PSIDCC=AKEyXzWQTNF4GvapbfIX3rHP-7S7ewkzbWPQb0bTD3QVgXzBnfu1vG36SsBVjdH6BfEntACtc-E",
+        "Referer": "https://www.google.com/alerts",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    "body": "params=%5Bnull%2C%5Bnull%2Cnull%2Cnull%2C%5Bnull%2C%22alabama%20shakes%20tour%20announcement%22%2C%22com%22%2C%5Bnull%2C%22en%22%2C%22US%22%5D%2Cnull%2Cnull%2Cnull%2C0%2C1%5D%2Cnull%2C3%2C%5B%5Bnull%2C1%2C%22eugene.f.begue%40gmail.com%22%2C%5Bnull%2Cnull%2C16%5D%2C2%2C%22en-US%22%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%220%22%2Cnull%2Cnull%2C%22AB2Xq4hcilCERh73EFWJVHXx-io2lhh1EhC8UD8%22%5D%5D%5D%5D",
+    "method": "POST"
+});

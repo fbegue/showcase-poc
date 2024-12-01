@@ -26,6 +26,7 @@ var fetchTryAPI = require('../utility/network_utility').fetchTryAPI
 var limiter = require('../utility/network_utility').limiter
 
 var util = require('../util')
+const wikipedia_api = require("./wikipedia_api");
 
 // var sample_events = require('./example data objects/event').events;
 // var sample_playlists_resolved =  require('./example endpoint outputs/playlists_resolved_20')
@@ -2990,43 +2991,43 @@ me.completeArtist = function (req, res) {
 
 };
 
-me.getPlaying = function (req, res) {
-	let uri = "https://api.spotify.com/v1/me/player/currently-playing"
-	let options = {
-		method: "GET",
-		uri: uri,
-		headers: {
-			'User-Agent': 'Request-Promise',
-			"Authorization": 'Bearer ' + req.body.spotifyApi.getAccessToken()
-		},
-		json: true
-	};
+me.getPlaying = async function (req, res) {
+	try {
+		let uri = "https://api.spotify.com/v1/me/player/currently-playing"
+		let options = {
+			method: "GET",
+			uri: uri,
+			headers: {
+				'User-Agent': 'Request-Promise',
+				"Authorization": 'Bearer ' + req.body.spotifyApi.getAccessToken()
+			},
+			json: true
+		};
 
-	console.log({options});
+		console.log({options});
+		let trackResult = await rp(options)
 
-	rp(options)
-		.then(track => {
-			//console.log("r",r);
-			//todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
-			if (track) {
-				req.body.spotifyApi.getArtist(track.item.artists[0].id)
-					.then(artist => {
-						var pay = {track: track, artist: artist.body};
-						// console.log("getPlaying",pay);
-						console.log("getPlaying finished", pay.track.item.name);
-						res.send(pay)
-					}, e => {
-					})
-			} else {
-				let msg = "getPlaying finished - nothing is playing right now"
-				console.warn(msg);
-				res.send({msg: msg, track: null, artist: null})
-			}
 
-		}, err => {
-			console.log("err", err);
-			res.status(500).send(err)
-		})
+		//todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
+		if (trackResult) {
+
+			let artistResult = await req.body.spotifyApi.getArtist(trackResult.item.artists[0].id)
+			req.body.artistQuery = trackResult.item.artists[0].name;
+			let artistInfoResult = await wikipedia_api.getArtistInfoWiki(req)
+
+			var pay = {track: trackResult.item, artist: artistResult.body,artistInfo: artistInfoResult};
+			// console.log("getPlaying",pay);
+			console.log("getPlaying finished", pay.track.name);
+			res.send(artistInfoResult)
+		} else {
+			let msg = "getPlaying finished - nothing is playing right now"
+			console.warn(msg);
+			res.send({msg: msg, track: null, artist: null})
+		}
+	}catch(e){
+		console.error(e)
+		res.status(500).send(e)
+	}
 };
 
 me.saveCurrentlyPlayingTrack = function (req, res) {

@@ -12,6 +12,7 @@ for a fetch that contain special tokens that allow us to use the API directly fr
 
 ## todo
 - add timer between api calls? can't tell if it's just really slow or if I'm getting rate-limited or something like that
+
 ## bugs
 
 - I get `https://play.google.com/log` errors reported back in console, but they don't seem to affect functionality

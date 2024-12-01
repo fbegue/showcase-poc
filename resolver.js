@@ -252,16 +252,17 @@ module.exports.resolveArtists = function(req,artists){
 
 module.exports.resolveArtists2 = function(req,artists){
 	return new Promise(function(done, fail) {
-		//console.log("resolveArtists",artists.length);
+		console.log("resolveArtists2",artists.length);
 		//let startDate = new Date(); console.log("resolveSpotify start time:",startDate);
 		//resolver.spotify expects batches of 50 artist's ids
 
 		var resultOb = {artists:artists};
 		// var resultOb = {artists:artists.slice(71,artists.length -1)};
 
+
 		var fakeCheck =  function(resultOb){
 			return new Promise(function(done, fail) {
-				//console.log("checkDBForArtistGenres IS DISABLED!");
+				console.log("checkDBForArtistGenres IS DISABLED!");
 				resultOb.payload = resultOb.artists;
 				resultOb.db = [];
 				done(resultOb)
@@ -328,10 +329,11 @@ module.exports.resolveArtists2 = function(req,artists){
 							//artistPay = artistPay.filter(r =>{return r !=== undefined})
 						})
 
-
+						console.log("commitArtistGenres payload: ",artistPay.length)
 						db_api.commitArtistGenres(artistPay)
 							.then(ignored =>{
-
+								//console.warn("commitArtistGenres ignored length: ",ignored)
+								//console.log("commitArtistGenres finished!")
 								var result = resultOb.db.concat(artistPay)
 								done(result)
 

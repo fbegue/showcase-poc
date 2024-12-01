@@ -336,7 +336,7 @@ me.commitArtistGenres =  function(artists) {
 		//testing: I guess fuck the sql cache for now
 		//tried playing around and making a SP (insert_artists2)
 		//but didn't effect speed at all.
-		//console.log("commitArtistGenres IS DISABLED!");
+		console.log("commitArtistGenres IS DISABLED!");
 		done()
 	})
 }
@@ -502,7 +502,6 @@ async function commit_artistSongkick_with_match(artist,artistSongkick,artist_art
 	try{
 
 		var alreadyExists = await insert_artist(artist);
-
 
 		await insert_artistSongkick(artistSongkick);
 

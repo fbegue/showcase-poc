@@ -435,10 +435,10 @@ var fetch_metro_events = function (metro, dateFilter) {
 
 }//getMetroEvents
 
-// let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240721.output.json")
+let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-Columbus.20241027.output.json")
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.json")
-let inputJsonFile = null;
+//let inputJsonFile = null;
 
 /**
  * fetch_metro_events_file
@@ -456,9 +456,9 @@ function fetch_metro_events_from_file() {
 
 //todo:
 /**
- * get upcoming events for a metro and process the artists and genres by either
- * confirming that my SQL DB has an spotify to songkick artist relationship
- * with genres or searching with spotify and committing new matches to SQL DB
+ * get upcoming events for a metro and process the artists and genres by either:
+ * - confirming that my SQL DB has a spotify to songkick artist relationship with genres
+ * - searching with spotify and committing new matches to SQL DB
  * also, commit the fetched events to mongo
  * @param req.body
  * {
@@ -916,7 +916,7 @@ module.exports.get_metro_events_local = function (req) {
 };
 
 /**
- * pull cached events from mongo and fully qualify the artist
+ * pull cached events from mongo and fully qualify the artist using checkDBFor_artist_artistSongkick_match
  * @function resolveEvents
  * @param req.body{
  *	"metro":{"displayName":"Columbus",

@@ -4,6 +4,7 @@ let resolver = require("../resolver")
 var giveMePayloads = require('../utility/utility').giveMePayloads
 const FuzzySet = require('fuzzyset')
 var Bottleneck = require("bottleneck");
+const {DateTime} = require("luxon")
 var network_utility = require('../utility/network_utility')
 //todo:
 // var items = require('../scripts/experience-columbus-scraper/experienceColumbusParsed')
@@ -1368,7 +1369,14 @@ me.removeThesePlaylists = async function (req, res) {
 	})
 }
 
-
+/**
+ * Given a req.body.dateFilter and jsonInputFile of events, return events within the dateFilter parameters
+ * - any event with start date AFTER start
+ * - any event with start date BEFORE stop
+ * @param req
+ * @param jsonInputFile
+ * @returns {*}
+ */
 const filterEvents = function (req, jsonInputFile) {
 
 	//testing: filter for only events before date
@@ -1501,9 +1509,11 @@ const getArtistDateMap = function(req,jsonInputFile){
 // let playlistName = "songkick-santa-fe.20231206"
 //let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.resolved.json"
 
-let playlistName = "Songkick-SaltLakeCity.20241027.20250101"
-//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/songkick-columbus.20240721.output.resolved.json"
-let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.resolved.json"
+//let playlistName = "Songkick-SaltLakeCity.20241027.20250101"
+// let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.resolved.json"
+
+let playlistName = "Songkick-Columbus.20241027"
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-Columbus.20241027.output.resolved.json"
 
 /**
  * @desc given an input json file w/ fully qualified songkick events:
@@ -1515,25 +1525,47 @@ let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-
  * @returns {Promise<void>}
  */
 me.createPlaylistFromJson = async function (req, res) {
+
 	var jsonInputFile = require(jsonInputFilePath)
+	console.log("createPlaylistFromJson | path", jsonInputFilePath);
+	let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
+
+	req.body.eventsArtists = [];
 
 	//testing: reduce input size
 	//jsonInputFile = jsonInputFile.slice(0,2)
 
-	console.log("createPlaylistFromJson | path", jsonInputFilePath);
-	let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
-	req.body.tracksLimit = 2;
-	req.body.artists = [];
+	//testing: override dateFilter values
 	//req.body.dateFilter.start = "03-12-2024"
 	//req.body.dateFilter.stop =  "04-16-2024"
 
+	//testing: experimental options
+
+	//how many tracks per artist should be on the resulting playlist
+	req.body.tracksLimit = 2;
+
+	//note: options for splitting playlists into sub-playlists
 	//omitting eachFamily and eachDay just creates 1 playlist
 	req.body.eachFamily = false;
+
 	//todo: untested
 	req.body.eachDay = false;
 
+	//note: options for incorporating user-data into playlist creation
+
+	//use User's followed artists
 	req.body.userArtistsFilter = true;
 
+	//todo: use User's followed artists' related artists
+	//req.body.userArtistsRelatedFilter = true;
+
+	req.body.userArtistsGenresFilter = false;
+
+	//use User's saved songs' artists
+	req.body.userLikedTracksArtistsFilter = true;
+
+
+	//perform filtering using req.body.dateFilter
 	jsonInputFile = filterEvents(req, jsonInputFile)
 	console.log("pre-filtered from inputjson", jsonInputFile.length + " / " + jsonInputFileStartLength)
 
@@ -1556,7 +1588,7 @@ me.createPlaylistFromJson = async function (req, res) {
 			//no latin please (LA)
 			var isLatin = p.artist.familyAgg === "latin";
 			if (typeof p.artist.id === "string" && !isLatin) {
-				req.body.artists.push(p.artist.id)
+				req.body.eventsArtists.push(p.artist.id)
 				if (!LA_artist_date_map[p.artist.id]) {
 					LA_artist_date_map[p.artist.id] = e.start.date
 				} else {
@@ -1569,39 +1601,162 @@ me.createPlaylistFromJson = async function (req, res) {
 	});
 
 	//avoid duplicate calls to get tracks for this artist later on
-	req.body.artists = uniq(req.body.artists);
+	req.body.eventsArtists = uniq(req.body.eventsArtists);
 
-	console.log("req.body.artists",JSON.parse(JSON.stringify(req.body.artists.length)))
+	console.log("req.body.eventsArtists",JSON.parse(JSON.stringify(req.body.eventsArtists.length)))
 
 	//testing:
 	let artistsFiltered =[];
-	if(req.body.userArtistsFilter){
-		//todo: mixing types here (full artist v. artist id)
-		let r = await spotify_api._getFollowedArtists(req);
-		let userSavedTracksArtists = await spotify_api._getMySavedTracksArtists(req);
-		//console.log("_getFollowedArtists",r.artists.length)
-		//console.log("userSavedTracksArtists",userSavedTracksArtists.length)
-		let artistsConcat = r.artists.concat(userSavedTracksArtists)
-		let artists = uniqBy(artistsConcat, "id")
-		console.log("_getFollowedArtists + _getMySavedTracksArtists length",artistsConcat.length)
-		req.body.artists.forEach(aId =>{
-			let found = artists.find(aFind => {
-				return aId ===aFind.id
-			})
-			if(found){
-				artistsFiltered.push(aId)
-			}
-		})
-	}
-	console.log("artistsFiltered",artistsFiltered.length)
-	req.body.artists = artistsFiltered;
 
-	console.log("unresolvedEventArtists", JSON.stringify(uniqBy(unresolvedEventArtists.map(a => {
+	//todo: mixing types here (full artist v. artist id)
+	let artists = [];
+
+	if(req.body.userArtistsFilter) {
+
+		let followedArtistsResult = await spotify_api._getFollowedArtists(req);
+		console.log("_getFollowedArtists result: ", followedArtistsResult.artists.length)
+		artists = artists.concat(followedArtistsResult.artists)
+
+	}
+
+	// iterate thru available events and suggest ones based off whether or not they share
+	// a genre with any of my saved artists
+
+	let matchingEvents = [];
+	if(req.body.userArtistsGenresFilter){
+
+		//todo: resolver has been disabled - was trying to use fully resolved genres but just using strGenres for now ...
+		//let resolvedFollowedArtists = await resolver.resolveArtists2(req,artists)
+
+		function getEventsWithMatchingArtists(events, artists, checkFamilyAgg = false, invalidFamilyAggs = []) {
+			return events
+				.map(event => {
+					// Map over each performance in the event
+					const updatedPerformances = event.performance.map(perf => {
+						const artistGenres = perf.artist.genres;
+
+						// Warn if the artist has no genres
+						if (!artistGenres || artistGenres.length === 0) {
+							console.warn(`Warning: Artist "${perf.artist.displayName}" has no genres specified.`);
+							return perf;
+						}
+
+						// Get the list of genre names for the current performance artist
+						const artistGenreNames = artistGenres.map(genre => genre.name.toLowerCase());
+						const artistFamilyAgg = perf.artist.familyAgg;
+
+						// Find matching artists based on genre overlap and familyAgg requirement
+						const matchingArtists = artists.filter(artist => {
+							const hasGenreMatch = artist.strGenres.some(genre => artistGenreNames.includes(genre.toLowerCase()));
+
+							// Only check familyAgg if the flag is true and both artists have a familyAgg value
+							const hasFamilyAggMatch = checkFamilyAgg ?
+								(artistFamilyAgg && artist.familyAgg && artistFamilyAgg === artist.familyAgg) : true;
+
+							// Log warning if familyAgg does not match and it is being checked
+							if (checkFamilyAgg && hasGenreMatch && artistFamilyAgg && artist.familyAgg && artistFamilyAgg !== artist.familyAgg) {
+								console.warn(`Warning: Artist "${perf.artist.displayName}" with familyAgg "${artistFamilyAgg}" didn't match artist "${artist.displayName}" with familyAgg "${artist.familyAgg}".`);
+							}
+
+							// If invalidFamilyAggs is provided, exclude matches where familyAgg is in the invalid list
+							const isInvalidFamilyAgg = invalidFamilyAggs.length > 0 ? invalidFamilyAggs.includes(artist.familyAgg) : false;
+
+							// Log warning if familyAgg is invalid and remove from matching artists
+							if (checkFamilyAgg && hasGenreMatch && artist.familyAgg && isInvalidFamilyAgg) {
+								console.warn(`Warning: Artist "${artist.displayName}" has an invalid familyAgg "${artist.familyAgg}". It will be excluded from matching.`);
+							}
+
+							// Return if both genre and familyAgg (if checked) conditions are met, and familyAgg is valid
+							return hasGenreMatch && hasFamilyAggMatch && !isInvalidFamilyAgg;
+						});
+
+						// Add matchingArtists to the artist if there are matches
+						return {
+							...perf,
+							artist: {
+								...perf.artist,
+								matchingArtists: matchingArtists.length > 0 ? matchingArtists : undefined
+							}
+						};
+					});
+
+					// Filter performances to include only those with matching artists
+					const performancesWithMatches = updatedPerformances.filter(
+						perf => perf.artist.matchingArtists
+					);
+
+					// Return the updated event if there’s at least one matching performance
+					if (performancesWithMatches.length > 0) {
+						return {
+							...event,
+							performance: performancesWithMatches
+						};
+					} else {
+						return null; // Indicate no matching artists found in this event
+					}
+				})
+				.filter(event => event !== null); // Filter out null events
+		}
+
+
+		// checkFamilyAgg usage:
+		// if the matched artist doesn't share a familyAgg value with the event artist, ignore it
+		//note: useful for cases where the two share a genre but maybe doesn't make sense to suggest based on them
+		//example: Nick Cave and the BS have familyAgg "folk" but have rock genres like "alternative rock"
+
+		const checkFamilyAgg = false;
+
+        // invalidFamilyAggs usage: Set the checkFamilyAgg flag and provide a list of invalid familyAggs.
+		// if the matched artist has a familyAgg in this list, ignore it.
+		//note: useful for genres like "hip hop" where - given my specific taste - it's very doubtful
+		//I need suggestions on "related" hip-hoppers
+		//example: Lil Yachty shared "hip hop" genre with both Lil Wayne and Chance
+
+		const invalidFamilyAggs = ["hip hop"];
+
+		//matchingEvents = getEventsWithMatchingArtists(jsonInputFile, artists);
+		matchingEvents = getEventsWithMatchingArtists(jsonInputFile, artists,false,invalidFamilyAggs);
+
+		//console.log(matchingEvents);
+		const performanceArtists = matchingEvents
+			.flatMap(event => event.performance)
+			.map(perf => perf.artist);
+
+		artists = artists.concat(performanceArtists)
+		console.log("getEventsWithMatchingArtists result: ",performanceArtists.length)
+	}
+
+
+	if(req.body.userLikedTracksArtistsFilter){
+		let userSavedTracksArtists = await spotify_api._getMySavedTracksArtists(req);
+		artists = artists.concat(userSavedTracksArtists)
+		console.log("_getMySavedTracksArtists result: ",userSavedTracksArtists.length)
+	}
+
+
+	let artistsIds = uniqBy(artists, "id")
+	console.log("total unique user-fetched artists: ",artistsIds.length)
+
+	//create list of artists to form playlist from by iterating thru artists resolved from events list
+	//and saving corresponding Spotify artist objects to artistsFiltered
+	req.body.eventsArtists.forEach(aId =>{
+		let found = artistsIds.find(aFind => {
+			return aId ===aFind.id
+		})
+		if(found){
+			artistsFiltered.push(aId)
+		}
+	})
+
+	console.log("artistsFiltered",artistsFiltered.length)
+	req.body.eventsArtists = artistsFiltered;
+
+	console.warn("unresolvedEventArtists", JSON.stringify(uniqBy(unresolvedEventArtists.map(a => {
 		return a.displayName
 	}), "id")))
 
 	//testing:
-	//req.body.artists = req.body.artists.slice(0,51)
+	//req.body.eventsArtists = req.body.eventsArtists.slice(0,51)
 
 	try {
 		var task_getArtistTopTracks = async function (id) {
@@ -1626,7 +1781,7 @@ me.createPlaylistFromJson = async function (req, res) {
 			}
 		}
 
-		var proms = req.body.artists.map(task_getArtistTopTracks);
+		var proms = req.body.eventsArtists.map(task_getArtistTopTracks);
 		var songSets = await Promise.all(proms)
 
 
@@ -1715,7 +1870,8 @@ me.createPlaylistFromJson = async function (req, res) {
 		if (req.body.eachDay) {
 			var r = await Promise.all(createPlaylistForEachDay());
 			//todo:
-		} else if (req.body.eachFamily) {
+		}
+		else if (req.body.eachFamily) {
 
 			let trackFamilyMap = await me.sortTracksToFamilies(req, songs)
 
@@ -1726,7 +1882,8 @@ me.createPlaylistFromJson = async function (req, res) {
 
 			await Promise.all(promises)
 			debugger
-		} else {
+		}
+		else {
 			//create playist with 1 payload
 
 			let payload_0_date = Object.keys(daySongPays)[0];
@@ -1754,6 +1911,15 @@ me.createPlaylistFromJson = async function (req, res) {
 	}
 };
 
+/**
+ * @desc given an input json file w/ fully qualified songkick events:
+ * 	- create list of events to remove baesd on dateFilter supplied in req.body.dateFilter
+ * 	- ask spotify for ${tracksLimit} # of tracks from each artist
+ * 	- (optional) choose alternative output playlist format
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
 me.prunePlaylistFromJson = async function (req, res) {
 
 	try {
@@ -1761,34 +1927,45 @@ me.prunePlaylistFromJson = async function (req, res) {
 		console.log("prunePlaylistFromJson | path", jsonInputFilePath);
 
 		//testing:
-		let playlistId = "62cAeGlbK8vt6IzWqF4BYP";
+		// let playlistId = "62cAeGlbK8vt6IzWqF4BYP";
+		let playlistId = req.body.playlistId
 		console.log("prunePlaylistFromJson | playlistId", playlistId);
+		//fetch this so we can use snapshot_id later
+		let playlist = await playlist_api.getPlaylist(req, playlistId)
+		console.log("prunePlaylistFromJson | playlist.name", playlist.name);
 
 		req.body.tracksLimit = 2
-		req.body.artists = [];
+		req.body.eventsArtists = [];
 
 		let jsonInputFileStartLength = JSON.parse(JSON.stringify(jsonInputFile)).length
+		if(!req.body.dateFilter.stop){
+			//throw `req.body.dateFilter.start = ${req.body.dateFilter.start} - prunePlaylistFromJson requires starting date to filter from";
+			console.warn(`req.body.dateFilter.stop = ${req.body.dateFilter.stop} - prunePlaylistFromJson set end date to now()`)
+			req.body.dateFilter.stop = DateTime.now().toFormat("MM-dd-yyyy");
+			console.warn(`req.body.dateFilter.stop = ${req.body.dateFilter.stop}`);
+		}
 		var eventsToRemove = filterEvents(req, jsonInputFile)
 
 		let removalReport = {
 			num_events_removed:eventsToRemove.length,
-			first_event:eventsToRemove[0].displayName,
+			first_event:{date:eventsToRemove[0].start.date,displayName:eventsToRemove[0].displayName},
 			first_event_artists:eventsToRemove[0].performance.map(p =>{return p.displayName}),
-			last_event:eventsToRemove[eventsToRemove.length -1].displayName,
+			last_event:{date:eventsToRemove[eventsToRemove.length -1].start.date,displayName:eventsToRemove[eventsToRemove.length -1].displayName},
 			last_event_artists:eventsToRemove[eventsToRemove.length -1].performance.map(p =>{return p.displayName}),
-
 		}
 		console.log("pre-filtered to remove from inputjson", removalReport.num_events_removed + " / " + jsonInputFileStartLength)
-		console.log("first event:",removalReport.first_event)
-		console.log("first event artists:",removalReport.first_event_artists)
-		console.log("last event:",removalReport.last_event)
-		console.log("last event artists:",removalReport.last_event_artists)
+		// console.log("first event:",removalReport.first_event)
+		// console.log("first event artists:",removalReport.first_event_artists)
+		// console.log("last event:",removalReport.last_event)
+		// console.log("last event artists:",removalReport.last_event_artists)
+		console.log(JSON.stringify(removalReport,null,4))
 
-
+		//create object with artistIds of events to be removed as keys
 		let artistDateMap = getArtistDateMap(req,eventsToRemove)
+		debugger;
 
 		//testing:
-		//req.body.artists = req.body.artists.slice(0,10)
+		//req.body.eventsArtists = req.body.eventsArtists.slice(0,10)
 
 		//for every performance who's date is passed, we need to identify which songs we need to remove by that artist
 		//fetch tracks from playlist in order
@@ -1800,11 +1977,10 @@ me.prunePlaylistFromJson = async function (req, res) {
 		//testing:
 		//console.log(JSON.stringify(jsonInputFile[0],null,4))
 
-		//fetch this so we can use snapshot_id later
-		let playlist = await playlist_api.getPlaylist(req, playlistId)
+
 
 		let currentTracks = await playlist_api.getPlaylistTracks(req, playlistId)
-		let track_removal_index_map = {};
+		let artist_removal_index_map = {};
 		currentTracks.forEach((tob, i) => {
 
 			//todo: is there some unintended consequences from just removing every song by one of the (example 3)
@@ -1812,26 +1988,29 @@ me.prunePlaylistFromJson = async function (req, res) {
 			//I put on ALSO includes another one of the 3 artists? I guess it just removes earlier than would have been detected?
 
 			//todo: feel like this needs to be sensitive to position
-			//if we see removal of indexes that aren't contiguoluous, that's a clue we're removing artist from somewhere we shouldn't?
+			//if we see removal of indexes that aren't contiguous, that's a clue we're removing artist from somewhere we shouldn't?
 
 			//for every artist on the track, if they're on our map, remove that song
 			tob.track.artists.forEach(a => {
 				//if we have it in our map, we need to remove the first entry
 				if (artistDateMap[a.id]) {
-					track_removal_index_map[i] = a
+					artist_removal_index_map[i] = a
 				}
 			})
 		})
 
-		let indexes = Object.keys(track_removal_index_map).map(str => parseInt(str))
+		let indexes = Object.keys(artist_removal_index_map).map(str => parseInt(str))
 
+		//note: optimistic - should really be called "to be removed"
 		removalReport.num_tracks_removed = indexes.length;
 		removalReport.num_tracks_before = currentTracks.length;
 		removalReport.num_tracks_after = currentTracks.length - indexes.length
 		removalReport.first_track_index = indexes[0];
 		removalReport.last_track_index = indexes[indexes.length -1];
+		removalReport.artists_from_tracks = [...new Set(Object.values(artist_removal_index_map).map(artist => artist.name))];
 
-		console.log("num_tracks_removed",removalReport.num_tracks_removed)
+		// console.log("number of tracks to be removed",removalReport.num_tracks_removed)
+		// console.log("artists from tracks",removalReport.artists_from_tracks)
 
 		debugger
 		if(indexes.length > 0){
@@ -1860,7 +2039,7 @@ me.prunePlaylistFromJson = async function (req, res) {
 	// 	}
 	//
 	//
-	// 	var proms = req.body.artists.map(task);
+	// 	var proms = req.body.eventsArtists.map(task);
 	// 	var songSets = await Promise.all(proms)
 	//
 	// 	var songs = [];
