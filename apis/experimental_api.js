@@ -1661,7 +1661,8 @@ const getArtistDateMap = function(req,jsonInputFile){
 // let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.resolved.json"
 
 let playlistName = "Songkick-SaltLakeCity.20250326"
-let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20250326.output.resolved.json"
+//let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20250326.output.resolved.json"
+let jsonInputFilePath = null;
 
 /**
  * @desc given an input json file w/ fully qualified songkick events:
