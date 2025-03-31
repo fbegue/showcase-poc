@@ -42,12 +42,12 @@
                   "Runtime": "nodejs20.x",
                   "Role": "arn:aws:iam::318321395970:role/showcase-backend-app-dev-us-east-1-lambdaRole",
                   "Handler": "app.handler",
-                  "CodeSize": 32545475,
+                  "CodeSize": 32546048,
                   "Description": "",
                   "Timeout": 90,
                   "MemorySize": 3500,
-                  "LastModified": "2024-12-01T20:37:24.000+0000",
-                  "CodeSha256": "uf1q4PPtaEuBUb261cjsOKXobx9IB11wDcax7SIpVlk=",
+                  "LastModified": "2024-12-01T20:59:54.000+0000",
+                  "CodeSha256": "TeJOTtJ8rVAAifNvdKUo8p0F2aNRUvYEc8M7LZBLJqE=",
                   "Version": "$LATEST",
                   "VpcConfig": {
                     "SubnetIds": [],
@@ -60,7 +60,7 @@
                     "Mode": "PassThrough"
                   },
                   "MasterArn": null,
-                  "RevisionId": "243260c1-d020-436f-b3cf-b4a842343261",
+                  "RevisionId": "eb5eabc3-c083-40e3-9a37-b7f7fa577ea0",
                   "State": "Active",
                   "StateReason": null,
                   "StateReasonCode": null,
@@ -96,7 +96,7 @@
                 },
                 "Code": {
                   "RepositoryType": "S3",
-                  "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-5f64fc17-dedc-47b2-b4ec-817872be91e4?versionId=B_MJr3kPob3KoPNvlqZGyQzsoAcOa9XH&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAAaCXVzLWVhc3QtMSJIMEYCIQDGzNYnPBoxHOJW%2BxUHhEoeTdjJ4yOntRD9m5m5yuMwBwIhAM6ONqQ2Lejy0KTyZ7kjJ6Rf2VnAlO6593Nwf1A2RRPGKpICCKn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNzQ5Njc4OTAyODM5Igx7HJtr8OybhTgfg%2BYq5gFsVQoxO5MgKoXXJocNlgHkN51X0ZGd61bFy18lf2m0gvLVx%2BivhfIM0eJuc3Dh5SXDhf%2B9jcAsly4kuHja8zgPPYuQId6JWrVARNQNCq%2FVgo1IBJjQ1%2BzCYXJ0oJc9glEVFx6cTFoj0dnYWaq08S1tZhgObJl%2BGwf62cqYI65xJxEXCQDCG5LzUn%2Fye7ZrMMJQGQZMQw6aq0KX1NBDahFIILI0j8NHzKWJxMbjudHwUyJvjRT35ahW7xnDti%2FFXBrG7Mk4Bp8Xc0Kq8L51V2vgpoAWDVw0qNPEEWNZKdQNpAj0y66IQjDMiLK6BjqOAS1kK%2BwWmNJirYeH59qoC9Qb5hDE0TnaQXUpqjWlqpuv7GV2YWvVJsjNfGpQ4Csqt5THmWo4vaYltcqLAQST0STEaba65O9cXpVU3s7MtxT0KoTIhroYbB%2BPcIMarfY6TvoFfOfVZZzT%2FTG%2BSPK%2FxmJikqOoaz0vtoFcI4OMuJVuDCckajCU5M5%2FzwBAe%2BI%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241201T203849Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY334D6WHAA%2F20241201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e2cdb3d8ab33110b03cc202fb52b37d74263a1821cf642503190e2610a57993d",
+                  "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-80cd79a2-fd95-49d1-af77-77f19552272a?versionId=p6QZvzLQ0AVglZtb76wI6_ze3DMAaoCU&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCBn%2FmMzfExkQw1B0%2BU4CwTjDz8guphtMJBkcK2Yb8K8QIhANdjkLkq1lmtthqM2%2Fbc8fvJWLUWBEM%2BdoW7W59OjQJLKpICCKP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNzQ5Njc4OTAyODM5IgzSb1aiB31%2BehsYogoq5gECkvDA6AhuIlc2LlRz4TALRwzPuV1lmD%2FSwog6VggYQtt6gQFt4INu2jYfrT4OiT%2Bsn%2BiA46vdU7o%2FxjC0UOyS7z0S1dHKSjH1pkUh5c3opHx1OYhYyLHxEMJpXTXzKAwk%2FZCcBvvRGFucI9BCOXOsmVc%2BFEUNQ6%2FKnJl8bIMJqwU6gA3bupHUFQaSrbiAOYxSyaf6lDkl7F2rq1GIrntDYj7psayiI3z2Bm6GllG%2FQcaGI3scAZIrUjr9QBnnH%2FlYRTxXdZdcxgHmYY1W57zgT1FKWqkfGdgMDpvFvV2J9a4jIzUWsDCn6rC6BjqOARBfY3R7xzozKpYNkykhr1wD3r%2FL6gOoXGWud5keUrTGqtXuNs8HHs%2BelQz1GgfQYB6p9hRfaXYpfFmvHzSp3Xx%2BtYApTlEkE6XQb%2FYVih95OeDML7jLmIwtiyZ72MwUa4eW3eyWXep1eDyqV%2FH%2B2pETR2lrTB5BwaycD1%2BGPRwaogbafRMhW14dA3M7oh4%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241201T210345Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY3Q523CQT2%2F20241201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=ee72696e326539bd202293427c01f06ad7a23ff6f208b6e4ddb0526633eb31ae",
                   "ImageUri": null,
                   "ResolvedImageUri": null
                 },
@@ -185,12 +185,12 @@
             "Runtime": "nodejs20.x",
             "Role": "arn:aws:iam::318321395970:role/showcase-backend-app-dev-us-east-1-lambdaRole",
             "Handler": "app.handler",
-            "CodeSize": 32545475,
+            "CodeSize": 32546048,
             "Description": "",
             "Timeout": 90,
             "MemorySize": 3500,
-            "LastModified": "2024-12-01T20:37:24.000+0000",
-            "CodeSha256": "uf1q4PPtaEuBUb261cjsOKXobx9IB11wDcax7SIpVlk=",
+            "LastModified": "2024-12-01T20:59:54.000+0000",
+            "CodeSha256": "TeJOTtJ8rVAAifNvdKUo8p0F2aNRUvYEc8M7LZBLJqE=",
             "Version": "$LATEST",
             "VpcConfig": {
               "SubnetIds": [],
@@ -203,7 +203,7 @@
               "Mode": "PassThrough"
             },
             "MasterArn": null,
-            "RevisionId": "243260c1-d020-436f-b3cf-b4a842343261",
+            "RevisionId": "eb5eabc3-c083-40e3-9a37-b7f7fa577ea0",
             "State": "Active",
             "StateReason": null,
             "StateReasonCode": null,
@@ -239,7 +239,7 @@
           },
           "Code": {
             "RepositoryType": "S3",
-            "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-5f64fc17-dedc-47b2-b4ec-817872be91e4?versionId=B_MJr3kPob3KoPNvlqZGyQzsoAcOa9XH&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAAaCXVzLWVhc3QtMSJIMEYCIQDGzNYnPBoxHOJW%2BxUHhEoeTdjJ4yOntRD9m5m5yuMwBwIhAM6ONqQ2Lejy0KTyZ7kjJ6Rf2VnAlO6593Nwf1A2RRPGKpICCKn%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNzQ5Njc4OTAyODM5Igx7HJtr8OybhTgfg%2BYq5gFsVQoxO5MgKoXXJocNlgHkN51X0ZGd61bFy18lf2m0gvLVx%2BivhfIM0eJuc3Dh5SXDhf%2B9jcAsly4kuHja8zgPPYuQId6JWrVARNQNCq%2FVgo1IBJjQ1%2BzCYXJ0oJc9glEVFx6cTFoj0dnYWaq08S1tZhgObJl%2BGwf62cqYI65xJxEXCQDCG5LzUn%2Fye7ZrMMJQGQZMQw6aq0KX1NBDahFIILI0j8NHzKWJxMbjudHwUyJvjRT35ahW7xnDti%2FFXBrG7Mk4Bp8Xc0Kq8L51V2vgpoAWDVw0qNPEEWNZKdQNpAj0y66IQjDMiLK6BjqOAS1kK%2BwWmNJirYeH59qoC9Qb5hDE0TnaQXUpqjWlqpuv7GV2YWvVJsjNfGpQ4Csqt5THmWo4vaYltcqLAQST0STEaba65O9cXpVU3s7MtxT0KoTIhroYbB%2BPcIMarfY6TvoFfOfVZZzT%2FTG%2BSPK%2FxmJikqOoaz0vtoFcI4OMuJVuDCckajCU5M5%2FzwBAe%2BI%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241201T203849Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY334D6WHAA%2F20241201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=e2cdb3d8ab33110b03cc202fb52b37d74263a1821cf642503190e2610a57993d",
+            "Location": "https://prod-04-2014-tasks.s3.us-east-1.amazonaws.com/snapshots/318321395970/showcase-backend-app-dev-app-80cd79a2-fd95-49d1-af77-77f19552272a?versionId=p6QZvzLQ0AVglZtb76wI6_ze3DMAaoCU&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCBn%2FmMzfExkQw1B0%2BU4CwTjDz8guphtMJBkcK2Yb8K8QIhANdjkLkq1lmtthqM2%2Fbc8fvJWLUWBEM%2BdoW7W59OjQJLKpICCKP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNzQ5Njc4OTAyODM5IgzSb1aiB31%2BehsYogoq5gECkvDA6AhuIlc2LlRz4TALRwzPuV1lmD%2FSwog6VggYQtt6gQFt4INu2jYfrT4OiT%2Bsn%2BiA46vdU7o%2FxjC0UOyS7z0S1dHKSjH1pkUh5c3opHx1OYhYyLHxEMJpXTXzKAwk%2FZCcBvvRGFucI9BCOXOsmVc%2BFEUNQ6%2FKnJl8bIMJqwU6gA3bupHUFQaSrbiAOYxSyaf6lDkl7F2rq1GIrntDYj7psayiI3z2Bm6GllG%2FQcaGI3scAZIrUjr9QBnnH%2FlYRTxXdZdcxgHmYY1W57zgT1FKWqkfGdgMDpvFvV2J9a4jIzUWsDCn6rC6BjqOARBfY3R7xzozKpYNkykhr1wD3r%2FL6gOoXGWud5keUrTGqtXuNs8HHs%2BelQz1GgfQYB6p9hRfaXYpfFmvHzSp3Xx%2BtYApTlEkE6XQb%2FYVih95OeDML7jLmIwtiyZ72MwUa4eW3eyWXep1eDyqV%2FH%2B2pETR2lrTB5BwaycD1%2BGPRwaogbafRMhW14dA3M7oh4%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241201T210345Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIA25DCYHY3Q523CQT2%2F20241201%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=ee72696e326539bd202293427c01f06ad7a23ff6f208b6e4ddb0526633eb31ae",
             "ImageUri": null,
             "ResolvedImageUri": null
           },

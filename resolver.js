@@ -376,7 +376,6 @@ me.resolveTracks = async function(req,playOb) {
 
 	//prune duplicate artists from track aggregation
 	artists = _.uniqBy(artists, function (n) {
-		debugger
 		return n.id;
 	});
 
@@ -430,6 +429,7 @@ me.resolveTracks = async function(req,playOb) {
 // - each object is a legit track, not an item with a track field (result of search)
 me.resolveTracksArray = async function(req,tracks) {
 
+
 	var artists = [];
 	tracks.forEach(item => {
 		artists = artists.concat(_.get(item, 'artists'));
@@ -449,8 +449,15 @@ me.resolveTracksArray = async function(req,tracks) {
 			var pullArtists = [];
 			var artistMap = {};
 			resolvedArtists.forEach(a => {
-				artistMap[a.id] = a
+				if(!a){
+					//debugger
+				}
+				else{
+					artistMap[a.id] = a
+				}
+
 			})
+
 
 			tracks.forEach(track => {
 

@@ -2289,6 +2289,78 @@ var resolveAlbumTracks = async function (req, id) {
 			return res
 		} catch (e) {
 			throw e
+		}	try {
+			var task = async function (id) {
+				//note: id stays the same like this??
+				// delete req.body.artist
+				// req.body.artist= {id:id}
+				//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+				try {
+					//note: straight-spotifyApi
+					//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+					var response = await limiter.schedule(_getArtistTopTracks, req, id)
+					return response;
+				} catch (e) {
+					debugger
+				}
+			}
+
+			var proms = req.body.artists.map(task);
+			debugger
+			var songSets = await Promise.all(proms)
+			debugger
+			var songs = [];
+			songSets.forEach(s => {
+				songs = songs.concat(s.slice(0, req.body.tracksLimit))
+			})
+
+			//testing: split by day
+
+			var r = await limiter.schedule(me.createPlaylist, req, req.body.user, {name: req.body.playlistName}, songs)
+			debugger
+			//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+			var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r.playlist)
+			res.send(tracksR)
+		} catch (e) {
+			debugger
+			res.status(500).send(e)
+		}	try {
+			var task = async function (id) {
+				//note: id stays the same like this??
+				// delete req.body.artist
+				// req.body.artist= {id:id}
+				//var _req = {body:{spotifyApi:req.body.spotifyApi,artist:{id:id}}}
+
+				try {
+					//note: straight-spotifyApi
+					//var response = await limiter.schedule(req.body.spotifyApi.getArtistTopTracks,req.body.artist.id, 'ES')
+					var response = await limiter.schedule(_getArtistTopTracks, req, id)
+					return response;
+				} catch (e) {
+					debugger
+				}
+			}
+
+			var proms = req.body.artists.map(task);
+			debugger
+			var songSets = await Promise.all(proms)
+			debugger
+			var songs = [];
+			songSets.forEach(s => {
+				songs = songs.concat(s.slice(0, req.body.tracksLimit))
+			})
+
+			//testing: split by day
+
+			var r = await limiter.schedule(me.createPlaylist, req, req.body.user, {name: req.body.playlistName}, songs)
+			debugger
+			//note: when tracksR submits the playlist, it tacks on myCreated/myUpdated
+			var tracksR = await db_mongo_api.trackUserPlaylist(req.body.user, r.playlist)
+			res.send(tracksR)
+		} catch (e) {
+			debugger
+			res.status(500).send(e)
 		}
 	}
 
@@ -2889,7 +2961,6 @@ me.searchSpotify = async function (req, item) {
 	nameClean = nameClean.replace(/[^a-zA-Z\s\d\\.]/g, "");
 	nameClean = encodeURIComponent(nameClean)
 
-	debugger
 	if (nameClean === "") {
 		debugger
 		return {item: item, failure: {reason: "empty name parse"}}
@@ -2991,6 +3062,25 @@ me.completeArtist = function (req, res) {
 
 };
 
+
+var _getAlbum = async function (req, id) {
+	try {
+		var res = await req.body.spotifyApi.getAlbum(id)
+		return res.body
+	} catch (e) {
+
+		throw e
+	}
+}
+
+var _getTrack = async function (req, id) {
+	try {
+		var res = await req.body.spotifyApi.getTrack(id)
+		return res.body
+	} catch (e) {
+		throw e
+	}
+}
 me.getPlaying = async function (req, res) {
 	try {
 		let uri = "https://api.spotify.com/v1/me/player/currently-playing"
@@ -3007,16 +3097,79 @@ me.getPlaying = async function (req, res) {
 		console.log({options});
 		let trackResult = await rp(options)
 
-
 		//todo: for whatever reason, when nothing is playing, instead of failing it just comes back undefined
 		if (trackResult) {
 
 			let artistResult = await req.body.spotifyApi.getArtist(trackResult.item.artists[0].id)
+
+			let albumsResult = await req.body.spotifyApi.getArtistAlbums(trackResult.item.artists[0].id,{limit: 50})
+				.then(network_utility.pageIt.bind(null, req, null, null))
+				.then(r => {
+					return r
+				})
+
+			let albumsIds = albumsResult.items.map(a => a.id)
+
+			try {
+				var task = async function (id) {
+					try {
+						var album = await limiter.schedule(_getAlbum,req, id)
+						return album;
+					} catch (e) {
+						debugger
+					}
+				}
+				var proms = albumsIds.map(task);
+			} catch (e) {
+				debugger
+			}
+
+			let albumsQualifiedResult = await Promise.all(proms);
+			let playingTrackAlbum = albumsQualifiedResult.find(a =>{return a.id===trackResult.item.album.id})
+			let playingTrackAlbumTrackIds = playingTrackAlbum.tracks.items.map(a => a.id)
+
+
+			//note: getAlbum includes track ids but does NOT include popularity of tracks
+			//note: getAlbumTracks does NOT include popularity of tracks
+
+			try {
+				var task2 = async function (id) {
+					try {
+						var response = await limiter.schedule(_getTrack,req, id)
+						return response;
+					} catch (e) {
+						debugger
+					}
+				}
+				var proms2 = playingTrackAlbumTrackIds.map(task2);
+			} catch (e) {
+				debugger
+			}
+			let playingTrackAlbumTrackQualifiedResult = await Promise.all(proms2);
+			let tracksPopularity = playingTrackAlbumTrackQualifiedResult
+				.map(track => ({ name: track.name, id: track.id, popularity: track.popularity }))
+				.sort((a, b) => a.popularity - b.popularity ); // Sort in asc order
+
+			let albumsPopularity = albumsQualifiedResult
+				.map(al => ({ name: al.name, id: al.id, popularity: al.popularity,release:al.release_date}))
+				.sort((a, b) => a.popularity - b.popularity ); // Sort in asc order
+
+			//note: artist overall popularity, the playing album versus all albums, the playing track versus OTHER TRACKS ON ALBUM
+			//note:
+			//todo: to get overall popularity of track for artist, would have to go fetch every single track which is rough ...
+			// - since artist top tracks are plays AND TIME, not really apprporiate here
+			let popularity = {
+				artist:artistResult.body.popularity,
+				album:playingTrackAlbum.popularity,
+				albums:albumsPopularity,
+				track:trackResult.item.popularity,
+				tracks:tracksPopularity
+			}
+
 			req.body.artistQuery = trackResult.item.artists[0].name;
 			let artistInfoResult = await wikipedia_api.getArtistInfoWiki(req)
 
-			var pay = {track: trackResult.item, artist: artistResult.body,artistInfo: artistInfoResult.artistInfo};
-			// console.log("getPlaying",pay);
+			var pay = {track: trackResult.item, artist: artistResult.body,artistInfo:{wikipedia: artistInfoResult.artistInfo},popularity:popularity};
 			console.log("getPlaying finished", pay.track.name);
 			res.send(pay)
 		} else {

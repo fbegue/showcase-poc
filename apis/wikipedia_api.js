@@ -12,6 +12,7 @@ me.getArtistInfoWiki= async function(req) {
 			console.log(findArtistArticleResult);
 
 
+
 			var task = function (r) {
 				return me.parseArticle(r)
 			}
@@ -37,6 +38,7 @@ me.getArtistInfoWiki= async function(req) {
 				return resultWithMostNonNullFields;
 			}
 			let bestInfo = getFirstWithMostNonNullFields(parseArticleResults)
+
 
 			return {artistInfo:bestInfo,artistQuery:req.body.artistQuery}
 		}
@@ -95,13 +97,15 @@ me.parseArticle = async function(article){
 	console.log(options.url);
 	return rp(options)
 		.then(function (result) {
+
 			let parsedResult = JSON.parse(result)
+
 			//todo: didn't spend tooo much time looking, but wasn't able to get the quick info as json fields
 
 			const $ = cheerio.load(parsedResult.parse.text);
 			const infoboxLabels = $('.infobox-label');
 			const infoboxDatas = $('.infobox-data');
-			let artistInfo = {genres:null,origin:null,active:null};
+			let artistInfo = {url:`https://en.wikipedia.org/?curid=${pageid}`,genres:null,origin:null,active:null};
 
 			infoboxLabels.each((index, element) => {
 				const labelText = $(element).text();
@@ -215,6 +219,7 @@ me.parseArticle = async function(article){
 
 				}
 			});
+
 			return artistInfo
 
 		}).catch(function (err) {

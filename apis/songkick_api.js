@@ -439,6 +439,7 @@ var fetch_metro_events = function (metro, dateFilter) {
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/songkick-santa-fe.20231206.output.json")
 //let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.json")
 //let inputJsonFile = null;
+let inputJsonFile = require("../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20250326.output.json")
 
 /**
  * fetch_metro_events_file
@@ -838,8 +839,9 @@ module.exports.fetchMetroEvents = async function (req, res) {
 		})//results.each
 
 		//testing:
-		console.info("spotifySearch_artists_noMatches", spotifySearch_artists_noMatches.length);
-		console.info("spotifySearch_artists_noGenres", spotifySearch_artists_noGenres.length);
+		console.warn("spotifySearch_artists_noMatches", spotifySearch_artists_noMatches.length);
+		console.info(JSON.stringify(spotifySearch_artists_noMatches,null,4));
+		console.warn("spotifySearch_artists_noGenres", spotifySearch_artists_noGenres.length);
 
 		console.info("committing new artist-artistSongkick matches", aas_promises.length);
 

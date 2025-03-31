@@ -1,150 +1,202 @@
-
-A$AP Rocky - HIGHJACK ft. Jessica Pratt
-
-
-Adrianne Lenker - Sadness as a Gift
-
-
-Alice Longyu Gao - ♡ Korean Girls ft. Mega Mongoliad
-
-
-Aliyah’s Interlude - Fashion Icon
-
-
-Amyl and the Sniffers - U Should Not Be Doing That
-
-
-Ari Lennox - Smoke
-
-
-Armand Hammer - Doves ft. Benjamin Booker
-
-
-bbno$ - it boy
-
-
-Beth Gibbons - Floating on a Moment
-
-
-Chappell Roan - Good Luck, Babe!
-
-
-Charley Crockett - $10 Cowboy
-
-
-Charli XCX & Lorde - The girl, so confusing version with Lorde
-
-
-Chat Pile - I Am Dog Now
-
-
-Chelsea Wolfe - Everything Turns Blue
-
-
-clipping. - Run It
-
-
-Denzel Curry - HOT ONE ft. TiaCorine & FERG
-
-
-Doechii - Alter Ego ft. JT
-
-
-Dog Race - It’s the Squeeze
-
-
-Elias Rønnenfelt - No One Else
-
-
-Fat Dog - Wither
-
-
-FKA twigs - Perfect Stranger
-
-
-FLO - Caught Up
-
-
-Fontaines D.C. - Starburster
-
-
-Geordie Greep - Holy, Holy
-
-
-Ginger Root - No Problems
-
-
-Hiatus Kaiyote - Cinnamon Temple
-
-
-horsegiirL - eat, sleep, slay, 🔁
-
-
-Ibibio Sound Machine - Pull the Rope
-
-
-Jamie xx - Baddy on the Floor ft. Honey Dijon
-
-
-Jane Remover - Magic I Want U
-
-
-Joey Valence & Brae - THE BADDEST
-
-
-Justice - Generator
-
-
-Kamasi Washington - Prologue
-
-
-Kendrick Lamar - meet the grahams
-
-(shoutout the Spectre & QoQinox for the image used in the vid!
-
-Kim Gordon - BYE BYE
-
-
-Knocked Loose - Suffocate ft. Poppy
-
-
-Laura Marling - No One’s Gonna Love You Like I Can
-
-
-The Lemon Twigs - My Golden Years
-
-
-Magdalena Bay - Death & Romance
-
-
-Moses Sumney - Vintage
-
-
-Nia Archives - Crowded Roomz
-
-
-Porter Robinson - Cheerleader
-
-
-Remi Wolf - Toro
-
-
-Sampha & Little Sims - Satellite Business 2.0
-
-
-Shygirl - encore ft. Danny L Harle
-
-
-test plan - Walking in a Vacuum
-
-
-Tierra Whack - 27 CLUB
-
-
-Tinashe - Nasty
-
-
-Vampire Weekend - Classical
-
-
-Xiu Xiu - Veneficium
+[
+  {
+    "artist": "A$AP Rocky",
+    "track": "HIGHJACK ft. Jessica Pratt"
+  },
+  {
+    "artist": "Adrianne Lenker",
+    "track": "Sadness as a Gift"
+  },
+  {
+    "artist": "Alice Longyu Gao",
+    "track": "♡ Korean Girls ft. Mega Mongoliad"
+  },
+  {
+    "artist": "Aliyah’s Interlude",
+    "track": "Fashion Icon"
+  },
+  {
+    "artist": "Amyl and the Sniffers",
+    "track": "U Should Not Be Doing That"
+  },
+  {
+    "artist": "Ari Lennox",
+    "track": "Smoke"
+  },
+  {
+    "artist": "Armand Hammer",
+    "track": "Doves ft. Benjamin Booker"
+  },
+  {
+    "artist": "bbno$",
+    "track": "it boy"
+  },
+  {
+    "artist": "Beth Gibbons",
+    "track": "Floating on a Moment"
+  },
+  {
+    "artist": "Chappell Roan",
+    "track": "Good Luck, Babe!"
+  },
+  {
+    "artist": "Charley Crockett",
+    "track": "$10 Cowboy"
+  },
+  {
+    "artist": "Charli XCX & Lorde",
+    "track": "The girl, so confusing version with Lorde"
+  },
+  {
+    "artist": "Chat Pile",
+    "track": "I Am Dog Now"
+  },
+  {
+    "artist": "Chelsea Wolfe",
+    "track": "Everything Turns Blue"
+  },
+  {
+    "artist": "clipping.",
+    "track": "Run It"
+  },
+  {
+    "artist": "Denzel Curry",
+    "track": "HOT ONE ft. TiaCorine & FERG"
+  },
+  {
+    "artist": "Doechii",
+    "track": "Alter Ego ft. JT"
+  },
+  {
+    "artist": "Dog Race",
+    "track": "It’s the Squeeze"
+  },
+  {
+    "artist": "Elias Rønnenfelt",
+    "track": "No One Else"
+  },
+  {
+    "artist": "Fat Dog",
+    "track": "Wither"
+  },
+  {
+    "artist": "FKA twigs",
+    "track": "Perfect Stranger"
+  },
+  {
+    "artist": "FLO",
+    "track": "Caught Up"
+  },
+  {
+    "artist": "Fontaines D.C.",
+    "track": "Starburster"
+  },
+  {
+    "artist": "Geordie Greep",
+    "track": "Holy, Holy"
+  },
+  {
+    "artist": "Ginger Root",
+    "track": "No Problems"
+  },
+  {
+    "artist": "Hiatus Kaiyote",
+    "track": "Cinnamon Temple"
+  },
+  {
+    "artist": "horsegiirL",
+    "track": "eat, sleep, slay, 🔁"
+  },
+  {
+    "artist": "Ibibio Sound Machine",
+    "track": "Pull the Rope"
+  },
+  {
+    "artist": "Jamie xx",
+    "track": "Baddy on the Floor ft. Honey Dijon"
+  },
+  {
+    "artist": "Jane Remover",
+    "track": "Magic I Want U"
+  },
+  {
+    "artist": "Joey Valence & Brae",
+    "track": "THE BADDEST"
+  },
+  {
+    "artist": "Justice",
+    "track": "Generator"
+  },
+  {
+    "artist": "Kamasi Washington",
+    "track": "Prologue"
+  },
+  {
+    "artist": "Kendrick Lamar",
+    "track": "meet the grahams"
+  },
+  {
+    "artist": "Kim Gordon",
+    "track": "BYE BYE"
+  },
+  {
+    "artist": "Knocked Loose",
+    "track": "Suffocate ft. Poppy"
+  },
+  {
+    "artist": "Laura Marling",
+    "track": "No One’s Gonna Love You Like I Can"
+  },
+  {
+    "artist": "The Lemon Twigs",
+    "track": "My Golden Years"
+  },
+  {
+    "artist": "Magdalena Bay",
+    "track": "Death & Romance"
+  },
+  {
+    "artist": "Moses Sumney",
+    "track": "Vintage"
+  },
+  {
+    "artist": "Nia Archives",
+    "track": "Crowded Roomz"
+  },
+  {
+    "artist": "Porter Robinson",
+    "track": "Cheerleader"
+  },
+  {
+    "artist": "Remi Wolf",
+    "track": "Toro"
+  },
+  {
+    "artist": "Sampha & Little Sims",
+    "track": "Satellite Business 2.0"
+  },
+  {
+    "artist": "Shygirl",
+    "track": "encore ft. Danny L Harle"
+  },
+  {
+    "artist": "test plan",
+    "track": "Walking in a Vacuum"
+  },
+  {
+    "artist": "Tierra Whack",
+    "track": "27 CLUB"
+  },
+  {
+    "artist": "Tinashe",
+    "track": "Nasty"
+  },
+  {
+    "artist": "Vampire Weekend",
+    "track": "Classical"
+  },
+  {
+    "artist": "Xiu Xiu",
+    "track": "Veneficium"
+  }
+]

@@ -797,6 +797,7 @@ me.resolveArtistsToSamplePlaylist = async function (req, res) {
 //resolveArtistsToSamplePlaylist
 
 
+//note: for rolling-stones-top-100-guitarists-scraper/guitaristTrackTuples.json
 me.resolveArtistsTracksTuplesToPlaylist = async function (req, res) {
 	//todo:
 	let tuples = []
@@ -941,6 +942,153 @@ me.resolveArtistsTracksTuplesToPlaylist = async function (req, res) {
 	debugger
 }
 //resolveArtistsTracksTuplesToPlaylist
+
+//note: for fantano-top-lists/top-50-songs.2024.json
+me.resolveArtistsTracksTuplesToPlaylist2 = async function (req, res) {
+	//todo:
+	//let tuples = []
+	 let tuples = require("../scripts/fantano-top-lists/top-50-songs.2024.json");
+	//testing:
+	//tuples = tuples.slice(0, 1)
+
+	let trackArtistArr = [];
+	tuples.forEach(t => {
+		trackArtistArr.push({name:t.track,artist:{name:t.artist},type:"track"})
+	})
+
+	var task = async function (item) {
+		try {
+			//todo: we passed this in a strange way, so that we can't calculate it here.
+			// should redo above
+
+			//ask spotify to search "type" results
+			//we pass the entire item so we can track it item w/ result
+			var response = await network_utility.limiter.schedule(spotify_api.searchSpotify, req, item)
+
+			if (response?.result.items.length > 0) {
+
+				//success: has "result"
+				//matchArtistResult = {item: item, queryResultItems: queryResultItems, result:{}}
+				//failure: has "flag"
+				//matchArtistResult = {item: item, queryResultItems: queryResultItems, flag: "not on Spotify"}
+				let processSearchSpotifyResult = async function (item, queryResultItems) {
+					var matchArtistResult = false;
+
+					//todo: should just be done globally on any item return
+					//cleanup report back results
+					queryResultItems.forEach(item => {
+						item.available_markets = null
+					});
+
+					//don't bother to search Spotify for artists we know it doesn't have in the catalog
+					if (notOnSpotify.indexOf(item.artist) !== -1) {
+						matchArtistResult = {item: item, queryResultItems: queryResultItems, flag: "not on Spotify"}
+						console.warn(matchArtistResult.flag, JSON.stringify(matchArtistResult, null, 4));
+						return matchArtistResult
+					} else {
+						//==================================================
+						//does item (track/album) have the artist we expect?
+
+						//for each track/album item
+						for (var x = 0; x < queryResultItems.length && !matchArtistResult; x++) {
+							var qItem = queryResultItems[x];
+							//does the item's artist match any result from the query?
+							for (var y = 0; y < qItem.artists.length && !matchArtistResult; y++) {
+								var qArtist = qItem.artists[y];
+
+
+								let matchResult = processFuzzy(qArtist.name, item.artist.name);
+								if (matchResult) {
+									// non-falsy matchResult breaks out of both loops
+									matchArtistResult = {
+										item: item,
+										result: qArtist.name,
+										matchReason: matchResult.matchReason
+									}
+								}
+							}
+						}//outer-for
+
+						if (!matchArtistResult) {
+							matchArtistResult = {
+								item: item,
+								queryResultItems: queryResultItems,
+								flag: "failed to match query artist any result artist"
+							}
+							console.warn(matchArtistResult.flag, JSON.stringify(matchArtistResult, null, 4));
+
+							return matchArtistResult
+
+						} else {
+							//console.log(matchArtistResult.matchReason, JSON.stringify(matchArtistResult, null, 4));
+
+							//==================================================
+							////does the track/album title match one from the query results?
+
+							let matchTrackResult = false;
+							for (var x = 0; x < queryResultItems.length && !matchTrackResult; x++) {
+								var qItem = queryResultItems[x];
+
+
+								let matchResult = processFuzzy(qItem.name, item.name);
+								if (matchResult) {
+									// non-falsy matchResult breaks out of both loops
+									matchTrackResult = {item: item, result: qItem, matchReason: matchResult.matchReason}
+								}
+							}//outer-for
+
+							if (!matchTrackResult) {
+								matchTrackResult = {
+									item: item,
+									queryResultItems: queryResultItems,
+									flag: "failed to match query track with any result track"
+								}
+								console.warn(matchTrackResult.flag, JSON.stringify(matchTrackResult, null, 4));
+								return matchTrackResult
+							} else {
+								return {
+									item: item, queryResultItems: queryResultItems, result:
+										{matchArtistResult: matchArtistResult, matchTrackResult: matchTrackResult}
+								}
+							}
+						}//fail
+					}//fail
+
+				}//processSearchSpotifyResult
+
+
+				return await processSearchSpotifyResult(response.item, response.result.items)
+			} else {
+				let result = {item: item, responseItems: response.result.items, flag: "searchSpotify returned nothing!"}
+				return result;
+			}
+		} catch (e) {
+			console.error(e);
+			debugger
+		}
+
+	}//task
+
+	var ps = trackArtistArr.map(task);
+
+	var results = await Promise.all(ps)
+	let failures = results.filter(r => !r.result)
+	let successes = results.filter(r => r.result)
+
+	console.log(`successes: ${successes.length} | failures: ${failures.length}`)
+	let str = ""
+	failures.forEach(f => {
+		str = str + f.item.artist.name + ","
+	})
+
+	//only fetch tracks for good results
+	let tracks = []
+	successes.forEach(r => {
+		tracks.push({id: r.result.matchTrackResult.result.id})
+	})
+	await makeAndPopulatePlaylist(req, "fantano-top-50-songs.2024", tracks)
+	debugger
+}
 
 me.resolveAlbumStringsToSamplePlaylist = async function (req, res) {
 
@@ -1512,8 +1660,8 @@ const getArtistDateMap = function(req,jsonInputFile){
 //let playlistName = "Songkick-SaltLakeCity.20241027.20250101"
 // let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20241027.output.resolved.json"
 
-let playlistName = "Songkick-Columbus.20241027"
-let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-Columbus.20241027.output.resolved.json"
+let playlistName = "Songkick-SaltLakeCity.20250326"
+let jsonInputFilePath = "../scripts/songkick-scraper/octoparse-results/Songkick-SaltLakeCity.20250326.output.resolved.json"
 
 /**
  * @desc given an input json file w/ fully qualified songkick events:
@@ -2490,4 +2638,56 @@ me.archiveBillboardHot100Playlists = async function(req, res) {
 	// })
 }
 
+me.prunePlaylist = async function (req, res) {
 
+	try {
+
+		//let playlistId = req.body.playlistId
+		let playlistId = "2nXpBDAYitfYH4BPkWr8a5";
+		console.log("prunePlaylist | playlistId", playlistId);
+		//fetch this so we can use snapshot_id later
+		let playlist = await playlist_api.getPlaylist(req, playlistId)
+		console.log("prunePlaylistFromJson | playlist.name", playlist.name);
+
+		let currentPlaylistItems = await playlist_api.getPlaylistTracks(req, playlistId)
+		let artist_removal_index_map = {};
+		let currentPlaylistTracks = currentPlaylistItems.map((item) =>{return item.track })
+		await resolver.resolveTracksArray(req,  currentPlaylistTracks)
+
+		let noGenreArtists = [];
+		currentPlaylistTracks.forEach((track, i) => {
+
+			//for every artist on the track, if they're on our map, remove that song
+			track.artists.forEach(a => {
+				//if we have it in our map, we need to remove the first entry
+				if(a.genres){
+					a.genres.forEach(gOb =>{
+						//console.log(gOb.family_name)
+						//console.log(track.name,a.name,gOb.family_name)
+						if(gOb.family_name === "country" || gOb.family_name === "folk" ){
+							console.warn(track.name,a.name,gOb.family_name)
+							artist_removal_index_map[i] = a
+						}
+					})
+				}
+				else{
+					noGenreArtists.push(a)
+				}
+
+			})
+		})
+		let indexes = Object.keys(artist_removal_index_map).map(str => parseInt(str))
+		debugger
+		if(indexes.length > 0){
+			let r_removal = await req.body.spotifyApi.removeTracksFromPlaylistByPosition(playlist.id,
+				indexes, playlist.snapshot_id)
+		}
+
+		res.send({"result":"done"})
+
+	} catch (e) {
+		console.error(e)
+		debugger
+		res.status(500).send(e)
+	}
+};

@@ -1,4 +1,1737 @@
-[{"artist":{"name":"Lindsey Buckingham"},
-"key_tracks_string":"Key Tracks: \"Rhiannon,\" \"Go Your Own Way\"","reg_solve":["Rhiannon","Go Your Own Way"],
-"track_obs":[{"name":"Rhiannon","type":"track"},{"name":"Go Your Own Way","type":"track"}]
-},{"artist":{"name":"Thurston Moore"},"key_tracks_string":"Key Tracks: \"Expressway to Yr. Skull,\" \"Silver Rocket\"","reg_solve":["Expressway to Yr. Skull","Silver Rocket"],"track_obs":[{"name":"Expressway to Yr. Skull","type":"track"},{"name":"Silver Rocket","type":"track"}]},{"artist":{"name":"Alex Lifeson"},"key_tracks_string":"Key Tracks: \"La Villa Strangiato,\" \"The Spirit of Radio\"","reg_solve":["La Villa Strangiato","The Spirit of Radio"],"track_obs":[{"name":"La Villa Strangiato","type":"track"},{"name":"The Spirit of Radio","type":"track"}]},{"artist":{"name":"Steve Jones"},"key_tracks_string":"Key Tracks: \"God Save the Queen,\" \"Pretty Vacant\"","reg_solve":["God Save the Queen","Pretty Vacant"],"track_obs":[{"name":"God Save the Queen","type":"track"},{"name":"Pretty Vacant","type":"track"}]},{"artist":{"name":"Bruce Springsteen"},"key_tracks_string":"Key Tracks: \"Kitty's Back,\" \"Backstreets\"","reg_solve":["Kitty's Back","Backstreets"],"track_obs":[{"name":"Kitty's Back","type":"track"},{"name":"Backstreets","type":"track"}]},{"artist":{"name":"Roger McGuinn"},"key_tracks_string":"Key Tracks: \"Mr. Tambourine Man,\" \"Eight Miles High\"","reg_solve":["Mr. Tambourine Man","Eight Miles High"],"track_obs":[{"name":"Mr. Tambourine Man","type":"track"},{"name":"Eight Miles High","type":"track"}]},{"artist":{"name":"Peter Buck"},"key_tracks_string":"Key Tracks: \"Radio Free Europe,\" \"The One I Love\"","reg_solve":["Radio Free Europe","The One I Love"],"track_obs":[{"name":"Radio Free Europe","type":"track"},{"name":"The One I Love","type":"track"}]},{"artist":{"name":"Paul Simon"},"key_tracks_string":"Key Tracks: \"Dazzling Blue,\" \"Kathy's Song\"","reg_solve":["Dazzling Blue","Kathy's Song"],"track_obs":[{"name":"Dazzling Blue","type":"track"},{"name":"Kathy's Song","type":"track"}]},{"artist":{"name":"Dave Davies"},"key_tracks_string":"Key Tracks: \"You Really Got Me,\" \"All Day and All of the Night\"","reg_solve":["You Really Got Me","All Day and All of the Night"],"track_obs":[{"name":"You Really Got Me","type":"track"},{"name":"All Day and All of the Night","type":"track"}]},{"artist":{"name":"Tom Verlaine"},"key_tracks_string":"Key Tracks: \"Marquee Moon,\" \"Little Johnny Jewel,\" \"Breakin' in My Heart\"","reg_solve":["Marquee Moon","Little Johnny Jewel","Breakin' in My Heart"],"track_obs":[{"name":"Marquee Moon","type":"track"},{"name":"Little Johnny Jewel","type":"track"},{"name":"Breakin' in My Heart","type":"track"}]},{"artist":{"name":"Bonnie Raitt"},"key_tracks_string":"Key Tracks: \"Runaway,\" \"Something to Talk About\"","reg_solve":["Runaway","Something to Talk About"],"track_obs":[{"name":"Runaway","type":"track"},{"name":"Something to Talk About","type":"track"}]},{"artist":{"name":"Carl Perkins"},"key_tracks_string":"Key Tracks: \"Blue Suede Shoes,\" \"Glad All Over\"","reg_solve":["Blue Suede Shoes","Glad All Over"],"track_obs":[{"name":"Blue Suede Shoes","type":"track"},{"name":"Glad All Over","type":"track"}]},{"artist":{"name":"James Hetfield"},"key_tracks_string":"Key Tracks: \"Seek and Destroy,\" \"Master of Puppets\"","reg_solve":["Seek and Destroy","Master of Puppets"],"track_obs":[{"name":"Seek and Destroy","type":"track"},{"name":"Master of Puppets","type":"track"}]},{"artist":{"name":"J Mascis"},"key_tracks_string":"Key Tracks: \"Feel the Pain,\" \"Little Fury Things\"","reg_solve":["Feel the Pain","Little Fury Things"],"track_obs":[{"name":"Feel the Pain","type":"track"},{"name":"Little Fury Things","type":"track"}]},{"artist":{"name":"Andy Summers"},"key_tracks_string":"Key Tracks: \"Message in a Bottle,\" \"Every Breath You Take\"","reg_solve":["Message in a Bottle","Every Breath You Take"],"track_obs":[{"name":"Message in a Bottle","type":"track"},{"name":"Every Breath You Take","type":"track"}]},{"artist":{"name":"Eddie Hazel"},"key_tracks_string":"Key Tracks: \"Maggot Brain,\" \"Funky Dollar Bill\"","reg_solve":["Maggot Brain","Funky Dollar Bill"],"track_obs":[{"name":"Maggot Brain","type":"track"},{"name":"Funky Dollar Bill","type":"track"}]},{"artist":{"name":"Nels Cline"},"key_tracks_string":"Key Tracks: \"Spiders (Kidsmoke),\" \"Impossible Germany\"","reg_solve":["Spiders (Kidsmoke)","Impossible Germany"],"track_obs":[{"name":"Spiders (Kidsmoke)","type":"track"},{"name":"Impossible Germany","type":"track"}]},{"artist":{"name":"Lou Reed"},"key_tracks_string":"Key Tracks: \"Sister Ray,\" \"Heroin,\" \"Foggy Notion\"","reg_solve":["Sister Ray","Heroin","Foggy Notion"],"track_obs":[{"name":"Sister Ray","type":"track"},{"name":"Heroin","type":"track"},{"name":"Foggy Notion","type":"track"}]},{"artist":{"name":"Buddy Holly"},"key_tracks_string":"Key Tracks: \"That'll Be the Day,\" \"Peggy Sue\"","reg_solve":["That'll Be the Day","Peggy Sue"],"track_obs":[{"name":"That'll Be the Day","type":"track"},{"name":"Peggy Sue","type":"track"}]},{"artist":{"name":"Mike Campbell"},"key_tracks_string":"Key Tracks: \"Breakdown,\" \"You Got Lucky\"","reg_solve":["Breakdown","You Got Lucky"],"track_obs":[{"name":"Breakdown","type":"track"},{"name":"You Got Lucky","type":"track"}]},{"artist":{"name":"Willie Nelson"},"key_tracks_string":"Key Tracks: \"Whiskey River,\" \"Night Life\"","reg_solve":["Whiskey River","Night Life"],"track_obs":[{"name":"Whiskey River","type":"track"},{"name":"Night Life","type":"track"}]},{"artist":{"name":"Robby Krieger"},"key_tracks_string":"Key Tracks: \"Riders on the Storm,\" \"Roadhouse Blues\"","reg_solve":["Riders on the Storm","Roadhouse Blues"],"track_obs":[{"name":"Riders on the Storm","type":"track"},{"name":"Roadhouse Blues","type":"track"}]},{"artist":{"name":"Joni Mitchell"},"key_tracks_string":"Key Tracks: \"I Had a King,\" \"Nathan La Franeer,\" \"Night in the City,\" \"Coyote,\" \"A Case of You\"","reg_solve":["I Had a King","Nathan La Franeer","Night in the City","Coyote","A Case of You"],"track_obs":[{"name":"I Had a King","type":"track"},{"name":"Nathan La Franeer","type":"track"},{"name":"Night in the City","type":"track"},{"name":"Coyote","type":"track"},{"name":"A Case of You","type":"track"}]},{"artist":{"name":"Dick Dale"},"key_tracks_string":"Key Tracks: \"Misirlou,\" \"The Peter Gunn Theme\"","reg_solve":["Misirlou","The Peter Gunn Theme"],"track_obs":[{"name":"Misirlou","type":"track"},{"name":"The Peter Gunn Theme","type":"track"}]},{"artist":{"name":"Kurt Cobain"},"key_tracks_string":"Key Tracks: \"Smells Like Teen Spirit,\" \"Scentless Apprentice\"","reg_solve":["Smells Like Teen Spirit","Scentless Apprentice"],"track_obs":[{"name":"Smells Like Teen Spirit","type":"track"},{"name":"Scentless Apprentice","type":"track"}]},{"artist":{"name":"Robert Johnson"},"key_tracks_string":"Key Tracks: \"Ramblin' on My Mind,\" \"Traveling Riverside Blues\"","reg_solve":["Ramblin' on My Mind","Traveling Riverside Blues"],"track_obs":[{"name":"Ramblin' on My Mind","type":"track"},{"name":"Traveling Riverside Blues","type":"track"}]},{"artist":{"name":"Jack White"},"key_tracks_string":"Key Tracks: \"Seven Nation Army,\" \"Ball and Biscuit\"","reg_solve":["Seven Nation Army","Ball and Biscuit"],"track_obs":[{"name":"Seven Nation Army","type":"track"},{"name":"Ball and Biscuit","type":"track"}]},{"artist":{"name":"Richard Thompson"},"key_tracks_string":"Key Tracks: \"Shoot Out the Lights,\" \"1952 Vincent Black Lightning\"","reg_solve":["Shoot Out the Lights","1952 Vincent Black Lightning"],"track_obs":[{"name":"Shoot Out the Lights","type":"track"},{"name":"1952 Vincent Black Lightning","type":"track"}]},{"artist":{"name":"John McLaughlin"},"key_tracks_string":"Key Tracks: \"Right Off,\" \"The Noonward Race\"","reg_solve":["Right Off","The Noonward Race"],"track_obs":[{"name":"Right Off","type":"track"},{"name":"The Noonward Race","type":"track"}]},{"artist":{"name":"T-Bone Walker"},"key_tracks_string":"Key Tracks: \"Call It Stormy Monday,\" \"T-Bone Shuffle,\" \"Mean Old World\"","reg_solve":["Call It Stormy Monday","T-Bone Shuffle","Mean Old World"],"track_obs":[{"name":"Call It Stormy Monday","type":"track"},{"name":"T-Bone Shuffle","type":"track"},{"name":"Mean Old World","type":"track"}]},{"artist":{"name":"Leslie West"},"key_tracks_string":"Key Tracks: \"Mississippi Queen,\" \"Nantucket Sleighride (To Owen Coffin)\"","reg_solve":["Mississippi Queen","Nantucket Sleighride (To Owen Coffin)"],"track_obs":[{"name":"Mississippi Queen","type":"track"},{"name":"Nantucket Sleighride (To Owen Coffin)","type":"track"}]},{"artist":{"name":"Slash"},"key_tracks_string":"Key Tracks: \"Sweet Child O'Mine,\" \"Welcome to the Jungle\"","reg_solve":["Sweet Child O'Mine","Welcome to the Jungle"],"track_obs":[{"name":"Sweet Child O'Mine","type":"track"},{"name":"Welcome to the Jungle","type":"track"}]},{"artist":{"name":"Duane Eddy"},"key_tracks_string":"Key Tracks: \"Rebel Rouser,\" \"Peter Gunn\"","reg_solve":["Rebel Rouser","Peter Gunn"],"track_obs":[{"name":"Rebel Rouser","type":"track"},{"name":"Peter Gunn","type":"track"}]},{"artist":{"name":"Johnny Winter"},"key_tracks_string":"Key Tracks: \"I'm Yours and I'm Hers,\" \"Fast Life Rider\"","reg_solve":["I'm Yours and I'm Hers","Fast Life Rider"],"track_obs":[{"name":"I'm Yours and I'm Hers","type":"track"},{"name":"Fast Life Rider","type":"track"}]},{"artist":{"name":"Dickey Betts"},"key_tracks_string":"Key Tracks: \"In Memory of Elizabeth Reed,\" \"Jessica\"","reg_solve":["In Memory of Elizabeth Reed","Jessica"],"track_obs":[{"name":"In Memory of Elizabeth Reed","type":"track"},{"name":"Jessica","type":"track"}]},{"artist":{"name":"Robbie Robertson"},"key_tracks_string":"Key Tracks: \"The Shape I'm In,\" \"Like a Rolling Stone (Live 1966)\"","reg_solve":["The Shape I'm In","Like a Rolling Stone (Live 1966)"],"track_obs":[{"name":"The Shape I'm In","type":"track"},{"name":"Like a Rolling Stone (Live 1966)","type":"track"}]},{"artist":{"name":"Peter Green"},"key_tracks_string":"Key Tracks: \"Albatross,\" \"Rattlesnake Shake\"","reg_solve":["Albatross","Rattlesnake Shake"],"track_obs":[{"name":"Albatross","type":"track"},{"name":"Rattlesnake Shake","type":"track"}]},{"artist":{"name":"Rory Gallagher"},"key_tracks_string":"Key Tracks: \"Bullfrog Blues,\" \"Laundromat,\" \"Walk on Hot Coals\"","reg_solve":["Bullfrog Blues","Laundromat","Walk on Hot Coals"],"track_obs":[{"name":"Bullfrog Blues","type":"track"},{"name":"Laundromat","type":"track"},{"name":"Walk on Hot Coals","type":"track"}]},{"artist":{"name":"Albert Collins"},"key_tracks_string":"Key Tracks: \"Frosty,\" \"Sno-Cone Part 1\"","reg_solve":["Frosty","Sno-Cone Part 1"],"track_obs":[{"name":"Frosty","type":"track"},{"name":"Sno-Cone Part 1","type":"track"}]},{"artist":{"name":"John Lennon"},"key_tracks_string":"Key Tracks: \"Help!,\" \"Day Tripper,\" \"Yer Blues\"","reg_solve":["Help!","Day Tripper","Yer Blues"],"track_obs":[{"name":"Help!","type":"track"},{"name":"Day Tripper","type":"track"},{"name":"Yer Blues","type":"track"}]},{"artist":{"name":"Joe Walsh"},"key_tracks_string":"Key Tracks: \"Rocky Mountain Way,\" \"Funk #49\"","reg_solve":["Rocky Mountain Way","Funk #49"],"track_obs":[{"name":"Rocky Mountain Way","type":"track"},{"name":"Funk #49","type":"track"}]},{"artist":{"name":"Otis Rush"},"key_tracks_string":"Key Tracks: \"I Can't Quit You Baby,\" \"Double Trouble,\" \"Homework\"","reg_solve":["I Can't Quit You Baby","Double Trouble","Homework"],"track_obs":[{"name":"I Can't Quit You Baby","type":"track"},{"name":"Double Trouble","type":"track"},{"name":"Homework","type":"track"}]},{"artist":{"name":"Clarence White"},"key_tracks_string":"Key Tracks: \"Time Between,\" \"This Wheel's on Fire,\" \"Chestnut Mare\"","reg_solve":["Time Between","This Wheel's on Fire","Chestnut Mare"],"track_obs":[{"name":"Time Between","type":"track"},{"name":"This Wheel's on Fire","type":"track"},{"name":"Chestnut Mare","type":"track"}]},{"artist":{"name":"Johnny Marr"},"key_tracks_string":"Key Tracks: \"This Charming Man,\" \"How Soon Is Now?\"","reg_solve":["This Charming Man","How Soon Is Now?"],"track_obs":[{"name":"This Charming Man","type":"track"},{"name":"How Soon Is Now?","type":"track"}]},{"artist":{"name":"Ritchie Blackmore"},"key_tracks_string":"Key Tracks: \"Smoke on the Water,\" \"Highway Star,\" \"Speed King\"","reg_solve":["Smoke on the Water","Highway Star","Speed King"],"track_obs":[{"name":"Smoke on the Water","type":"track"},{"name":"Highway Star","type":"track"},{"name":"Speed King","type":"track"}]},{"artist":{"name":"Jonny Greenwood"},"key_tracks_string":"Key Tracks: \"Creep,\" \"Paranoid Android,\" \"My Iron Lung\"","reg_solve":["Creep","Paranoid Android","My Iron Lung"],"track_obs":[{"name":"Creep","type":"track"},{"name":"Paranoid Android","type":"track"},{"name":"My Iron Lung","type":"track"}]},{"artist":{"name":"Stephen Stills"},"key_tracks_string":"Key Tracks: \"Bluebird,\" \"Carry On,\" \"Go Back Home\"","reg_solve":["Bluebird","Carry On","Go Back Home"],"track_obs":[{"name":"Bluebird","type":"track"},{"name":"Carry On","type":"track"},{"name":"Go Back Home","type":"track"}]},{"artist":{"name":"Jerry Garcia"},"key_tracks_string":"Key Tracks: \"Dark Star,\" \"Sugaree,\" \"Casey Jones\"","reg_solve":["Dark Star","Sugaree","Casey Jones"],"track_obs":[{"name":"Dark Star","type":"track"},{"name":"Sugaree","type":"track"},{"name":"Casey Jones","type":"track"}]},{"artist":{"name":"Link Wray"},"key_tracks_string":"Key Tracks: \"Rumble,\" \"Jack the Ripper,\" \"Raw-Hide\"","reg_solve":["Rumble","Jack the Ripper","Raw-Hide"],"track_obs":[{"name":"Rumble","type":"track"},{"name":"Jack the Ripper","type":"track"},{"name":"Raw-Hide","type":"track"}]},{"artist":{"name":"Mark Knopfler"},"key_tracks_string":"Key Tracks: \"Sultans of Swing,\" \"Romeo and Juliet\"","reg_solve":["Sultans of Swing","Romeo and Juliet"],"track_obs":[{"name":"Sultans of Swing","type":"track"},{"name":"Romeo and Juliet","type":"track"}]},{"artist":{"name":"Hubert Sumlin"},"key_tracks_string":"Key Tracks: \"Smokestack Lightning,\" \"Spoonful,\" \"Killing Floor\"","reg_solve":["Smokestack Lightning","Spoonful","Killing Floor"],"track_obs":[{"name":"Smokestack Lightning","type":"track"},{"name":"Spoonful","type":"track"},{"name":"Killing Floor","type":"track"}]},{"artist":{"name":"Mick Ronson"},"key_tracks_string":"Key Tracks: \"The Width of a Circle,\" \"Suffragette City\"","reg_solve":["The Width of a Circle","Suffragette City"],"track_obs":[{"name":"The Width of a Circle","type":"track"},{"name":"Suffragette City","type":"track"}]},{"artist":{"name":"Tom Morello"},"key_tracks_string":"Key Tracks: \"Guerrilla Radio,\" \"Killing in the Name\"","reg_solve":["Guerrilla Radio","Killing in the Name"],"track_obs":[{"name":"Guerrilla Radio","type":"track"},{"name":"Killing in the Name","type":"track"}]},{"artist":{"name":"Steve Cropper"},"key_tracks_string":"Key Tracks: \"(Sittin' on) The Dock of the Bay,\" \"Green Onions,\" \"Soul Man\"","reg_solve":["(Sittin' on) The Dock of the Bay","Green Onions","Soul Man"],"track_obs":[{"name":"(Sittin' on) The Dock of the Bay","type":"track"},{"name":"Green Onions","type":"track"},{"name":"Soul Man","type":"track"}]},{"artist":{"name":"The Edge"},"key_tracks_string":"Key Tracks: \"I Will Follow,\" \"Pride (In the Name of Love),\" \"The Fly\"","reg_solve":["I Will Follow","Pride (In the Name of Love)","The Fly"],"track_obs":[{"name":"I Will Follow","type":"track"},{"name":"Pride (In the Name of Love)","type":"track"},{"name":"The Fly","type":"track"}]},{"artist":{"name":"Mick Taylor"},"key_tracks_string":"Key Tracks: \"Can't You Hear Me Knocking,\" \"All Down the Line\"","reg_solve":["Can't You Hear Me Knocking","All Down the Line"],"track_obs":[{"name":"Can't You Hear Me Knocking","type":"track"},{"name":"All Down the Line","type":"track"}]},{"artist":{"name":"Randy Rhoads"},"key_tracks_string":"Key Tracks: \"Crazy Train,\" \"Mr. Crowley,\" \"Diary of a Madman\"","reg_solve":["Crazy Train","Mr. Crowley","Diary of a Madman"],"track_obs":[{"name":"Crazy Train","type":"track"},{"name":"Mr. Crowley","type":"track"},{"name":"Diary of a Madman","type":"track"}]},{"artist":{"name":"John Lee Hooker"},"key_tracks_string":"Key Tracks: \"Boogie Chillen,\" \"BoomBoom,\" \"I'm in the Mood\"","reg_solve":["Boogie Chillen","BoomBoom","I'm in the Mood"],"track_obs":[{"name":"Boogie Chillen","type":"track"},{"name":"BoomBoom","type":"track"},{"name":"I'm in the Mood","type":"track"}]},{"artist":{"name":"Curtis Mayfield"},"key_tracks_string":"Key Tracks: \"Gypsy Woman,\" \"Move On Up,\" \"Freddie's Dead\"","reg_solve":["Gypsy Woman","Move On Up","Freddie's Dead"],"track_obs":[{"name":"Gypsy Woman","type":"track"},{"name":"Move On Up","type":"track"},{"name":"Freddie's Dead","type":"track"}]},{"artist":{"name":"Prince"},"key_tracks_string":"Key Tracks: \"Purple Rain,\" \"Kiss,\" \"When Doves Cry\"","reg_solve":["Purple Rain","Kiss","When Doves Cry"],"track_obs":[{"name":"Purple Rain","type":"track"},{"name":"Kiss","type":"track"},{"name":"When Doves Cry","type":"track"}]},{"artist":{"name":"Billy Gibbons"},"key_tracks_string":"Key Tracks: \"Jesus Left Chicago,\" \"La Grange\"","reg_solve":["Jesus Left Chicago","La Grange"],"track_obs":[{"name":"Jesus Left Chicago","type":"track"},{"name":"La Grange","type":"track"}]},{"artist":{"name":"Ry Cooder"},"key_tracks_string":"Key Tracks: \"Memo From Turner,\" \"Boomer's Story\"","reg_solve":["Memo From Turner","Boomer's Story"],"track_obs":[{"name":"Memo From Turner","type":"track"},{"name":"Boomer's Story","type":"track"}]},{"artist":{"name":"Elmore James"},"key_tracks_string":"Key Tracks: \"Dust My Broom,\" \"The Sky Is Crying\"","reg_solve":["Dust My Broom","The Sky Is Crying"],"track_obs":[{"name":"Dust My Broom","type":"track"},{"name":"The Sky Is Crying","type":"track"}]},{"artist":{"name":"Scotty Moore"},"key_tracks_string":"Key Tracks: \"That's All Right,\" \"Mystery Train,\" \"Heartbreak Hotel\"","reg_solve":["That's All Right","Mystery Train","Heartbreak Hotel"],"track_obs":[{"name":"That's All Right","type":"track"},{"name":"Mystery Train","type":"track"},{"name":"Heartbreak Hotel","type":"track"}]},{"artist":{"name":"Johnny Ramone"},"key_tracks_string":"Key Tracks: \"Blitzkrieg Bop,\" \"Judy Is a Punk,\" \"Rockaway Beach\"","reg_solve":["Blitzkrieg Bop","Judy Is a Punk","Rockaway Beach"],"track_obs":[{"name":"Blitzkrieg Bop","type":"track"},{"name":"Judy Is a Punk","type":"track"},{"name":"Rockaway Beach","type":"track"}]},{"artist":{"name":"Bo Diddley"},"key_tracks_string":"Key Tracks: \"Bo Diddley,\" \"Road Runner,\" \"Who Do You Love?\"","reg_solve":["Bo Diddley","Road Runner","Who Do You Love?"],"track_obs":[{"name":"Bo Diddley","type":"track"},{"name":"Road Runner","type":"track"},{"name":"Who Do You Love?","type":"track"}]},{"artist":{"name":"Brian May"},"key_tracks_string":"Key Tracks: \"Keep Yourself Alive,\" \"Brighton Rock\"","reg_solve":["Keep Yourself Alive","Brighton Rock"],"track_obs":[{"name":"Keep Yourself Alive","type":"track"},{"name":"Brighton Rock","type":"track"}]},{"artist":{"name":"Angus Young"},"key_tracks_string":"Key Tracks: \"Highway to Hell,\" \"Bad Boy Boogie\"","reg_solve":["Highway to Hell","Bad Boy Boogie"],"track_obs":[{"name":"Highway to Hell","type":"track"},{"name":"Bad Boy Boogie","type":"track"}]},{"artist":{"name":"Buddy Guy"},"key_tracks_string":"Key Tracks: \"Stone Crazy,\" \"First Time I Met the Blues\"","reg_solve":["Stone Crazy","First Time I Met the Blues"],"track_obs":[{"name":"Stone Crazy","type":"track"},{"name":"First Time I Met the Blues","type":"track"}]},{"artist":{"name":"Frank Zappa"},"key_tracks_string":"Key Tracks: \"Willie the Pimp,\" \"In-a-Gadda-Stravinsky\"","reg_solve":["Willie the Pimp","In-a-Gadda-Stravinsky"],"track_obs":[{"name":"Willie the Pimp","type":"track"},{"name":"In-a-Gadda-Stravinsky","type":"track"}]},{"artist":{"name":"Chet Atkins"},"key_tracks_string":"Key Tracks: \"Your Cheatin' Heart,\" \"Wake Up Little Susie\"","reg_solve":["Your Cheatin' Heart","Wake Up Little Susie"],"track_obs":[{"name":"Your Cheatin' Heart","type":"track"},{"name":"Wake Up Little Susie","type":"track"}]},{"artist":{"name":"Carlos Santana"},"key_tracks_string":"Key Tracks: \"Black Magic Woman,\" \"Oye Como Va,\" \"Soul Sacrifice\"","reg_solve":["Black Magic Woman","Oye Como Va","Soul Sacrifice"],"track_obs":[{"name":"Black Magic Woman","type":"track"},{"name":"Oye Como Va","type":"track"},{"name":"Soul Sacrifice","type":"track"}]},{"artist":{"name":"James Burton"},"key_tracks_string":"Key Tracks: \"Hello Mary Lou,\"\"Susie Q,\" \"Believe What You Say\"","reg_solve":["Hello Mary Lou","Susie Q","Believe What You Say"],"track_obs":[{"name":"Hello Mary Lou","type":"track"},{"name":"Susie Q","type":"track"},{"name":"Believe What You Say","type":"track"}]},{"artist":{"name":"Les Paul"},"key_tracks_string":"Key Tracks: \"How High the Moon,\" \"Vaya Con Dios,\" \"Tiger Rag\"","reg_solve":["How High the Moon","Vaya Con Dios","Tiger Rag"],"track_obs":[{"name":"How High the Moon","type":"track"},{"name":"Vaya Con Dios","type":"track"},{"name":"Tiger Rag","type":"track"}]},{"artist":{"name":"Freddy King"},"key_tracks_string":"Key Tracks: \"Hide Away,\" \"Have You Ever Loved a Woman,\" \"The Stumble\"","reg_solve":["Hide Away","Have You Ever Loved a Woman","The Stumble"],"track_obs":[{"name":"Hide Away","type":"track"},{"name":"Have You Ever Loved a Woman","type":"track"},{"name":"The Stumble","type":"track"}]},{"artist":{"name":"David Gilmour"},"key_tracks_string":"Key Tracks: \"Comfortably Numb,\" \"Shine on You Crazy Diamond\"","reg_solve":["Comfortably Numb","Shine on You Crazy Diamond"],"track_obs":[{"name":"Comfortably Numb","type":"track"},{"name":"Shine on You Crazy Diamond","type":"track"}]},{"artist":{"name":"Albert King"},"key_tracks_string":"Key Tracks: \"Born Under a Bad Sign,\" \"As the Years Go Passing By\"","reg_solve":["Born Under a Bad Sign","As the Years Go Passing By"],"track_obs":[{"name":"Born Under a Bad Sign","type":"track"},{"name":"As the Years Go Passing By","type":"track"}]},{"artist":{"name":"Stevie Ray Vaughan"},"key_tracks_string":"Key Tracks: \"Love Struck Baby,\" \"Cold Shot,\" \"Look at Little Sister\"","reg_solve":["Love Struck Baby","Cold Shot","Look at Little Sister"],"track_obs":[{"name":"Love Struck Baby","type":"track"},{"name":"Cold Shot","type":"track"},{"name":"Look at Little Sister","type":"track"}]},{"artist":{"name":"Pete Townshend"},"key_tracks_string":"Key Tracks: \"My Generation,\" \"I Can See for Miles,\" \"Summertime Blues\"","reg_solve":["My Generation","I Can See for Miles","Summertime Blues"],"track_obs":[{"name":"My Generation","type":"track"},{"name":"I Can See for Miles","type":"track"},{"name":"Summertime Blues","type":"track"}]}]
+[
+  {
+    "artist": {
+      "name": "Lindsey Buckingham"
+    },
+    "key_tracks_string": "Key Tracks: \"Rhiannon,\" \"Go Your Own Way\"",
+    "reg_solve": [
+      "Rhiannon",
+      "Go Your Own Way"
+    ],
+    "track_obs": [
+      {
+        "name": "Rhiannon",
+        "type": "track"
+      },
+      {
+        "name": "Go Your Own Way",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Thurston Moore"
+    },
+    "key_tracks_string": "Key Tracks: \"Expressway to Yr. Skull,\" \"Silver Rocket\"",
+    "reg_solve": [
+      "Expressway to Yr. Skull",
+      "Silver Rocket"
+    ],
+    "track_obs": [
+      {
+        "name": "Expressway to Yr. Skull",
+        "type": "track"
+      },
+      {
+        "name": "Silver Rocket",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Alex Lifeson"
+    },
+    "key_tracks_string": "Key Tracks: \"La Villa Strangiato,\" \"The Spirit of Radio\"",
+    "reg_solve": [
+      "La Villa Strangiato",
+      "The Spirit of Radio"
+    ],
+    "track_obs": [
+      {
+        "name": "La Villa Strangiato",
+        "type": "track"
+      },
+      {
+        "name": "The Spirit of Radio",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Steve Jones"
+    },
+    "key_tracks_string": "Key Tracks: \"God Save the Queen,\" \"Pretty Vacant\"",
+    "reg_solve": [
+      "God Save the Queen",
+      "Pretty Vacant"
+    ],
+    "track_obs": [
+      {
+        "name": "God Save the Queen",
+        "type": "track"
+      },
+      {
+        "name": "Pretty Vacant",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Bruce Springsteen"
+    },
+    "key_tracks_string": "Key Tracks: \"Kitty\u0027s Back,\" \"Backstreets\"",
+    "reg_solve": [
+      "Kitty\u0027s Back",
+      "Backstreets"
+    ],
+    "track_obs": [
+      {
+        "name": "Kitty\u0027s Back",
+        "type": "track"
+      },
+      {
+        "name": "Backstreets",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Roger McGuinn"
+    },
+    "key_tracks_string": "Key Tracks: \"Mr. Tambourine Man,\" \"Eight Miles High\"",
+    "reg_solve": [
+      "Mr. Tambourine Man",
+      "Eight Miles High"
+    ],
+    "track_obs": [
+      {
+        "name": "Mr. Tambourine Man",
+        "type": "track"
+      },
+      {
+        "name": "Eight Miles High",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Peter Buck"
+    },
+    "key_tracks_string": "Key Tracks: \"Radio Free Europe,\" \"The One I Love\"",
+    "reg_solve": [
+      "Radio Free Europe",
+      "The One I Love"
+    ],
+    "track_obs": [
+      {
+        "name": "Radio Free Europe",
+        "type": "track"
+      },
+      {
+        "name": "The One I Love",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Paul Simon"
+    },
+    "key_tracks_string": "Key Tracks: \"Dazzling Blue,\" \"Kathy\u0027s Song\"",
+    "reg_solve": [
+      "Dazzling Blue",
+      "Kathy\u0027s Song"
+    ],
+    "track_obs": [
+      {
+        "name": "Dazzling Blue",
+        "type": "track"
+      },
+      {
+        "name": "Kathy\u0027s Song",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Dave Davies"
+    },
+    "key_tracks_string": "Key Tracks: \"You Really Got Me,\" \"All Day and All of the Night\"",
+    "reg_solve": [
+      "You Really Got Me",
+      "All Day and All of the Night"
+    ],
+    "track_obs": [
+      {
+        "name": "You Really Got Me",
+        "type": "track"
+      },
+      {
+        "name": "All Day and All of the Night",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Tom Verlaine"
+    },
+    "key_tracks_string": "Key Tracks: \"Marquee Moon,\" \"Little Johnny Jewel,\" \"Breakin\u0027 in My Heart\"",
+    "reg_solve": [
+      "Marquee Moon",
+      "Little Johnny Jewel",
+      "Breakin\u0027 in My Heart"
+    ],
+    "track_obs": [
+      {
+        "name": "Marquee Moon",
+        "type": "track"
+      },
+      {
+        "name": "Little Johnny Jewel",
+        "type": "track"
+      },
+      {
+        "name": "Breakin\u0027 in My Heart",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Bonnie Raitt"
+    },
+    "key_tracks_string": "Key Tracks: \"Runaway,\" \"Something to Talk About\"",
+    "reg_solve": [
+      "Runaway",
+      "Something to Talk About"
+    ],
+    "track_obs": [
+      {
+        "name": "Runaway",
+        "type": "track"
+      },
+      {
+        "name": "Something to Talk About",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Carl Perkins"
+    },
+    "key_tracks_string": "Key Tracks: \"Blue Suede Shoes,\" \"Glad All Over\"",
+    "reg_solve": [
+      "Blue Suede Shoes",
+      "Glad All Over"
+    ],
+    "track_obs": [
+      {
+        "name": "Blue Suede Shoes",
+        "type": "track"
+      },
+      {
+        "name": "Glad All Over",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "James Hetfield"
+    },
+    "key_tracks_string": "Key Tracks: \"Seek and Destroy,\" \"Master of Puppets\"",
+    "reg_solve": [
+      "Seek and Destroy",
+      "Master of Puppets"
+    ],
+    "track_obs": [
+      {
+        "name": "Seek and Destroy",
+        "type": "track"
+      },
+      {
+        "name": "Master of Puppets",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "J Mascis"
+    },
+    "key_tracks_string": "Key Tracks: \"Feel the Pain,\" \"Little Fury Things\"",
+    "reg_solve": [
+      "Feel the Pain",
+      "Little Fury Things"
+    ],
+    "track_obs": [
+      {
+        "name": "Feel the Pain",
+        "type": "track"
+      },
+      {
+        "name": "Little Fury Things",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Andy Summers"
+    },
+    "key_tracks_string": "Key Tracks: \"Message in a Bottle,\" \"Every Breath You Take\"",
+    "reg_solve": [
+      "Message in a Bottle",
+      "Every Breath You Take"
+    ],
+    "track_obs": [
+      {
+        "name": "Message in a Bottle",
+        "type": "track"
+      },
+      {
+        "name": "Every Breath You Take",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Eddie Hazel"
+    },
+    "key_tracks_string": "Key Tracks: \"Maggot Brain,\" \"Funky Dollar Bill\"",
+    "reg_solve": [
+      "Maggot Brain",
+      "Funky Dollar Bill"
+    ],
+    "track_obs": [
+      {
+        "name": "Maggot Brain",
+        "type": "track"
+      },
+      {
+        "name": "Funky Dollar Bill",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Nels Cline"
+    },
+    "key_tracks_string": "Key Tracks: \"Spiders (Kidsmoke),\" \"Impossible Germany\"",
+    "reg_solve": [
+      "Spiders (Kidsmoke)",
+      "Impossible Germany"
+    ],
+    "track_obs": [
+      {
+        "name": "Spiders (Kidsmoke)",
+        "type": "track"
+      },
+      {
+        "name": "Impossible Germany",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Lou Reed"
+    },
+    "key_tracks_string": "Key Tracks: \"Sister Ray,\" \"Heroin,\" \"Foggy Notion\"",
+    "reg_solve": [
+      "Sister Ray",
+      "Heroin",
+      "Foggy Notion"
+    ],
+    "track_obs": [
+      {
+        "name": "Sister Ray",
+        "type": "track"
+      },
+      {
+        "name": "Heroin",
+        "type": "track"
+      },
+      {
+        "name": "Foggy Notion",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Buddy Holly"
+    },
+    "key_tracks_string": "Key Tracks: \"That\u0027ll Be the Day,\" \"Peggy Sue\"",
+    "reg_solve": [
+      "That\u0027ll Be the Day",
+      "Peggy Sue"
+    ],
+    "track_obs": [
+      {
+        "name": "That\u0027ll Be the Day",
+        "type": "track"
+      },
+      {
+        "name": "Peggy Sue",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Mike Campbell"
+    },
+    "key_tracks_string": "Key Tracks: \"Breakdown,\" \"You Got Lucky\"",
+    "reg_solve": [
+      "Breakdown",
+      "You Got Lucky"
+    ],
+    "track_obs": [
+      {
+        "name": "Breakdown",
+        "type": "track"
+      },
+      {
+        "name": "You Got Lucky",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Willie Nelson"
+    },
+    "key_tracks_string": "Key Tracks: \"Whiskey River,\" \"Night Life\"",
+    "reg_solve": [
+      "Whiskey River",
+      "Night Life"
+    ],
+    "track_obs": [
+      {
+        "name": "Whiskey River",
+        "type": "track"
+      },
+      {
+        "name": "Night Life",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Robby Krieger"
+    },
+    "key_tracks_string": "Key Tracks: \"Riders on the Storm,\" \"Roadhouse Blues\"",
+    "reg_solve": [
+      "Riders on the Storm",
+      "Roadhouse Blues"
+    ],
+    "track_obs": [
+      {
+        "name": "Riders on the Storm",
+        "type": "track"
+      },
+      {
+        "name": "Roadhouse Blues",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Joni Mitchell"
+    },
+    "key_tracks_string": "Key Tracks: \"I Had a King,\" \"Nathan La Franeer,\" \"Night in the City,\" \"Coyote,\" \"A Case of You\"",
+    "reg_solve": [
+      "I Had a King",
+      "Nathan La Franeer",
+      "Night in the City",
+      "Coyote",
+      "A Case of You"
+    ],
+    "track_obs": [
+      {
+        "name": "I Had a King",
+        "type": "track"
+      },
+      {
+        "name": "Nathan La Franeer",
+        "type": "track"
+      },
+      {
+        "name": "Night in the City",
+        "type": "track"
+      },
+      {
+        "name": "Coyote",
+        "type": "track"
+      },
+      {
+        "name": "A Case of You",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Dick Dale"
+    },
+    "key_tracks_string": "Key Tracks: \"Misirlou,\" \"The Peter Gunn Theme\"",
+    "reg_solve": [
+      "Misirlou",
+      "The Peter Gunn Theme"
+    ],
+    "track_obs": [
+      {
+        "name": "Misirlou",
+        "type": "track"
+      },
+      {
+        "name": "The Peter Gunn Theme",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Kurt Cobain"
+    },
+    "key_tracks_string": "Key Tracks: \"Smells Like Teen Spirit,\" \"Scentless Apprentice\"",
+    "reg_solve": [
+      "Smells Like Teen Spirit",
+      "Scentless Apprentice"
+    ],
+    "track_obs": [
+      {
+        "name": "Smells Like Teen Spirit",
+        "type": "track"
+      },
+      {
+        "name": "Scentless Apprentice",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Robert Johnson"
+    },
+    "key_tracks_string": "Key Tracks: \"Ramblin\u0027 on My Mind,\" \"Traveling Riverside Blues\"",
+    "reg_solve": [
+      "Ramblin\u0027 on My Mind",
+      "Traveling Riverside Blues"
+    ],
+    "track_obs": [
+      {
+        "name": "Ramblin\u0027 on My Mind",
+        "type": "track"
+      },
+      {
+        "name": "Traveling Riverside Blues",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Jack White"
+    },
+    "key_tracks_string": "Key Tracks: \"Seven Nation Army,\" \"Ball and Biscuit\"",
+    "reg_solve": [
+      "Seven Nation Army",
+      "Ball and Biscuit"
+    ],
+    "track_obs": [
+      {
+        "name": "Seven Nation Army",
+        "type": "track"
+      },
+      {
+        "name": "Ball and Biscuit",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Richard Thompson"
+    },
+    "key_tracks_string": "Key Tracks: \"Shoot Out the Lights,\" \"1952 Vincent Black Lightning\"",
+    "reg_solve": [
+      "Shoot Out the Lights",
+      "1952 Vincent Black Lightning"
+    ],
+    "track_obs": [
+      {
+        "name": "Shoot Out the Lights",
+        "type": "track"
+      },
+      {
+        "name": "1952 Vincent Black Lightning",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "John McLaughlin"
+    },
+    "key_tracks_string": "Key Tracks: \"Right Off,\" \"The Noonward Race\"",
+    "reg_solve": [
+      "Right Off",
+      "The Noonward Race"
+    ],
+    "track_obs": [
+      {
+        "name": "Right Off",
+        "type": "track"
+      },
+      {
+        "name": "The Noonward Race",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "T-Bone Walker"
+    },
+    "key_tracks_string": "Key Tracks: \"Call It Stormy Monday,\" \"T-Bone Shuffle,\" \"Mean Old World\"",
+    "reg_solve": [
+      "Call It Stormy Monday",
+      "T-Bone Shuffle",
+      "Mean Old World"
+    ],
+    "track_obs": [
+      {
+        "name": "Call It Stormy Monday",
+        "type": "track"
+      },
+      {
+        "name": "T-Bone Shuffle",
+        "type": "track"
+      },
+      {
+        "name": "Mean Old World",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Leslie West"
+    },
+    "key_tracks_string": "Key Tracks: \"Mississippi Queen,\" \"Nantucket Sleighride (To Owen Coffin)\"",
+    "reg_solve": [
+      "Mississippi Queen",
+      "Nantucket Sleighride (To Owen Coffin)"
+    ],
+    "track_obs": [
+      {
+        "name": "Mississippi Queen",
+        "type": "track"
+      },
+      {
+        "name": "Nantucket Sleighride (To Owen Coffin)",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Slash"
+    },
+    "key_tracks_string": "Key Tracks: \"Sweet Child O\u0027Mine,\" \"Welcome to the Jungle\"",
+    "reg_solve": [
+      "Sweet Child O\u0027Mine",
+      "Welcome to the Jungle"
+    ],
+    "track_obs": [
+      {
+        "name": "Sweet Child O\u0027Mine",
+        "type": "track"
+      },
+      {
+        "name": "Welcome to the Jungle",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Duane Eddy"
+    },
+    "key_tracks_string": "Key Tracks: \"Rebel Rouser,\" \"Peter Gunn\"",
+    "reg_solve": [
+      "Rebel Rouser",
+      "Peter Gunn"
+    ],
+    "track_obs": [
+      {
+        "name": "Rebel Rouser",
+        "type": "track"
+      },
+      {
+        "name": "Peter Gunn",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Johnny Winter"
+    },
+    "key_tracks_string": "Key Tracks: \"I\u0027m Yours and I\u0027m Hers,\" \"Fast Life Rider\"",
+    "reg_solve": [
+      "I\u0027m Yours and I\u0027m Hers",
+      "Fast Life Rider"
+    ],
+    "track_obs": [
+      {
+        "name": "I\u0027m Yours and I\u0027m Hers",
+        "type": "track"
+      },
+      {
+        "name": "Fast Life Rider",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Dickey Betts"
+    },
+    "key_tracks_string": "Key Tracks: \"In Memory of Elizabeth Reed,\" \"Jessica\"",
+    "reg_solve": [
+      "In Memory of Elizabeth Reed",
+      "Jessica"
+    ],
+    "track_obs": [
+      {
+        "name": "In Memory of Elizabeth Reed",
+        "type": "track"
+      },
+      {
+        "name": "Jessica",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Robbie Robertson"
+    },
+    "key_tracks_string": "Key Tracks: \"The Shape I\u0027m In,\" \"Like a Rolling Stone (Live 1966)\"",
+    "reg_solve": [
+      "The Shape I\u0027m In",
+      "Like a Rolling Stone (Live 1966)"
+    ],
+    "track_obs": [
+      {
+        "name": "The Shape I\u0027m In",
+        "type": "track"
+      },
+      {
+        "name": "Like a Rolling Stone (Live 1966)",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Peter Green"
+    },
+    "key_tracks_string": "Key Tracks: \"Albatross,\" \"Rattlesnake Shake\"",
+    "reg_solve": [
+      "Albatross",
+      "Rattlesnake Shake"
+    ],
+    "track_obs": [
+      {
+        "name": "Albatross",
+        "type": "track"
+      },
+      {
+        "name": "Rattlesnake Shake",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Rory Gallagher"
+    },
+    "key_tracks_string": "Key Tracks: \"Bullfrog Blues,\" \"Laundromat,\" \"Walk on Hot Coals\"",
+    "reg_solve": [
+      "Bullfrog Blues",
+      "Laundromat",
+      "Walk on Hot Coals"
+    ],
+    "track_obs": [
+      {
+        "name": "Bullfrog Blues",
+        "type": "track"
+      },
+      {
+        "name": "Laundromat",
+        "type": "track"
+      },
+      {
+        "name": "Walk on Hot Coals",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Albert Collins"
+    },
+    "key_tracks_string": "Key Tracks: \"Frosty,\" \"Sno-Cone Part 1\"",
+    "reg_solve": [
+      "Frosty",
+      "Sno-Cone Part 1"
+    ],
+    "track_obs": [
+      {
+        "name": "Frosty",
+        "type": "track"
+      },
+      {
+        "name": "Sno-Cone Part 1",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "John Lennon"
+    },
+    "key_tracks_string": "Key Tracks: \"Help!,\" \"Day Tripper,\" \"Yer Blues\"",
+    "reg_solve": [
+      "Help!",
+      "Day Tripper",
+      "Yer Blues"
+    ],
+    "track_obs": [
+      {
+        "name": "Help!",
+        "type": "track"
+      },
+      {
+        "name": "Day Tripper",
+        "type": "track"
+      },
+      {
+        "name": "Yer Blues",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Joe Walsh"
+    },
+    "key_tracks_string": "Key Tracks: \"Rocky Mountain Way,\" \"Funk #49\"",
+    "reg_solve": [
+      "Rocky Mountain Way",
+      "Funk #49"
+    ],
+    "track_obs": [
+      {
+        "name": "Rocky Mountain Way",
+        "type": "track"
+      },
+      {
+        "name": "Funk #49",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Otis Rush"
+    },
+    "key_tracks_string": "Key Tracks: \"I Can\u0027t Quit You Baby,\" \"Double Trouble,\" \"Homework\"",
+    "reg_solve": [
+      "I Can\u0027t Quit You Baby",
+      "Double Trouble",
+      "Homework"
+    ],
+    "track_obs": [
+      {
+        "name": "I Can\u0027t Quit You Baby",
+        "type": "track"
+      },
+      {
+        "name": "Double Trouble",
+        "type": "track"
+      },
+      {
+        "name": "Homework",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Clarence White"
+    },
+    "key_tracks_string": "Key Tracks: \"Time Between,\" \"This Wheel\u0027s on Fire,\" \"Chestnut Mare\"",
+    "reg_solve": [
+      "Time Between",
+      "This Wheel\u0027s on Fire",
+      "Chestnut Mare"
+    ],
+    "track_obs": [
+      {
+        "name": "Time Between",
+        "type": "track"
+      },
+      {
+        "name": "This Wheel\u0027s on Fire",
+        "type": "track"
+      },
+      {
+        "name": "Chestnut Mare",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Johnny Marr"
+    },
+    "key_tracks_string": "Key Tracks: \"This Charming Man,\" \"How Soon Is Now?\"",
+    "reg_solve": [
+      "This Charming Man",
+      "How Soon Is Now?"
+    ],
+    "track_obs": [
+      {
+        "name": "This Charming Man",
+        "type": "track"
+      },
+      {
+        "name": "How Soon Is Now?",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Ritchie Blackmore"
+    },
+    "key_tracks_string": "Key Tracks: \"Smoke on the Water,\" \"Highway Star,\" \"Speed King\"",
+    "reg_solve": [
+      "Smoke on the Water",
+      "Highway Star",
+      "Speed King"
+    ],
+    "track_obs": [
+      {
+        "name": "Smoke on the Water",
+        "type": "track"
+      },
+      {
+        "name": "Highway Star",
+        "type": "track"
+      },
+      {
+        "name": "Speed King",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Jonny Greenwood"
+    },
+    "key_tracks_string": "Key Tracks: \"Creep,\" \"Paranoid Android,\" \"My Iron Lung\"",
+    "reg_solve": [
+      "Creep",
+      "Paranoid Android",
+      "My Iron Lung"
+    ],
+    "track_obs": [
+      {
+        "name": "Creep",
+        "type": "track"
+      },
+      {
+        "name": "Paranoid Android",
+        "type": "track"
+      },
+      {
+        "name": "My Iron Lung",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Stephen Stills"
+    },
+    "key_tracks_string": "Key Tracks: \"Bluebird,\" \"Carry On,\" \"Go Back Home\"",
+    "reg_solve": [
+      "Bluebird",
+      "Carry On",
+      "Go Back Home"
+    ],
+    "track_obs": [
+      {
+        "name": "Bluebird",
+        "type": "track"
+      },
+      {
+        "name": "Carry On",
+        "type": "track"
+      },
+      {
+        "name": "Go Back Home",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Jerry Garcia"
+    },
+    "key_tracks_string": "Key Tracks: \"Dark Star,\" \"Sugaree,\" \"Casey Jones\"",
+    "reg_solve": [
+      "Dark Star",
+      "Sugaree",
+      "Casey Jones"
+    ],
+    "track_obs": [
+      {
+        "name": "Dark Star",
+        "type": "track"
+      },
+      {
+        "name": "Sugaree",
+        "type": "track"
+      },
+      {
+        "name": "Casey Jones",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Link Wray"
+    },
+    "key_tracks_string": "Key Tracks: \"Rumble,\" \"Jack the Ripper,\" \"Raw-Hide\"",
+    "reg_solve": [
+      "Rumble",
+      "Jack the Ripper",
+      "Raw-Hide"
+    ],
+    "track_obs": [
+      {
+        "name": "Rumble",
+        "type": "track"
+      },
+      {
+        "name": "Jack the Ripper",
+        "type": "track"
+      },
+      {
+        "name": "Raw-Hide",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Mark Knopfler"
+    },
+    "key_tracks_string": "Key Tracks: \"Sultans of Swing,\" \"Romeo and Juliet\"",
+    "reg_solve": [
+      "Sultans of Swing",
+      "Romeo and Juliet"
+    ],
+    "track_obs": [
+      {
+        "name": "Sultans of Swing",
+        "type": "track"
+      },
+      {
+        "name": "Romeo and Juliet",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Hubert Sumlin"
+    },
+    "key_tracks_string": "Key Tracks: \"Smokestack Lightning,\" \"Spoonful,\" \"Killing Floor\"",
+    "reg_solve": [
+      "Smokestack Lightning",
+      "Spoonful",
+      "Killing Floor"
+    ],
+    "track_obs": [
+      {
+        "name": "Smokestack Lightning",
+        "type": "track"
+      },
+      {
+        "name": "Spoonful",
+        "type": "track"
+      },
+      {
+        "name": "Killing Floor",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Mick Ronson"
+    },
+    "key_tracks_string": "Key Tracks: \"The Width of a Circle,\" \"Suffragette City\"",
+    "reg_solve": [
+      "The Width of a Circle",
+      "Suffragette City"
+    ],
+    "track_obs": [
+      {
+        "name": "The Width of a Circle",
+        "type": "track"
+      },
+      {
+        "name": "Suffragette City",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Tom Morello"
+    },
+    "key_tracks_string": "Key Tracks: \"Guerrilla Radio,\" \"Killing in the Name\"",
+    "reg_solve": [
+      "Guerrilla Radio",
+      "Killing in the Name"
+    ],
+    "track_obs": [
+      {
+        "name": "Guerrilla Radio",
+        "type": "track"
+      },
+      {
+        "name": "Killing in the Name",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Steve Cropper"
+    },
+    "key_tracks_string": "Key Tracks: \"(Sittin\u0027 on) The Dock of the Bay,\" \"Green Onions,\" \"Soul Man\"",
+    "reg_solve": [
+      "(Sittin\u0027 on) The Dock of the Bay",
+      "Green Onions",
+      "Soul Man"
+    ],
+    "track_obs": [
+      {
+        "name": "(Sittin\u0027 on) The Dock of the Bay",
+        "type": "track"
+      },
+      {
+        "name": "Green Onions",
+        "type": "track"
+      },
+      {
+        "name": "Soul Man",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "The Edge"
+    },
+    "key_tracks_string": "Key Tracks: \"I Will Follow,\" \"Pride (In the Name of Love),\" \"The Fly\"",
+    "reg_solve": [
+      "I Will Follow",
+      "Pride (In the Name of Love)",
+      "The Fly"
+    ],
+    "track_obs": [
+      {
+        "name": "I Will Follow",
+        "type": "track"
+      },
+      {
+        "name": "Pride (In the Name of Love)",
+        "type": "track"
+      },
+      {
+        "name": "The Fly",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Mick Taylor"
+    },
+    "key_tracks_string": "Key Tracks: \"Can\u0027t You Hear Me Knocking,\" \"All Down the Line\"",
+    "reg_solve": [
+      "Can\u0027t You Hear Me Knocking",
+      "All Down the Line"
+    ],
+    "track_obs": [
+      {
+        "name": "Can\u0027t You Hear Me Knocking",
+        "type": "track"
+      },
+      {
+        "name": "All Down the Line",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Randy Rhoads"
+    },
+    "key_tracks_string": "Key Tracks: \"Crazy Train,\" \"Mr. Crowley,\" \"Diary of a Madman\"",
+    "reg_solve": [
+      "Crazy Train",
+      "Mr. Crowley",
+      "Diary of a Madman"
+    ],
+    "track_obs": [
+      {
+        "name": "Crazy Train",
+        "type": "track"
+      },
+      {
+        "name": "Mr. Crowley",
+        "type": "track"
+      },
+      {
+        "name": "Diary of a Madman",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "John Lee Hooker"
+    },
+    "key_tracks_string": "Key Tracks: \"Boogie Chillen,\" \"BoomBoom,\" \"I\u0027m in the Mood\"",
+    "reg_solve": [
+      "Boogie Chillen",
+      "BoomBoom",
+      "I\u0027m in the Mood"
+    ],
+    "track_obs": [
+      {
+        "name": "Boogie Chillen",
+        "type": "track"
+      },
+      {
+        "name": "BoomBoom",
+        "type": "track"
+      },
+      {
+        "name": "I\u0027m in the Mood",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Curtis Mayfield"
+    },
+    "key_tracks_string": "Key Tracks: \"Gypsy Woman,\" \"Move On Up,\" \"Freddie\u0027s Dead\"",
+    "reg_solve": [
+      "Gypsy Woman",
+      "Move On Up",
+      "Freddie\u0027s Dead"
+    ],
+    "track_obs": [
+      {
+        "name": "Gypsy Woman",
+        "type": "track"
+      },
+      {
+        "name": "Move On Up",
+        "type": "track"
+      },
+      {
+        "name": "Freddie\u0027s Dead",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Prince"
+    },
+    "key_tracks_string": "Key Tracks: \"Purple Rain,\" \"Kiss,\" \"When Doves Cry\"",
+    "reg_solve": [
+      "Purple Rain",
+      "Kiss",
+      "When Doves Cry"
+    ],
+    "track_obs": [
+      {
+        "name": "Purple Rain",
+        "type": "track"
+      },
+      {
+        "name": "Kiss",
+        "type": "track"
+      },
+      {
+        "name": "When Doves Cry",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Billy Gibbons"
+    },
+    "key_tracks_string": "Key Tracks: \"Jesus Left Chicago,\" \"La Grange\"",
+    "reg_solve": [
+      "Jesus Left Chicago",
+      "La Grange"
+    ],
+    "track_obs": [
+      {
+        "name": "Jesus Left Chicago",
+        "type": "track"
+      },
+      {
+        "name": "La Grange",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Ry Cooder"
+    },
+    "key_tracks_string": "Key Tracks: \"Memo From Turner,\" \"Boomer\u0027s Story\"",
+    "reg_solve": [
+      "Memo From Turner",
+      "Boomer\u0027s Story"
+    ],
+    "track_obs": [
+      {
+        "name": "Memo From Turner",
+        "type": "track"
+      },
+      {
+        "name": "Boomer\u0027s Story",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Elmore James"
+    },
+    "key_tracks_string": "Key Tracks: \"Dust My Broom,\" \"The Sky Is Crying\"",
+    "reg_solve": [
+      "Dust My Broom",
+      "The Sky Is Crying"
+    ],
+    "track_obs": [
+      {
+        "name": "Dust My Broom",
+        "type": "track"
+      },
+      {
+        "name": "The Sky Is Crying",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Scotty Moore"
+    },
+    "key_tracks_string": "Key Tracks: \"That\u0027s All Right,\" \"Mystery Train,\" \"Heartbreak Hotel\"",
+    "reg_solve": [
+      "That\u0027s All Right",
+      "Mystery Train",
+      "Heartbreak Hotel"
+    ],
+    "track_obs": [
+      {
+        "name": "That\u0027s All Right",
+        "type": "track"
+      },
+      {
+        "name": "Mystery Train",
+        "type": "track"
+      },
+      {
+        "name": "Heartbreak Hotel",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Johnny Ramone"
+    },
+    "key_tracks_string": "Key Tracks: \"Blitzkrieg Bop,\" \"Judy Is a Punk,\" \"Rockaway Beach\"",
+    "reg_solve": [
+      "Blitzkrieg Bop",
+      "Judy Is a Punk",
+      "Rockaway Beach"
+    ],
+    "track_obs": [
+      {
+        "name": "Blitzkrieg Bop",
+        "type": "track"
+      },
+      {
+        "name": "Judy Is a Punk",
+        "type": "track"
+      },
+      {
+        "name": "Rockaway Beach",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Bo Diddley"
+    },
+    "key_tracks_string": "Key Tracks: \"Bo Diddley,\" \"Road Runner,\" \"Who Do You Love?\"",
+    "reg_solve": [
+      "Bo Diddley",
+      "Road Runner",
+      "Who Do You Love?"
+    ],
+    "track_obs": [
+      {
+        "name": "Bo Diddley",
+        "type": "track"
+      },
+      {
+        "name": "Road Runner",
+        "type": "track"
+      },
+      {
+        "name": "Who Do You Love?",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Brian May"
+    },
+    "key_tracks_string": "Key Tracks: \"Keep Yourself Alive,\" \"Brighton Rock\"",
+    "reg_solve": [
+      "Keep Yourself Alive",
+      "Brighton Rock"
+    ],
+    "track_obs": [
+      {
+        "name": "Keep Yourself Alive",
+        "type": "track"
+      },
+      {
+        "name": "Brighton Rock",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Angus Young"
+    },
+    "key_tracks_string": "Key Tracks: \"Highway to Hell,\" \"Bad Boy Boogie\"",
+    "reg_solve": [
+      "Highway to Hell",
+      "Bad Boy Boogie"
+    ],
+    "track_obs": [
+      {
+        "name": "Highway to Hell",
+        "type": "track"
+      },
+      {
+        "name": "Bad Boy Boogie",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Buddy Guy"
+    },
+    "key_tracks_string": "Key Tracks: \"Stone Crazy,\" \"First Time I Met the Blues\"",
+    "reg_solve": [
+      "Stone Crazy",
+      "First Time I Met the Blues"
+    ],
+    "track_obs": [
+      {
+        "name": "Stone Crazy",
+        "type": "track"
+      },
+      {
+        "name": "First Time I Met the Blues",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Frank Zappa"
+    },
+    "key_tracks_string": "Key Tracks: \"Willie the Pimp,\" \"In-a-Gadda-Stravinsky\"",
+    "reg_solve": [
+      "Willie the Pimp",
+      "In-a-Gadda-Stravinsky"
+    ],
+    "track_obs": [
+      {
+        "name": "Willie the Pimp",
+        "type": "track"
+      },
+      {
+        "name": "In-a-Gadda-Stravinsky",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Chet Atkins"
+    },
+    "key_tracks_string": "Key Tracks: \"Your Cheatin\u0027 Heart,\" \"Wake Up Little Susie\"",
+    "reg_solve": [
+      "Your Cheatin\u0027 Heart",
+      "Wake Up Little Susie"
+    ],
+    "track_obs": [
+      {
+        "name": "Your Cheatin\u0027 Heart",
+        "type": "track"
+      },
+      {
+        "name": "Wake Up Little Susie",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Carlos Santana"
+    },
+    "key_tracks_string": "Key Tracks: \"Black Magic Woman,\" \"Oye Como Va,\" \"Soul Sacrifice\"",
+    "reg_solve": [
+      "Black Magic Woman",
+      "Oye Como Va",
+      "Soul Sacrifice"
+    ],
+    "track_obs": [
+      {
+        "name": "Black Magic Woman",
+        "type": "track"
+      },
+      {
+        "name": "Oye Como Va",
+        "type": "track"
+      },
+      {
+        "name": "Soul Sacrifice",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "James Burton"
+    },
+    "key_tracks_string": "Key Tracks: \"Hello Mary Lou,\"\"Susie Q,\" \"Believe What You Say\"",
+    "reg_solve": [
+      "Hello Mary Lou",
+      "Susie Q",
+      "Believe What You Say"
+    ],
+    "track_obs": [
+      {
+        "name": "Hello Mary Lou",
+        "type": "track"
+      },
+      {
+        "name": "Susie Q",
+        "type": "track"
+      },
+      {
+        "name": "Believe What You Say",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Les Paul"
+    },
+    "key_tracks_string": "Key Tracks: \"How High the Moon,\" \"Vaya Con Dios,\" \"Tiger Rag\"",
+    "reg_solve": [
+      "How High the Moon",
+      "Vaya Con Dios",
+      "Tiger Rag"
+    ],
+    "track_obs": [
+      {
+        "name": "How High the Moon",
+        "type": "track"
+      },
+      {
+        "name": "Vaya Con Dios",
+        "type": "track"
+      },
+      {
+        "name": "Tiger Rag",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Freddy King"
+    },
+    "key_tracks_string": "Key Tracks: \"Hide Away,\" \"Have You Ever Loved a Woman,\" \"The Stumble\"",
+    "reg_solve": [
+      "Hide Away",
+      "Have You Ever Loved a Woman",
+      "The Stumble"
+    ],
+    "track_obs": [
+      {
+        "name": "Hide Away",
+        "type": "track"
+      },
+      {
+        "name": "Have You Ever Loved a Woman",
+        "type": "track"
+      },
+      {
+        "name": "The Stumble",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "David Gilmour"
+    },
+    "key_tracks_string": "Key Tracks: \"Comfortably Numb,\" \"Shine on You Crazy Diamond\"",
+    "reg_solve": [
+      "Comfortably Numb",
+      "Shine on You Crazy Diamond"
+    ],
+    "track_obs": [
+      {
+        "name": "Comfortably Numb",
+        "type": "track"
+      },
+      {
+        "name": "Shine on You Crazy Diamond",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Albert King"
+    },
+    "key_tracks_string": "Key Tracks: \"Born Under a Bad Sign,\" \"As the Years Go Passing By\"",
+    "reg_solve": [
+      "Born Under a Bad Sign",
+      "As the Years Go Passing By"
+    ],
+    "track_obs": [
+      {
+        "name": "Born Under a Bad Sign",
+        "type": "track"
+      },
+      {
+        "name": "As the Years Go Passing By",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Stevie Ray Vaughan"
+    },
+    "key_tracks_string": "Key Tracks: \"Love Struck Baby,\" \"Cold Shot,\" \"Look at Little Sister\"",
+    "reg_solve": [
+      "Love Struck Baby",
+      "Cold Shot",
+      "Look at Little Sister"
+    ],
+    "track_obs": [
+      {
+        "name": "Love Struck Baby",
+        "type": "track"
+      },
+      {
+        "name": "Cold Shot",
+        "type": "track"
+      },
+      {
+        "name": "Look at Little Sister",
+        "type": "track"
+      }
+    ]
+  },
+  {
+    "artist": {
+      "name": "Pete Townshend"
+    },
+    "key_tracks_string": "Key Tracks: \"My Generation,\" \"I Can See for Miles,\" \"Summertime Blues\"",
+    "reg_solve": [
+      "My Generation",
+      "I Can See for Miles",
+      "Summertime Blues"
+    ],
+    "track_obs": [
+      {
+        "name": "My Generation",
+        "type": "track"
+      },
+      {
+        "name": "I Can See for Miles",
+        "type": "track"
+      },
+      {
+        "name": "Summertime Blues",
+        "type": "track"
+      }
+    ]
+  }
+]

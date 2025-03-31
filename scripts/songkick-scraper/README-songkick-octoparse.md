@@ -40,6 +40,14 @@ in experimental_api:
 - set new playlistName
   - modify date if date start filter is used in step below
     - songkick-columbus.20240721.<START_DATE>
+  - set various req.body options (hardcode)
 - hit createPlaylistFromJson in Postman
     - this WILL process dateFilter, however if events were just fetched than start will be limited by today's date anyways
 
+## octoparse songkick scraper versions
+
+- Songkick-Metro-Scraper
+  - default version which just scrapes data available in listing
+- Songkick-Metro-Scraper-Subpage
+  - expiermenting with entering sub-page in order to get "on sale" information
+    - TODO: other data only available on subpage

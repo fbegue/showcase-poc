@@ -82,6 +82,9 @@ Note: "Request must be smaller than 70167211 bytes for the UpdateFunctionCode op
 ### deploy a (the) function
 `npm run deploy`
 
+
+!!!! NOTE I think it might fail to startup if the RDS instance isn't running - but things like getPlyaing will still work when its turned off since it doesn't use it
+
 ### smoke test (locally)
 `serverless invoke local --function app --path testing/test.json`
 (postman) https://api.soundfound.io/api/info

@@ -1,0 +1,3333 @@
+[
+    {
+        "uri": "https://www.songkick.com/concerts/42413873-dexter-and-the-moonrocks-at-bluestone",
+        "artists": [
+            "Dexter and The Moonrocks",
+            "Red Leather",
+            "Cigarettes @ Sunset"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42361974-grieves-at-skullys-music-diner",
+        "artists": [
+            "Grieves",
+            "Curci"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42232834-anthony-gomes-at-king-of-clubs",
+        "artists": [
+            "Anthony Gomes",
+            "Paralandra",
+            "Cage Willis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488210-tropical-del-bravo-at-spain-night-club",
+        "artists": [
+            "Tropical del Bravo"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42499186-bryndis-at-la-boom",
+        "artists": [
+            "Bryndis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42504205-hoodoo-soul-band-at-rumba-cafe",
+        "artists": [
+            "Hoodoo Soul Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42274096-anberlin-at-athenaeum-theatre",
+        "artists": [
+            "Anberlin",
+            "Copeland",
+            "Madina Lake"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42322614-marc-scibilia-at-a-and-r-music-bar",
+        "artists": [
+            "Marc Scibilia"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395123-honestav-at-ace-of-cups",
+        "artists": [
+            "Honestav",
+            "Damien Styles"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42475196-archer-oh-at-rumba-cafe",
+        "artists": [
+            "Archer Oh",
+            "New Modern"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42200817-mary-j-blige-at-nationwide-arena",
+        "artists": [
+            "Mary J. Blige",
+            "Ne-Yo",
+            "Mario"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42277403-righteous-brothers-at-palace-theatre",
+        "artists": [
+            "The Righteous Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42275638-bri-bagwell-at-natalies-grandview",
+        "artists": [
+            "Bri Bagwell",
+            "Austin Plaine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42130683-pat-mcgee-at-rumba-cafe",
+        "artists": [
+            "Pat McGee"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42377047-not-again-at-woodlands-tavern",
+        "artists": [
+            "Not Again"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42438424-adrien-nunez-at-a-and-r-music-bar",
+        "artists": [
+            "Adrien Nunez"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42212558-almost-monday-at-a-and-r-music-bar",
+        "artists": [
+            "Almost Monday"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42442409-kidd-g-at-bluestone",
+        "artists": [
+            "Kidd G"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42375243-crystal-casino-band-at-ace-of-cups",
+        "artists": [
+            "The Crystal Casino Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42346418-pink-talking-fish-at-woodlands-tavern",
+        "artists": [
+            "Pink Talking Fish"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42285552-daisy-the-great-at-a-and-r-music-bar",
+        "artists": [
+            "Daisy the Great"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42273969-shane-gillis-at-nationwide-arena",
+        "artists": [
+            "Shane Gillis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42437324-ripe-at-skullys",
+        "artists": [
+            "Ripe"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42323728-drake-white-at-bluestone",
+        "artists": [
+            "Drake White",
+            "Pug Johnson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42439206-doc-robinson-at-woodlands-tavern",
+        "artists": [
+            "Doc Robinson",
+            "Lily Bloom"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42441470-blueprint-at-natalies",
+        "artists": [
+            "Blueprint"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42356859-suitcase-junket-at-natalies-grandview",
+        "artists": [
+            "The Suitcase Junket"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42417296-lopan-at-ace-of-cups",
+        "artists": [
+            "Lo-Pan"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326300-michael-monroe-at-king-of-clubs",
+        "artists": [
+            "Michael Monroe",
+            "Pettibone"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42354233-thot-squad-at-milo-arts",
+        "artists": [
+            "THOT SQUAD",
+            "Rob Apollo"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42359330-cold-at-king-of-clubs-columbus",
+        "artists": [
+            "Cold",
+            "September Mourning",
+            "University Drive"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42165866-maria-bamford-at-lincoln-theatre",
+        "artists": [
+            "Maria Bamford"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42282509-corook-at-a-and-r-music-bar",
+        "artists": [
+            "corook"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42451550-snarls-at-ace-of-cups",
+        "artists": [
+            "Snarls",
+            "Big Fat Head",
+            "daarling"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42439213-doc-robinson-at-woodlands-tavern",
+        "artists": [
+            "Doc Robinson",
+            "Hello Emerson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42411680-bill-bellamy-at-columbus-athenaeum",
+        "artists": [
+            "Bill Bellamy"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42195631-columbus-symphony-orchestra-at-ohio-theatre",
+        "artists": [
+            "Columbus Symphony Orchestra"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42453886-drake-white-at-bluestone",
+        "artists": [
+            "Drake White",
+            "Pug Johnson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469493-davy-knowles-at-natalies-grandview",
+        "artists": [
+            "Davy Knowles"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/41932534-coal-chamber-at-kemba-live",
+        "artists": [
+            "Coal Chamber",
+            "Black Satellite",
+            "Fear Factory",
+            "Twiztid",
+            "Wednesday 13"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42338917-jeremy-camp-at-columbus-athenaeum",
+        "artists": [
+            "Jeremy Camp"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42325853-chuck-ragan-at-a-and-r-music-bar",
+        "artists": [
+            "Chuck Ragan",
+            "Nate Bergman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42333498-chanel-beads-at-ace-of-cups",
+        "artists": [
+            "Chanel Beads",
+            "More Eaze",
+            "Anastasia Coope"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42322885-traitors-at-king-of-clubs",
+        "artists": [
+            "Traitors",
+            "Crown Magnetar",
+            "Yosemite In Black"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42271407-maoli-at-newport-music-hall",
+        "artists": [
+            "Maoli"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42373182-moonshine-bandits-at-rumba-cafe",
+        "artists": [
+            "Moonshine Bandits"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42205880-explosions-in-the-sky-at-newport-music-hall",
+        "artists": [
+            "Explosions in the Sky"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42309992-yot-club-at-skullys-music-diner",
+        "artists": [
+            "Yot Club",
+            "Vundabar"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42426803-cursive-at-ace-of-cups",
+        "artists": [
+            "Cursive",
+            "Diles Que No Me Maten"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326864-iron-and-wine-at-bluestone",
+        "artists": [
+            "Iron & Wine",
+            "Jobi Riccio"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42305611-connor-price-at-kemba-live",
+        "artists": [
+            "Connor Price",
+            "Graham"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395257-sarah-kinsley-at-a-and-r-music-bar",
+        "artists": [
+            "Sarah Kinsley"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42445505-pinkshift-at-ace-of-cups",
+        "artists": [
+            "Pinkshift",
+            "VIAL"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42385652-alejandro-escovedo-at-rumba-cafe",
+        "artists": [
+            "Alejandro Escovedo"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42405958-charlotte-rose-benjamin-at-a-and-r-music-bar",
+        "artists": [
+            "Charlotte Rose Benjamin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42451393-jivebomb-at-dirty-dungarees",
+        "artists": [
+            "Jivebomb",
+            "Polarview",
+            "SMILE",
+            "flat six",
+            "Kill Gosling"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42325890-while-she-sleeps-at-newport-music-hall",
+        "artists": [
+            "While She Sleeps",
+            "Bury Tomorrow",
+            "Vended"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469503-sadurn-at-rumba-cafe",
+        "artists": [
+            "sadurn",
+            "Wished Bone"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42417294-cloakroom-at-ace-of-cups",
+        "artists": [
+            "Cloakroom"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467672-andy-shaw-band-at-woodlands-tavern",
+        "artists": [
+            "Andy Shaw Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42416012-dancing-with-the-stars-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Dancing with the Stars"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42393814-breen-l-rynne-l-murray-at-natalies",
+        "artists": [
+            "Breen l Rynne l Murray",
+            "Pádraig Rynne",
+            "tara breen",
+            "Jim Murray"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42416872-austin-giorgio-at-woodlands-tavern",
+        "artists": [
+            "austin giorgio"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42460200-george-barrie-band-at-sweeneys-walnut-street-tavern",
+        "artists": [
+            "George Barrie Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467330-big-blitz-at-summit-music-hall",
+        "artists": [
+            "Big Blitz",
+            "You Bred Raptors"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42415800-brother-ali-at-woodlands-tavern",
+        "artists": [
+            "Brother Ali"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42102547-carly-pearce-at-kemba-live",
+        "artists": [
+            "Carly Pearce",
+            "Carter Faith"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42510280-ghost-of-paul-revere-at-rumba-cafe",
+        "artists": [
+            "Ghost of Paul Revere",
+            "Griffin William Sherry"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42359695-your-neighbors-at-a-and-r-music-bar",
+        "artists": [
+            "Your Neighbors",
+            "dreamfone"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42227124-sam-morril-at-jo-ann-davidson-theatre-vern-riffe-center",
+        "artists": [
+            "Sam Morril"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42129179-bryan-andrews-at-midland-theatre",
+        "artists": [
+            "bryan andrews"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42447234-3420-at-summit-music-hall",
+        "artists": [
+            "3420"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42485158-dallas-ugly-at-rambling-house",
+        "artists": [
+            "Dallas Ugly",
+            "Olivia Ellen Lloyd",
+            "Moe Reen"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42511692-jonathan-hape-at-goat-river-sound",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42382806-beach-bunny-at-bluestone",
+        "artists": [
+            "Beach Bunny",
+            "Pool Kids"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42254725-elder-at-ace-of-cups",
+        "artists": [
+            "Elder",
+            "SACRI MONTI",
+            "Moon Destroys"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42383437-bryan-martin-at-columbus-athenaeum",
+        "artists": [
+            "Bryan Martin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42434155-cancer-bats-at-king-of-clubs",
+        "artists": [
+            "Cancer Bats",
+            "Strawberry Girls",
+            "Crucible of Hate",
+            "A Scarred Existence",
+            "The Conquering"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42391379-sutton-foster-at-southern-theatre",
+        "artists": [
+            "Sutton Foster"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42277585-jeffrey-martin-at-rumba-cafe",
+        "artists": [
+            "Jeffrey Martin",
+            "Lou Hazel"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42484911-vctre-at-summit-music-hall",
+        "artists": [
+            "VCTRE",
+            "Luminyst"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42278598-vampa-at-skullys-music-diner",
+        "artists": [
+            "Vampa"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42340654-dogs-in-a-pile-at-woodlands-tavern",
+        "artists": [
+            "Dogs in a Pile"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412145-emo-nite-at-a-and-r-music-bar",
+        "artists": [
+            "Emo Nite"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42244607-john-vincent-iii-at-newport-music-hall",
+        "artists": [
+            "John Vincent III",
+            "Murdo Mitchell"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42123633-gavin-adcock-at-bluestone",
+        "artists": [
+            "Gavin Adcock"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42408752-rezn-at-ace-of-cups",
+        "artists": [
+            "REZN",
+            "Harsh Realm"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42346899-donna-the-buffalo-at-woodlands-tavern",
+        "artists": [
+            "Donna the Buffalo"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42447889-dread-engine-at-a-and-r-music-bar",
+        "artists": [
+            "Dread Engine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42447888-dread-engine-at-a-and-r-music-bar",
+        "artists": [
+            "Dread Engine",
+            "The Dead Cassettes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42475013-billy-two-shoes-at-rendezvous-lounge",
+        "artists": [
+            "Billy Two Shoes",
+            "Josh Lawson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42476314-teeth-marks-oh-at-rumba-cafe",
+        "artists": [
+            "TEETH MARKS (OH)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42123602-gavin-adcock-at-bluestone",
+        "artists": [
+            "Gavin Adcock"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395235-matt-hansen-at-a-and-r-music-bar",
+        "artists": [
+            "Matt Hansen"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42512488-moon-hooch-at-woodlands-tavern",
+        "artists": [
+            "Moon Hooch"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42357995-rick-wakeman-at-southern-theatre",
+        "artists": [
+            "Rick Wakeman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42414505-123-andres-at-lincoln-theatre",
+        "artists": [
+            "123 Andrés"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42422244-marbin-at-summit-music-hall",
+        "artists": [
+            "Marbin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42328899-mssv-at-ace-of-cups",
+        "artists": [
+            "MSSV",
+            "Mike Watt",
+            "Mike Baggetta"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42324152-victor-wooten-at-columbus-athenaeum",
+        "artists": [
+            "Victor Wooten",
+            "Wooten Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398522-penelope-road-at-a-and-r-music-bar",
+        "artists": [
+            "Penelope Road"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444927-animaniacs-at-templetonblackburn-alumni-memorial-auditorium-ohio-university",
+        "artists": [
+            "Animaniacs"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42474284-desecation-at-ace-of-cups",
+        "artists": [
+            "Desecation",
+            "Roots of Deception",
+            "Suspectum",
+            "Windchimes",
+            "Scasm"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496149-tand-at-woodlands-tavern",
+        "artists": [
+            "Tand."
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42440043-real-friends-at-ace-of-cups",
+        "artists": [
+            "Real Friends",
+            "Broadside",
+            "Manor Gates"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326261-sammy-rae-and-the-friends-at-newport-music-hall",
+        "artists": [
+            "Sammy Rae & the Friends",
+            "Zinadelphia"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42203674-geoff-tate-at-columbus-athenaeum",
+        "artists": [
+            "Geoff Tate",
+            "Fire"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42479419-late-night-radio-at-summit-music-hall",
+        "artists": [
+            "Late Night Radio",
+            "DMVU"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42485728-morning-in-may-at-rumba-cafe",
+        "artists": [
+            "Morning in May",
+            "Breakaway",
+            "Bravelake"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42402033-george-barrie-band-at-woodlands-tavern",
+        "artists": [
+            "George Barrie Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42460492-young-medicine-at-rumba-cafe",
+        "artists": [
+            "young medicine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444639-my-morning-jacket-at-templetonblackburn-alumni-memorial-auditorium-ohio-university",
+        "artists": [
+            "My Morning Jacket"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42411575-yelawolf-at-bluestone",
+        "artists": [
+            "YelaWolf"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42304657-lowertown-at-ace-of-cups",
+        "artists": [
+            "Lowertown"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42333574-john-splithoff-at-a-and-r-music-bar",
+        "artists": [
+            "John Splithoff",
+            "Evann McIntosh"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42355030-joe-stamm-band-at-woodlands-tavern",
+        "artists": [
+            "Joe Stamm Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493353-squeaky-feet-at-summit-music-hall",
+        "artists": [
+            "Squeaky Feet"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42438451-gareth-pearson-at-natalies-grandview",
+        "artists": [
+            "Gareth Pearson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42461937-life-in-idle-at-donatos-basement",
+        "artists": [
+            "Life In Idle",
+            "Minus"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42275211-halfalive-at-kemba-live",
+        "artists": [
+            "half•alive",
+            "The Walters",
+            "mehro"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42382649-knox-at-newport-music-hall",
+        "artists": [
+            "Knox",
+            "THE WLDLFE"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42378034-everyone-asked-about-you-at-rumba-cafe",
+        "artists": [
+            "Everyone Asked About You",
+            "your arms are my cocoon"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42401634-slow-joy-at-a-and-r-music-bar",
+        "artists": [
+            "Slow Joy",
+            "Flycatcher"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42292777-joanne-shaw-taylor-at-columbus-athenaeum",
+        "artists": [
+            "Joanne Shaw Taylor"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42481241-ekoostik-hookah-official-at-woodlands-tavern",
+        "artists": [
+            "ekoostik hookah (official)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42246630-june-star-at-rambling-house",
+        "artists": [
+            "June Star",
+            "Caitlin Kraus",
+            "Shane Sweeney"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467405-alex-edelman-at-jo-ann-davidson-theatre-vern-riffe-center",
+        "artists": [
+            "Alex Edelman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42000286-dean-lewis-at-bluestone",
+        "artists": [
+            "Dean Lewis",
+            "Henry Moodie"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42306406-alison-krauss-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Alison Krauss",
+            "Alison Krauss and Union Station",
+            "Jerry Douglas"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42274835-wheatus-at-a-and-r-music-bar",
+        "artists": [
+            "Wheatus"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42374386-strawberry-girls-at-king-of-clubs",
+        "artists": [
+            "Strawberry Girls",
+            "Cancer Bats"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42380033-he-is-legend-at-king-of-clubs",
+        "artists": [
+            "He Is Legend"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42445447-he-is-legend-at-king-of-clubs-columbus",
+        "artists": [
+            "He Is Legend",
+            "Cancer Bats",
+            "Strawberry Girls"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42434335-bobaflex-at-newport-music-hall",
+        "artists": [
+            "Bobaflex",
+            "Electric Dream Machine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42481242-ekoostik-hookah-official-at-woodlands-tavern",
+        "artists": [
+            "ekoostik hookah (official)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42376107-og-nixin-at-skullys-music-diner",
+        "artists": [
+            "OG Nixin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42484383-new-translations-at-rumba-cafe",
+        "artists": [
+            "New Translations"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42389882-octave-cat-at-woodlands-tavern",
+        "artists": [
+            "Octave Cat",
+            "Yam Yam"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42413073-with-sails-ahead-at-dirty-dungarees",
+        "artists": [
+            "With Sails Ahead",
+            "Secret Gardens",
+            "Year Twins",
+            "Narrow/Arrow"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42474278-heartsick-at-king-of-clubs",
+        "artists": [
+            "Heartsick",
+            "Crucible of Hate",
+            "Pariah",
+            "Sourblood",
+            "Corrosive Vengence"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42305955-mt-joy-at-kemba-live",
+        "artists": [
+            "Mt. Joy"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42454502-jon-wiilde-at-ace-of-cups",
+        "artists": [
+            "Jon Wiilde"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42282527-denzel-curry-at-kemba-live",
+        "artists": [
+            "Denzel Curry",
+            "Kenny Mason",
+            "454",
+            "Clip"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469275-rosegarden-funeral-party-at-rumba-cafe",
+        "artists": [
+            "Rosegarden Funeral Party"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42468826-eric-bachmann-at-undertow-show",
+        "artists": [
+            "Eric Bachmann"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42286571-alton-brown-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Alton Brown"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42447399-drook-at-dirty-dungarees",
+        "artists": [
+            "Drook"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3686221-newark-ohio/id/42113026-newark-ohio-2025",
+        "artists": [
+            "kennydaatari"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42320047-brenn-at-a-and-r-music-bar",
+        "artists": [
+            "brenn"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395107-babyjake-at-ace-of-cups",
+        "artists": [
+            "BabyJake"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467823-j-roddy-walston-at-rumba-cafe",
+        "artists": [
+            "J Roddy Walston"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42370996-buffalo-rose-at-natalies-grandview",
+        "artists": [
+            "Buffalo Rose"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42507704-jt-hillier-at-woodlands-tavern",
+        "artists": [
+            "JT Hillier"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42470773-mercury-rev-at-rumba-cafe",
+        "artists": [
+            "Mercury Rev",
+            "Ryley Walker"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42161691-larry-fleet-at-bluestone",
+        "artists": [
+            "Larry Fleet",
+            "EVERETTE"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42390683-sofia-isella-at-a-and-r-music-bar",
+        "artists": [
+            "SOFIA ISELLA"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42458828-wooli-at-newport-music-hall",
+        "artists": [
+            "Wooli",
+            "EAZYBAKED",
+            "Capochino"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42441644-widdler-at-summit-music-hall",
+        "artists": [
+            "The Widdler",
+            "Bent Spectrum"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42458430-eazybaked-at-newport-music-hall",
+        "artists": [
+            "EAZYBAKED"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42317504-rolling-quartz-at-king-of-clubs",
+        "artists": [
+            "Rolling Quartz"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42495396-brendan-abernathy-at-a-and-r-music-bar",
+        "artists": [
+            "Brendan Abernathy"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42171890-awolnation-at-newport-music-hall",
+        "artists": [
+            "AWOLNATION",
+            "Bryce Fox"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42397444-momma-at-skullys",
+        "artists": [
+            "Momma"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42392526-ls-dunes-at-a-and-r-music-bar",
+        "artists": [
+            "LS DUNES",
+            "From Indian Lakes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42333650-har-mar-superstar-at-rumba-cafe",
+        "artists": [
+            "Har Mar Superstar"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42263824-wednesday-13-at-king-of-clubs-columbus",
+        "artists": [
+            "Wednesday 13",
+            "Stitched Up Heart",
+            "Dead Rabbits",
+            "I Ya Toyah"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496863-cane-toads-at-summit-music-hall",
+        "artists": [
+            "The Cane Toads",
+            "Loconti",
+            "Austin & The Syd Experience (US)",
+            "Electro Cult Circus",
+            "Magehand",
+            "BlackHat",
+            "Colour Phase",
+            "The Fronks"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42306908-michael-blaustein-at-event-center-hollywood-casino",
+        "artists": [
+            "Michael Blaustein"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42442453-michael-blaustein-at-event-center-hollywood-casino",
+        "artists": [
+            "Michael Blaustein"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42470867-laughing-chimes-at-union",
+        "artists": [
+            "The Laughing Chimes",
+            "Smug Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42363266-browning-at-king-of-clubs",
+        "artists": [
+            "The Browning",
+            "Salem's Childe",
+            "SWARM",
+            "Everything's Taken"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42418771-noah-gundersen-at-rumba-cafe",
+        "artists": [
+            "Noah Gundersen"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42227283-jim-jefferies-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Jim Jefferies"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398267-husbands-okc-at-ace-of-cups",
+        "artists": [
+            "Husbands (OKC)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42330894-seph-schlueter-at-church-next-door",
+        "artists": [
+            "Seph Schlueter"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42470870-paper-airplanes-at-rambling-house",
+        "artists": [
+            "Paper Airplanes",
+            "The Laughing Chimes",
+            "Smug Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42435113-blaq-pages-at-forum-columbus",
+        "artists": [
+            "Blaq Pages"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42509895-kenny-reichert-at-ginger-rabbit-jazz-lounge",
+        "artists": [
+            "Kenny Reichert"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42391191-circa-waves-at-newport-music-hall",
+        "artists": [
+            "Circa Waves",
+            "Friday Pilots Club"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42322967-jane-remover-at-ace-of-cups",
+        "artists": [
+            "Jane Remover",
+            "Dazegxd"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42431335-we-are-messengers-at-fairfield-christian-church",
+        "artists": [
+            "We Are Messengers",
+            "Leanna Crawford",
+            "Austin French"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488595-buffalo-ryders-at-bikes-for-all-people",
+        "artists": [
+            "The Buffalo Ryders"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42387166-orla-gartland-at-a-and-r-music-bar",
+        "artists": [
+            "Orla Gartland",
+            "FIGHTMASTER"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42310046-aristocrats-at-skullys-music-diner",
+        "artists": [
+            "The Aristocrats"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493676-cal-in-red-at-rumba-cafe",
+        "artists": [
+            "Cal in Red",
+            "Whitehall"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42503928-occults-us-at-spacebar",
+        "artists": [
+            "OCCULTS (US)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42282599-nightly-at-newport-music-hall",
+        "artists": [
+            "Nightly",
+            "MICO",
+            "Brooke Alexx"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42250684-dweezil-zappa-at-kemba-live",
+        "artists": [
+            "Dweezil Zappa"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42312564-liz-longley-at-natalies-grandview",
+        "artists": [
+            "Liz Longley"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482314-dead-on-a-sunday-at-ace-of-cups",
+        "artists": [
+            "Dead On A Sunday",
+            "Blood Orchid"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42417095-ward-davis-at-woodlands-tavern",
+        "artists": [
+            "Ward Davis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42424100-iann-dior-at-a-and-r-music-bar",
+        "artists": [
+            "iann dior"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42446021-october-london-at-palace-theatre",
+        "artists": [
+            "October London"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398039-amish-outlaws-at-rumba-cafe",
+        "artists": [
+            "The Amish Outlaws"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42334311-dan-rodriguez-at-natalies-grandview",
+        "artists": [
+            "Dan Rodriguez"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42468952-wax-future-at-summit-music-hall",
+        "artists": [
+            "Wax Future"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42420672-east-rich-at-fifteen32-social",
+        "artists": [
+            "EAST RICH"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42431022-shallow-alcove-at-woodlands-tavern",
+        "artists": [
+            "Shallow Alcove",
+            "Lighthearted"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42158116-nick-cave-and-the-bad-seeds-at-palace-theatre",
+        "artists": [
+            "Nick Cave and The Bad Seeds"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42396675-blue-stones-at-newport-music-hall",
+        "artists": [
+            "The Blue Stones",
+            "VEAUX"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42428626-prince-daddy-and-the-hyena-at-king-of-clubs",
+        "artists": [
+            "Prince Daddy & The Hyena",
+            "Riley",
+            "Bike Routes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42390148-sunday-1994-at-a-and-r-music-bar",
+        "artists": [
+            "Sunday (1994)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42435827-consider-the-source-at-summit-music-hall",
+        "artists": [
+            "Consider the Source"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42476498-mamalarky-at-ace-of-cups",
+        "artists": [
+            "Mamalarky",
+            "Kennedy Mann"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482643-jonathan-hape-at-asterisk-supper-club",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488392-video-game-rave-at-skullys-music-diner",
+        "artists": [
+            "Video Game Rave"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42498137-labra-brothers-at-natalies-grandview",
+        "artists": [
+            "The Labra Brothers",
+            "blucone"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42499063-upnow-at-half-baked",
+        "artists": [
+            "Upnow!",
+            "Dance Like the Dead",
+            "Braininavat",
+            "Nevermind I'm Fine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42282497-nada-surf-at-a-and-r-music-bar",
+        "artists": [
+            "Nada Surf"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42478206-shelley-fka-dram-at-king-of-clubs",
+        "artists": [
+            "Shelley FKA DRAM",
+            "Black Satellite",
+            "Mind Incision",
+            "Khi Infinite",
+            "Gabe Niles"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42238370-leprous-at-newport-music-hall",
+        "artists": [
+            "Leprous",
+            "Wheel"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42451323-donnie-iris-at-bluestone",
+        "artists": [
+            "Donnie Iris"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42309527-jackie-venson-at-natalies-grandview",
+        "artists": [
+            "Jackie Venson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42357971-ariel-quartet-at-southern-theatre",
+        "artists": [
+            "Ariel Quartet"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42443054-souvenirs-at-rumba-cafe",
+        "artists": [
+            "Souvenirs",
+            "Good Reverend",
+            "Forever Strange"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482647-jonathan-hape-at-ugly-bunny-winery",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42500382-electric-grandmother-at-spacebar",
+        "artists": [
+            "The Electric Grandmother",
+            "girl songs",
+            "Safety Bear"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42249083-fontaines-dc-at-newport-music-hall",
+        "artists": [
+            "Fontaines D.C."
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326253-magdalena-bay-at-newport-music-hall",
+        "artists": [
+            "Magdalena Bay",
+            "Sam Austins"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42380125-abe-parker-at-rumba-cafe",
+        "artists": [
+            "Abe Parker"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42456898-matisyahu-at-a-and-r-music-bar",
+        "artists": [
+            "Matisyahu",
+            "Electric Kif"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42281806-damned-at-bluestone",
+        "artists": [
+            "The Damned"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42200593-wrecks-at-newport-music-hall",
+        "artists": [
+            "The Wrecks",
+            "Quarters of Change"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42464091-cocomelon-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "CoComelon"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42474271-split-chain-at-ace-of-cups",
+        "artists": [
+            "Split Chain",
+            "Tarantula"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42406002-ghost-club-at-rumba-cafe",
+        "artists": [
+            "Ghost Club"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3700956-sonic-temple-5-day-camping-pass-57-511/id/42267226-sonic-temple--5-day-camping-pass-57--511-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42373194-flo-at-summit-music-hall",
+        "artists": [
+            "FLO"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42349839-josh-radnor-at-columbus-athenaeum",
+        "artists": [
+            "Josh Radnor"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42455591-kieran-kane-and-rayna-gellert-at-natalies-grandview",
+        "artists": [
+            "Kieran Kane & Rayna Gellert",
+            "Kieran Kane",
+            "Rayna Gellert"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42391996-sweet-baby-james-the-1-james-taylor-tribute-at-weathervane-playhouse",
+        "artists": [
+            "Sweet Baby James - The #1 James Taylor Tribute"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42394007-giovannie-and-the-hired-guns-at-bluestone",
+        "artists": [
+            "Giovannie and the Hired Guns",
+            "Gannon Fremin & CCREV"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42431926-michaela-anne-at-athenaeum-theatre",
+        "artists": [
+            "Michaela Anne"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3700919-sonic-temple-4-day-parking-pass-58-511/id/42267100-sonic-temple--4-day-parking-pass-58--511-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/2762814-sonic-temple-art-music/id/42189880-sonic-temple-art--music-festival-2025",
+        "artists": [
+            "Metallica",
+            "Linkin Park",
+            "Korn",
+            "Three Days Grace",
+            "Incubus",
+            "Alice In Chains",
+            "Jimmy Eat World",
+            "Bullet for My Valentine",
+            "Rob Zombie",
+            "Alice Cooper",
+            "Hoobastank",
+            "Chevelle",
+            "Escape the Fate",
+            "Of Mice & Men",
+            "Killswitch Engage",
+            "Motionless In White",
+            "Mastodon",
+            "I Prevail",
+            "Trivium",
+            "Bad Omens",
+            "All That Remains",
+            "Silverstein",
+            "grandson",
+            "Alien Ant Farm",
+            "Set It Off",
+            "Underoath",
+            "Memphis May Fire",
+            "Sick Puppies",
+            "Poppy",
+            "Filter",
+            "Suicidal Tendencies",
+            "Sevendust",
+            "Ministry",
+            "As I Lay Dying",
+            "Ice Nine Kills",
+            "Testament",
+            "Cannibal Corpse",
+            "Arch Enemy",
+            "Crossfade",
+            "Hatebreed",
+            "HEALTH",
+            "The Plot In You",
+            "Whitechapel",
+            "From Ashes to New",
+            "Fit for a King",
+            "Caskets",
+            "Exodus",
+            "The Black Dahlia Murder",
+            "Framing Hanley",
+            "Deafheaven",
+            "Scary Kids Scaring Kids",
+            "Municipal Waste",
+            "Corrosion of Conformity",
+            "Converge",
+            "Orgy",
+            "Obituary",
+            "After the Burial",
+            "Jinjer",
+            "Upon A Burning Body",
+            "Fame on Fire",
+            "ERRA",
+            "The Acacia Strain",
+            "Overkill",
+            "I Set My Friends On Fire",
+            "Gwar",
+            "Fit for an Autopsy",
+            "Silent Planet",
+            "Nails",
+            "All Shall Perish",
+            "Power Trip",
+            "Citizen Soldier",
+            "AngelMaker",
+            "Wind Walkers",
+            "Invent, Animate",
+            "Cavalera Conspiracy",
+            "Sunami",
+            "Quicksand",
+            "Nitzer Ebb",
+            "Shadow of Intent",
+            "Bloodywood",
+            "Nevertel",
+            "Left To Suffer",
+            "Trust Company",
+            "Jesus Piece",
+            "Gatecreeper",
+            "Sanguisugabogg",
+            "Candy",
+            "Boundaries",
+            "Peelingflesh",
+            "Armored Saint",
+            "Adam Gontier",
+            "200 Stab Wounds",
+            "The Funeral Portrait",
+            "Pain of Truth",
+            "Frozen Soul",
+            "Return to Dust",
+            "Silly Goose",
+            "Gridiron",
+            "Dead Heat",
+            "Seven Hours After Violet",
+            "Uncured",
+            "Category 7",
+            "Asking Alexandra",
+            "The Devil Wears Pradaa"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326579-shakey-graves-at-newport-music-hall",
+        "artists": [
+            "Shakey Graves"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42325154-shayfer-james-at-ace-of-cups",
+        "artists": [
+            "Shayfer James",
+            "Sparkbird"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395244-nsb-at-a-and-r-music-bar",
+        "artists": [
+            "Nsb"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42391997-sweet-baby-james-the-1-james-taylor-tribute-at-weathervane-playhouse",
+        "artists": [
+            "Sweet Baby James - The #1 James Taylor Tribute"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42430410-tony-desare-at-jo-ann-davidson-theatre-vern-riffe-center",
+        "artists": [
+            "Tony DeSare"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42310087-cheekface-at-rumba-cafe",
+        "artists": [
+            "Cheekface"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42252916-arcadian-wild-at-a-and-r-music-bar",
+        "artists": [
+            "The Arcadian Wild",
+            "River And Rail"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42098162-aaron-diehl-at-southern-theatre",
+        "artists": [
+            "Aaron Diehl",
+            "Rhapsody"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42326879-moon-walker-at-skullys-music-diner",
+        "artists": [
+            "Moon Walker"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42238366-boa-uk-at-newport-music-hall",
+        "artists": [
+            "Bôa (UK)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493559-live-at-the-fillmore-at-columbus-athenaeum",
+        "artists": [
+            "Live at the Fillmore",
+            "Broken Arrow"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42098158-aaron-diehl-at-southern-theatre",
+        "artists": [
+            "Aaron Diehl",
+            "Rhapsody"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42400887-deathbyromy-at-a-and-r-music-bar",
+        "artists": [
+            "deathbyromy",
+            "Heffy"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42484551-cat-ridgeway-at-rumba-cafe",
+        "artists": [
+            "Cat Ridgeway",
+            "Friend of a Friend"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42409990-kishi-bashi-at-skullys",
+        "artists": [
+            "Kishi Bashi",
+            "Oshima Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42473258-sloppy-jane-at-rumba-cafe",
+        "artists": [
+            "Sloppy Jane"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42447718-corpus-offal-at-ace-of-cups",
+        "artists": [
+            "Corpus Offal"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482882-louyah-at-woodlands-tavern",
+        "artists": [
+            "Louyah"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42421874-squid-at-a-and-r-music-bar",
+        "artists": [
+            "Squid"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42491932-nazareth-at-king-of-clubs-columbus",
+        "artists": [
+            "Nazareth"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488368-slackjaw-at-rumba-cafe",
+        "artists": [
+            "Slackjaw"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42439210-thick-at-ace-of-cups",
+        "artists": [
+            "THICK",
+            "Slaughterhouse (LA)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42378106-mallrat-at-a-and-r-music-bar",
+        "artists": [
+            "Mallrat"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42374376-off-with-their-heads-at-ace-of-cups",
+        "artists": [
+            "Off With Their Heads",
+            "Smoking Popes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42497913-sidewalk-prophets-at-centerpoint-church",
+        "artists": [
+            "Sidewalk Prophets"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42424147-smallpools-at-newport-music-hall",
+        "artists": [
+            "Smallpools"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42441541-oceano-at-king-of-clubs",
+        "artists": [
+            "Oceano",
+            "I Declare War",
+            "FILTH!",
+            "Backbiter"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42397175-kevin-hart-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Kevin Hart"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488780-may-erlewine-at-natalies-grandview",
+        "artists": [
+            "May Erlewine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42433864-vomit-forth-at-donatos-basement",
+        "artists": [
+            "Vomit Forth"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42195670-columbus-symphony-orchestra-at-ohio-theatre",
+        "artists": [
+            "Columbus Symphony Orchestra",
+            "Tchaikovsky Spectacular"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42216906-ana-egge-at-six-string-concerts",
+        "artists": [
+            "Ana Egge"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42341251-kyle-gordon-at-rumba-cafe",
+        "artists": [
+            "Kyle Gordon"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42474663-mudd-at-a-and-r-music-bar",
+        "artists": [
+            "Mudd"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42409476-psychedelic-porn-crumpets-at-newport-music-hall",
+        "artists": [
+            "Psychedelic Porn Crumpets"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42361260-gigan-at-king-of-clubs",
+        "artists": [
+            "Gigan",
+            "Paradise Lost"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42456909-pony-bradshaw-at-a-and-r-music-bar",
+        "artists": [
+            "Pony Bradshaw",
+            "Will Overman Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496534-tx2-at-summit-music-hall",
+        "artists": [
+            "TX2",
+            "Dark Divine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42499821-rated-r-at-skullys-music-diner",
+        "artists": [
+            "Rated R"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494139-john-heffron-at-majestic-theater",
+        "artists": [
+            "John Heffron"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42195680-columbus-symphony-orchestra-at-ohio-theatre",
+        "artists": [
+            "Columbus Symphony Orchestra",
+            "Tchaikovsky Spectacular"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42511359-willie-gonzalez-at-la-boom",
+        "artists": [
+            "Willie Gonzalez"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42454407-coco-jones-at-newport-music-hall",
+        "artists": [
+            "Coco Jones",
+            "Lady London"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496594-savannah-conley-at-rumba-cafe",
+        "artists": [
+            "Savannah Conley"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42500985-carole-king-and-james-taylor-story-at-athenaeum-theatre",
+        "artists": [
+            "The Carole King and James Taylor Story",
+            "James Taylor"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42316748-a-place-to-bury-strangers-at-ace-of-cups",
+        "artists": [
+            "A Place To Bury Strangers",
+            "The Serfs (OH)",
+            "The Mall (US)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42413304-nekrogoblikon-at-king-of-clubs",
+        "artists": [
+            "Nekrogoblikon",
+            "Revocation",
+            "Ov Sulfur",
+            "Brat"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42510393-ryan-ellis-at-a-and-r-music-bar",
+        "artists": [
+            "Ryan Ellis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467819-ramona-at-rumba-cafe",
+        "artists": [
+            "Ramona"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42361959-bridge-city-sinners-at-skullys-music-diner",
+        "artists": [
+            "Bridge City Sinners"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42405172-charming-disaster-at-witchlab-lounge",
+        "artists": [
+            "Charming Disaster",
+            "THE LYCAN BITE"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42034621-jonathan-kingham-at-midland-theatre",
+        "artists": [
+            "Jonathan  Kingham"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494816-angela-perley-at-ace-of-cups",
+        "artists": [
+            "Angela Perley"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3718781-recharge-road-to-fire-lights-ft-ozztin-volume-unit-more/id/42478707-recharge--road-to-fire-lights-festival-ft-ozztin-volume-unit--more-2025",
+        "artists": [
+            "Volume Unit"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42374412-trouble-at-ace-of-cups",
+        "artists": [
+            "Trouble"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469138-guardin-at-summit-music-hall",
+        "artists": [
+            "guardin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42377713-pecos-and-the-rooftops-at-bluestone",
+        "artists": [
+            "Pecos & The Rooftops",
+            "Eddie & the Getaway"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42425698-pat-benatar-and-neil-giraldo-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Pat Benatar & Neil Giraldo",
+            "The Vindys"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488779-willy-tea-taylor-at-rumba-cafe",
+        "artists": [
+            "Willy Tea Taylor"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42195679-columbus-symphony-orchestra-at-ohio-theatre",
+        "artists": [
+            "Columbus Symphony Orchestra",
+            "Britten War Requiem"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42445504-emo-kids-at-king-of-clubs",
+        "artists": [
+            "Emo Kids",
+            "Crucible of Hate"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42461190-andy-shaw-band-at-woodlands-tavern",
+        "artists": [
+            "Andy Shaw Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488617-mikrodot-at-kee-columbus",
+        "artists": [
+            "Mikrodot"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42195648-columbus-symphony-orchestra-at-ohio-theatre",
+        "artists": [
+            "Columbus Symphony Orchestra",
+            "Britten War Requiem"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444382-los-dos-carnales-at-plaza-mexico",
+        "artists": [
+            "Los Dos Carnales",
+            "Gerardo Díaz y su Gerarquía"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42474279-8lb-pressure-at-king-of-clubs",
+        "artists": [
+            "8lb Pressure",
+            "Corrosive Vengence",
+            "Sourblood",
+            "Pariah",
+            "Audiocide",
+            "Seize Eternity"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3718615-3rd-annual-bank-street-bash/id/42476318-3rd-annual-bank-street-bash-2025",
+        "artists": [
+            "TEETH MARKS (OH)"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42156933-hippo-campus-at-kemba-live",
+        "artists": [
+            "Hippo Campus",
+            "Hotline TNT"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42394254-wonder-years-at-bluestone",
+        "artists": [
+            "The Wonder Years",
+            "Kevin Devine"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493350-chuck-prophet-at-natalies-grandview",
+        "artists": [
+            "Chuck Prophet"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42413307-baroness-at-king-of-clubs",
+        "artists": [
+            "Baroness"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42464983-malcolm-todd-at-kemba-live",
+        "artists": [
+            "Malcolm Todd"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42503131-unlikely-candidates-at-rumba-cafe",
+        "artists": [
+            "The Unlikely Candidates",
+            "SLO/TIDE"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42253307-peter-hook-and-the-light-at-bluestone",
+        "artists": [
+            "Peter Hook & The Light"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42497135-avi-kaplan-at-athenaeum-theatre",
+        "artists": [
+            "Avi Kaplan",
+            "Guthrie Brown"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42486847-tisburys-at-spacebar",
+        "artists": [
+            "The Tisburys",
+            "Super City",
+            "The Laughing Chimes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496427-gyasi-at-woodlands-tavern",
+        "artists": [
+            "Gyasi",
+            "Dagger Polyester"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42506626-veil-at-summit-music-hall",
+        "artists": [
+            "Veil",
+            "Synapse"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42465995-los-campesinos-at-king-of-clubs",
+        "artists": [
+            "Los Campesinos!"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42403389-santini-the-great-at-skullys-music-diner",
+        "artists": [
+            "Santini The Great"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482650-jonathan-hape-at-asterisk-supper-club",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3701921-2025-breakaway-music-friday/id/42243449-2025-breakaway-music-festival--friday-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3701930-2025-breakaway-music-2-day-pass-530531/id/42243450-2025-breakaway-music-festival--2-day-pass-530531-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3222291-breakaway-music-ohio/id/42428164-breakaway-music-festival-ohio-2025",
+        "artists": [
+            "Marshmello",
+            "Afrojack",
+            "Deorro",
+            "SOFI TUKKER",
+            "Dom Dolla",
+            "Bunt",
+            "Matroda",
+            "Odd Mob",
+            "MORTEN",
+            "J. Worra",
+            "Frank Walker",
+            "Isoxo",
+            "San Pacho",
+            "Juelz",
+            "Levity",
+            "Nitepunk",
+            "N.O.H.A.",
+            "SONS",
+            "Rommii",
+            "Xandra",
+            "Jackie Hollander",
+            "Leondis",
+            "Ares Carter",
+            "VRYBAD"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/2484739-breakaway-ohio/id/42428124-breakaway-ohio-2025",
+        "artists": [
+            "MORTEN"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/748104-breakaway-music/id/42260639-breakaway-music-festival-2025",
+        "artists": [
+            "Marshmello",
+            "Afrojack",
+            "Deorro",
+            "SOFI TUKKER",
+            "Dom Dolla",
+            "Bunt",
+            "Matroda",
+            "Odd Mob",
+            "MORTEN",
+            "J. Worra",
+            "Frank Walker",
+            "Isoxo",
+            "San Pacho",
+            "Nitepunk",
+            "Rommii",
+            "Xandra",
+            "Jackie Hollander",
+            "Leondis",
+            "Ares Carter"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42363381-wallows-at-kemba-live-outdoor",
+        "artists": [
+            "Wallows"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42343163-rehab-at-king-of-clubs",
+        "artists": [
+            "Rehab",
+            "Mickey Avalon",
+            "Tantric",
+            "Scotty Austin",
+            "Peter Dante"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3715930-ultimate-music-wave-fest-all-ages-with-adult/id/42445448-ultimate-music-wave-fest-all-ages-with-adult-2025",
+        "artists": [
+            "Mickey Avalon",
+            "Rehab",
+            "Scotty Austin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3701920-2025-breakaway-music-saturday/id/42243437-2025-breakaway-music-festival--saturday-2025",
+        "artists": [
+            "SATURDAY"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444318-sara-kays-at-a-and-r-music-bar",
+        "artists": [
+            "Sara Kays",
+            "Landon Conrath",
+            "Eli Wilson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444834-vampire-weekend-at-kemba-live",
+        "artists": [
+            "Vampire Weekend",
+            "Geese"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412131-orion-sun-at-newport-music-hall",
+        "artists": [
+            "orion sun"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42449828-fotocrime-at-cafe-bourbon-street",
+        "artists": [
+            "Fotocrime",
+            "Idioms",
+            "CHAINS OF DESIRE",
+            "Erin Void"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467509-kyle-dion-at-a-and-r-music-bar",
+        "artists": [
+            "Kyle Dion"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42488778-red-sun-rising-at-rumba-cafe",
+        "artists": [
+            "Red Sun Rising",
+            "Mike Protich"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42439656-abbie-gardner-at-natalies-grandview",
+        "artists": [
+            "Abbie Gardner"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42509123-ac-slater-at-otherworld",
+        "artists": [
+            "AC Slater"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42510446-provoker-at-a-and-r-music-bar",
+        "artists": [
+            "Provoker"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42411993-mei-semones-at-ace-of-cups",
+        "artists": [
+            "Mei Semones"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42464617-illiterate-light-at-natalies-grandview",
+        "artists": [
+            "Illiterate Light",
+            "Wes Parker"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42489155-johnny-manchild-and-the-poor-bastards-at-natalies-grandview",
+        "artists": [
+            "Johnny Manchild and the Poor Bastards",
+            "Fake Shark"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42387209-jet-at-kemba-live",
+        "artists": [
+            "Jet",
+            "Band of Skulls"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469923-games-we-play-at-a-and-r-music-bar",
+        "artists": [
+            "Games We Play",
+            "Paradox"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42486680-left-out-us-at-rumba-cafe",
+        "artists": [
+            "Left Out (US)",
+            "Special World",
+            "Neil"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493610-softcult-at-skullys-music-diner",
+        "artists": [
+            "Softcult",
+            "She's Green"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42310241-sarah-millican-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Sarah Millican"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42440019-bailey-spinn-at-ace-of-cups",
+        "artists": [
+            "Bailey Spinn"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42460859-ryan-oakes-at-king-of-clubs-columbus",
+        "artists": [
+            "Ryan Oakes",
+            "Merkules"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42203911-sarah-millican-at-southern-theatre",
+        "artists": [
+            "Sarah Millican"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42419486-punch-brothers-at-southern-theatre",
+        "artists": [
+            "Punch Brothers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42389754-artemas-at-bluestone",
+        "artists": [
+            "Artemas"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42491202-planning-for-burial-at-ace-of-cups",
+        "artists": [
+            "Planning For Burial",
+            "Wax Teeth",
+            "Stander"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42397156-kyle-smith-at-dankhouse-brewing-company",
+        "artists": [
+            "Kyle Smith",
+            "Josh Heinrichs",
+            "Rockstead"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42455550-king-apollo-at-unknown-venue",
+        "artists": [
+            "King Apollo",
+            "Sofar Sounds Columbus"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482654-jonathan-hape-at-henmick-farm-and-brewery",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/2375369-creekside-blues-jazz/id/42354320-creekside-blues--jazz-festival-2025",
+        "artists": [
+            "Jessy J"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42366776-blondshell-at-skullys-music-diner",
+        "artists": [
+            "Blondshell",
+            "Meg Elsier"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412679-rumjacks-at-rumba-cafe",
+        "artists": [
+            "The Rumjacks",
+            "Crazy and the Brains"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42387157-julia-wolf-at-a-and-r-music-bar",
+        "artists": [
+            "Julia Wolf",
+            "Worry Club",
+            "Ellis"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42420979-queens-of-the-stone-age-at-kemba-live-outdoor",
+        "artists": [
+            "Queens of the Stone Age",
+            "The Kills"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42454440-youth-fountain-at-ace-of-cups",
+        "artists": [
+            "Youth Fountain",
+            "Good Terms",
+            "Sad Park"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42403293-hozier-at-historic-crew-stadium",
+        "artists": [
+            "Hozier",
+            "Gigi Perez"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493530-origami-angel-at-king-of-clubs",
+        "artists": [
+            "Origami Angel",
+            "Saturdays At Your Place",
+            "Chase Petra"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42437865-emily-nenni-at-ace-of-cups",
+        "artists": [
+            "Emily Nenni"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42451554-colleen-green-at-ace-of-cups",
+        "artists": [
+            "Colleen Green",
+            "Rozwell Kid"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42437758-bug-hunter-at-skullys-music-diner",
+        "artists": [
+            "Bug Hunter",
+            "The Narcissist Cookbook"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412198-devo-at-kemba-live",
+        "artists": [
+            "Devo"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42492228-waylon-wyatt-at-newport-music-hall",
+        "artists": [
+            "Waylon Wyatt"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42512496-iron-maidens-at-king-of-clubs",
+        "artists": [
+            "The Iron Maidens",
+            "Scotty Austin",
+            "Peter Dante",
+            "Paradise Kitty"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42497301-millyz-at-a-and-r-music-bar",
+        "artists": [
+            "Millyz"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42482660-jonathan-hape-at-railhouse",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398557-modest-mouse-at-kemba-live",
+        "artists": [
+            "Modest Mouse"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42438779-lil-baby-at-nationwide-arena",
+        "artists": [
+            "Lil Baby",
+            "Bigxthaplug",
+            "NLE Choppa"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42417263-hekler-at-skullys-music-diner",
+        "artists": [
+            "HEKLER"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42475015-billy-two-shoes-at-unknown-venue",
+        "artists": [
+            "Billy Two Shoes",
+            "Josh Lawson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3696214-buckeye-country-superfest-starring-jelly-roll-kane-brown/id/42215387-buckeye-country-superfest-starring-jelly-roll--kane-brown-2025",
+        "artists": [
+            "Jelly Roll",
+            "Megan Moroney",
+            "Dasha",
+            "Treaty Oak Revival",
+            "Conner Smith"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3697715-buckeye-country-superfest-jelly-roll-kane-brown-megan-moroney-treaty-oak-revival/id/42231969-buckeye-country-superfest-jelly-roll-kane-brown-megan-moroney-treaty-oak-revival-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3697716-buckeye-country-superfest-parking/id/42231970-buckeye-country-superfest-parking-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3705134-2025-buckeye-country-superfest-jelly-roll-kane-brown-megan-moroney-treaty-oak-revival/id/42317690-2025-buckeye-country-superfest-jelly-roll-kane-brown-megan-moroney-treaty-oak-revival-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42377460-darts-us-at-cafe-bourbon-street",
+        "artists": [
+            "The Darts - US"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42508843-improvement-movement-at-woodlands-tavern",
+        "artists": [
+            "Improvement Movement"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42478380-christie-lenee-at-natalies-grandview",
+        "artists": [
+            "Christie Lenée",
+            "Katie Marie"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412188-clutch-at-kemba-live",
+        "artists": [
+            "Clutch",
+            "Tyler Bryant & the Shakedown",
+            "Nate Bergman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42229977-canaan-cox-at-rumba-cafe",
+        "artists": [
+            "Canaan Cox"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42502693-jonathan-hape-at-asterisk-supper-club",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42503365-bear-hands-at-rumba-cafe",
+        "artists": [
+            "Bear Hands"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469159-aurorawave-at-summit-music-hall",
+        "artists": [
+            "aurorawave"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42411344-psychedelic-furs-at-columbus-athenaeum",
+        "artists": [
+            "The Psychedelic Furs",
+            "The Mission"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42464928-powerman-5000-at-king-of-clubs",
+        "artists": [
+            "Powerman 5000",
+            "The Great Alone",
+            "Trapt",
+            "Ill Niño"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/1179558-powerman/id/42477252-powerman-2025",
+        "artists": [
+            "Powerman 5000",
+            "Ill Niño"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42467903-wallflowers-at-bluestone",
+        "artists": [
+            "The Wallflowers",
+            "Early James"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493853-orthodox-at-ace-of-cups",
+        "artists": [
+            "Orthodox",
+            "Mugshot",
+            "Omerta",
+            "fromjoy"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496571-2nd-grade-at-rumba-cafe",
+        "artists": [
+            "2nd Grade"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42449778-run-the-jewels-at-nationwide-arena",
+        "artists": [
+            "Run The Jewels"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42442767-phish-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Phish"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42470995-emery-at-skullys-music-diner",
+        "artists": [
+            "Emery",
+            "Have Mercy",
+            "Good Terms"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42371191-hayley-and-the-crushers-at-cafe-bourbon-street",
+        "artists": [
+            "Hayley and the Crushers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42483741-tynan-at-skullys-music-diner",
+        "artists": [
+            "TYNAN",
+            "Mport"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42428348-ezra-furman-at-ace-of-cups",
+        "artists": [
+            "Ezra Furman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42428593-winona-fighter-at-rumba-cafe",
+        "artists": [
+            "Winona Fighter"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42480712-tyler-hilton-at-skullys-music-diner",
+        "artists": [
+            "Tyler Hilton",
+            "BBMAK"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42478207-gunshine-at-king-of-clubs",
+        "artists": [
+            "Gunshine",
+            "Gabe Niles",
+            "Khi Infinite"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42435879-old-city-at-cafe-bourbon-street",
+        "artists": [
+            "Old City",
+            "Smug Brothers",
+            "Paper Airplane"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42390385-dont-panic-us-at-rumba-cafe",
+        "artists": [
+            "Don't Panic (US)",
+            "Patty PerShayla"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42490607-tiffany-haddish-at-event-center-hollywood-casino",
+        "artists": [
+            "Tiffany Haddish"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395998-ryan-adams-at-kemba-live",
+        "artists": [
+            "Ryan Adams"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42505758-jojo-siwa-at-newport-music-hall",
+        "artists": [
+            "JoJo Siwa"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42324368-creed-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Creed",
+            "3 Doors Down",
+            "Mammoth WVH"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493111-warning-at-kemba-live",
+        "artists": [
+            "The Warning"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42274842-keshi-at-kemba-live",
+        "artists": [
+            "keshi",
+            "Mac Ayres",
+            "Starfall"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42493493-white-denim-at-skullys-music-diner",
+        "artists": [
+            "White Denim"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42487725-dr-manhattan-at-ace-of-cups",
+        "artists": [
+            "Dr. Manhattan",
+            "Melted Bodies"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42375705-shinedown-at-schottenstein-arena",
+        "artists": [
+            "Shinedown",
+            "Morgan Wade",
+            "Bush"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42456021-head-and-the-heart-at-kemba-live",
+        "artists": [
+            "The Head and the Heart",
+            "Wild Rivers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42475644-crane-wives-at-columbus-athenaeum",
+        "artists": [
+            "The Crane Wives"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42421833-kidz-bop-kids-at-ohio-state-fair",
+        "artists": [
+            "Kidz Bop Kids"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42238082-foreigner-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Foreigner",
+            "Ohio State Fair"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3717172-rock-coshocton/id/42460641-rock-coshocton-2025",
+        "artists": []
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42453160-warren-zeiders-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Warren Zeiders",
+            "Ohio State Fair",
+            "Hailey Whitters"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42444535-vince-gill-at-palace-theatre",
+        "artists": [
+            "Vince Gill"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412617-gavin-adcock-at-coshocton-county-fairgrounds",
+        "artists": [
+            "Gavin Adcock"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42445446-pat-travers-at-king-of-clubs-columbus",
+        "artists": [
+            "Pat Travers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42419287-pat-travers-band-at-king-of-clubs",
+        "artists": [
+            "Pat Travers Band"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42502694-jonathan-hape-at-asterisk-supper-club",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42472197-everclear-at-king-of-clubs-columbus",
+        "artists": [
+            "Everclear",
+            "Black Satellite",
+            "Mind Incision"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42425691-morris-day-and-the-time-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Morris Day & The Time",
+            "Ohio State Fair",
+            "Confunkshun"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412523-them-dirty-roses-at-coshocton-county-fairgrounds",
+        "artists": [
+            "Them Dirty Roses"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42502695-jonathan-hape-at-brewdog-franklinton",
+        "artists": [
+            "Jonathan Hape"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42480811-tauren-wells-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Tauren Wells",
+            "Josiah Queen",
+            "Ohio State Fair"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42273319-samantha-crain-at-rumba-cafe",
+        "artists": [
+            "Samantha Crain"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42453309-leanne-morgan-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Leanne Morgan",
+            "Ohio State Fair"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42480751-tpain-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "T-Pain",
+            "Ohio State Fair"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42385691-larussell-at-skullys",
+        "artists": [
+            "LaRussell"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42426057-ajr-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "AJR",
+            "Ohio State Fair",
+            "Valley"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469131-blackberry-smoke-at-kemba-live-outdoor",
+        "artists": [
+            "Blackberry Smoke",
+            "Mike Campbell & The Dirty Knobs",
+            "Shannon McNally"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42379498-captured-the-ultimate-journey-tribute-at-ross-county-fairgrounds",
+        "artists": [
+            "CAPTURED - The Ultimate Journey Tribute"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42510472-trace-adkins-at-ohio-expo-center-and-state-fair",
+        "artists": [
+            "Trace Adkins",
+            "Alex Miller",
+            "Ohio State Fair"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42387120-lord-huron-at-kemba-live",
+        "artists": [
+            "Lord Huron",
+            "S.G. Goodman"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42286596-matt-rife-at-nationwide-arena",
+        "artists": [
+            "Matt Rife"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42465013-red-clay-strays-at-kemba-live",
+        "artists": [
+            "Red Clay Strays"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42501146-five-for-fighting-at-templelive-at-the-athenaeum",
+        "artists": [
+            "Five For Fighting",
+            "Vertical Horizon"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3721224-maxwell-the-serenade/id/42504574-maxwell-the-serenade-2025",
+        "artists": [
+            "Maxwell",
+            "Lucky Daye"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42372989-coheed-and-cambria-at-kemba-live",
+        "artists": [
+            "Coheed and Cambria",
+            "Taking Back Sunday",
+            "Foxing"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42306916-nate-bargatze-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Nate Bargatze"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494879-311-at-kemba-live",
+        "artists": [
+            "311",
+            "Sitting on Saturn",
+            "Badflower"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42371706-nate-bargatze-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Nate Bargatze"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494882-volkerball-at-kemba-live",
+        "artists": [
+            "Völkerball"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42498697-ani-difranco-at-kemba-live",
+        "artists": [
+            "Ani DiFranco",
+            "Tune-Yards"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42485781-ray-lamontagne-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Ray LaMontagne"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42510103-pink-turns-blue-at-rumba-cafe",
+        "artists": [
+            "Pink Turns Blue"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42496782-pup-at-kemba-live",
+        "artists": [
+            "PUP",
+            "Jeff Rosenstock",
+            "Ekko Astral"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42365020-castle-rat-at-ace-of-cups",
+        "artists": [
+            "Castle Rat"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42193281-weird-al-yankovic-at-palace-theatre",
+        "artists": [
+            "\"Weird Al\" Yankovic"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398481-yacht-rock-revue-at-bluestone",
+        "artists": [
+            "Yacht Rock Revue"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42506438-sex-mex-at-cafe-bourbon-street",
+        "artists": [
+            "Sex Mex"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42317969-indigo-girls-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Indigo Girls",
+            "Melissa Etheridge"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42491879-michael-schenker-at-king-of-clubs-columbus",
+        "artists": [
+            "Michael Schenker",
+            "Strawberry Girls",
+            "Cancer Bats"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42424434-mo-lowda-and-the-humble-at-ace-of-cups",
+        "artists": [
+            "Mo Lowda & the Humble",
+            "French Cassettes"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42287341-cochise-at-skullys-music-diner",
+        "artists": [
+            "Cochise"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/festivals/3720818-night-nation-run-columbus/id/42500225-night-nation-run-columbus-2025",
+        "artists": [
+            "Tony Styles"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42420473-rio-da-yung-og-at-skullys-music-diner",
+        "artists": [
+            "Rio Da Yung OG"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42429261-lumineers-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "The Lumineers",
+            "Chance Peña"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42412157-living-tombstone-at-newport-music-hall",
+        "artists": [
+            "The Living Tombstone"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42507124-garbage-at-kemba-live",
+        "artists": [
+            "Garbage",
+            "Starcrawler"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42476790-southern-culture-on-the-skids-at-rumba-cafe",
+        "artists": [
+            "Southern Culture On The Skids"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494902-matt-maltese-at-newport-music-hall",
+        "artists": [
+            "Matt Maltese"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42283763-jimmy-carr-at-southern-theatre",
+        "artists": [
+            "Jimmy Carr"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42379380-dirty-red-and-the-soul-shakers-at-eldorado-scioto-downs",
+        "artists": [
+            "Dirty Red & The Soul Shakers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42427141-johnnyswim-at-newport-music-hall",
+        "artists": [
+            "JOHNNYSWIM"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42417278-aldo-nova-at-king-of-clubs",
+        "artists": [
+            "Aldo Nova"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42514005-mumford-and-sons-at-nationwide-arena",
+        "artists": [
+            "Mumford & Sons",
+            "Michael Kiwanuka"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398583-kneecap-at-newport-music-hall",
+        "artists": [
+            "kneecap"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42497339-kings-of-thrash-at-king-of-clubs",
+        "artists": [
+            "KINGS OF THRASH",
+            "Crucible of Hate",
+            "Red Devil Vortex",
+            "Corrosive Vengence",
+            "The Warning Signs"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42398085-maddie-zahm-at-athenaeum-theatre",
+        "artists": [
+            "Maddie Zahm",
+            "Mercer Henderson"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42469885-mushroomhead-at-king-of-clubs",
+        "artists": [
+            "Mushroomhead",
+            "Psychostick",
+            "Black Satellite",
+            "Mind Incision"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42454547-wombats-at-newport-music-hall",
+        "artists": [
+            "The Wombats",
+            "Red Rum Club"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42395274-jacks-mannequin-at-kemba-live",
+        "artists": [
+            "Jack's Mannequin"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42379382-dirty-red-and-the-soul-shakers-at-eldorado-scioto-downs",
+        "artists": [
+            "Dirty Red & The Soul Shakers"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42502461-jonas-brothers-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Jonas Brothers",
+            "The All-American Rejects"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42494250-john-legend-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "John Legend"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42480301-bert-kreischer-at-value-city-arena-at-schottenstein-center",
+        "artists": [
+            "Bert Kreischer"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42501282-red-devil-vortex-at-king-of-clubs",
+        "artists": [
+            "Red Devil Vortex"
+        ]
+    },
+    {
+        "uri": "https://www.songkick.com/concerts/42426061-brad-williams-at-wexner-center-mershon-auditorium",
+        "artists": [
+            "Brad Williams"
+        ]
+    }
+]

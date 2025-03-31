@@ -1,5 +1,5 @@
 // var jsonInputPath  = "./octoparse-results/songkick-columbus.20240721.json"
-var jsonInputPath  = "./octoparse-results/Songkick-SaltLakeCity.20241027.json"
+var jsonInputPath  = "./octoparse-results/Songkick-SaltLakeCity.20250326.json"
 //var jsonInputPath  = "./octoparse-results/songkick-santa-fe.20231206.json"
 
 var jsonInput = require(jsonInputPath)
@@ -140,9 +140,22 @@ const mapOctoparseOutputToSongkickEvents = async function(jsonInput){
 		debugger
 
 		let jsonOutputFileName = base.replace(".json","") + ".output.json"
+		let jsonOutputEventListFileName = base.replace(".json","") + ".output.list.json"
 		console.log(`writing output file ${dir + "/" + jsonOutputFileName}`);
 		debugger
-		fs.writeFileSync(dir + "/" + jsonOutputFileName,  JSON.stringify(songkick_events));
+		fs.writeFileSync(dir + "/" + jsonOutputFileName,  JSON.stringify(songkick_events,null,4));
+
+		console.log(`writing output file ${dir + "/" + jsonOutputEventListFileName}`);
+		let list = [];
+		songkick_events.forEach(e =>{
+			let ob = {
+				uri:e.uri,
+				date:e.date,
+				artists:e.performance.map(p =>{return p.displayName})
+			}
+			list.push(ob)
+		})
+		fs.writeFileSync(dir + "/" + jsonOutputEventListFileName,  JSON.stringify(list,null,4));
 
 
     } catch(e){
