@@ -66,6 +66,10 @@ use postman to hit endpoints
 
 # deployment
 
+TODO: DOUBLE CHEcK I"M NOT INCLUDING REFERENCeS TO EXCLUDED WORK FILES
+experimental_api.js > jsonInputFilePath
+songkick_api.js > inputJsonFile
+
 ## commit steps (lambda)
 
 Automatically bumps minor version 1.x.0
